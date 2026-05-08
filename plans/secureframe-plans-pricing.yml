@@ -13,29 +13,33 @@ tags:
 - ISO 27001
 - Risk
 - Plans
-description: Placeholder plans/pricing artifact for Secureframe. Replace with real published pricing once
-  the pipeline researches the provider's plans page.
-notes: Initial scaffold — plans/pricing have not yet been reconciled.
+description: Secureframe pricing is quote-based and not posted publicly; tiers vary by frameworks
+  selected, integrations, and headcount.
+notes: API access is included with paid subscriptions. No self-serve plan page is published.
 sources:
-- https://secureframe.com/
+- https://secureframe.com/pricing
+- https://developer.secureframe.com/
 plans:
-- id: secureframe-default
-  name: To Be Reconciled
+- id: secureframe-quote-based
+  name: Quote-Based Subscription
   type: enterprise
-  description: Initial scaffold; replace with provider plan tiers once pricing is reconciled.
+  description: Annual subscription scoped to selected frameworks (SOC 2, ISO 27001, HIPAA,
+    PCI DSS, GDPR, NIST), integrations, and employee headcount. Contact Secureframe sales.
   entries:
-  - label: API Access
-    name: api_access
+  - label: Subscription
+    name: subscription
     type: flat
-    metric: varies
+    metric: annual subscription
     limit: -1
-    timeFrame: usage
+    timeFrame: yearly
     geo: global
     unit: 1
-    price: see https://secureframe.com/
+    price: contact sales
     userMultiplied: false
   elements:
-  - name: Pending Reconciliation
+  - name: API Access (included)
+  - name: Continuous Monitoring
+  - name: Vendor Management
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com

@@ -3,7 +3,9 @@ url: https://raw.githubusercontent.com/api-evangelist/secureframe/refs/heads/mai
 name: Secureframe
 x-type: company
 description: >-
-  Secureframe automates security compliance (SOC 2, ISO 27001, HIPAA, PCI DSS, GDPR) with continuous evidence collection, vendor management, and AI-powered risk.
+  Secureframe automates security and privacy compliance for SOC 2, ISO 27001,
+  HIPAA, PCI DSS, GDPR, NIST, and more. The Secureframe Public API exposes
+  controls, frameworks, evidence, tests, personnel, and vendor data.
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 tags:
   - GRC
@@ -14,10 +16,27 @@ tags:
 created: '2026-05-08'
 modified: '2026-05-08'
 specificationVersion: '0.19'
-apis: []
+apis:
+  - aid: secureframe:public-api
+    name: Secureframe Public API
+    description: >-
+      REST API providing programmatic access to Secureframe controls, frameworks,
+      tests, evidence, personnel, vendors, and audit data. Authenticated with
+      API access tokens.
+    humanURL: https://developer.secureframe.com/
+    baseURL: https://api.secureframe.com
+    tags:
+      - GRC
+      - Compliance
+      - REST
+    properties:
+      - type: Documentation
+        url: https://developer.secureframe.com/
 common:
   - type: Website
     url: https://secureframe.com/
+  - type: Developer
+    url: https://developer.secureframe.com/
   - type: Plans
     url: plans/secureframe-plans-pricing.yml
   - type: RateLimits
