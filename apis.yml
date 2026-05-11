@@ -43,6 +43,10 @@ common:
     url: rate-limits/secureframe-rate-limits.yml
   - type: FinOps
     url: finops/secureframe-finops.yml
+  - type: Integrations
+    url: https://secureframe.com/integrations
+integrations:
+  - name: Service Providers
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
