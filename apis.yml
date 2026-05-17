@@ -1,7 +1,7 @@
 aid: secureframe
 url: https://raw.githubusercontent.com/api-evangelist/secureframe/refs/heads/main/apis.yml
 name: Secureframe
-x-type: company
+kind: company
 description: >-
   Secureframe automates security and privacy compliance for SOC 2, ISO 27001,
   HIPAA, PCI DSS, GDPR, NIST, and more. The Secureframe Public API exposes
