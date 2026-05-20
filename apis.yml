@@ -33,6 +33,10 @@ apis:
       - type: Documentation
         url: https://developer.secureframe.com/
 common:
+  - type: GitHubOrganization
+    url: https://github.com/secureframe
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/secureframe
   - type: Website
     url: https://secureframe.com/
   - type: Developer
