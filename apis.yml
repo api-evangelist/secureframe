@@ -33,6 +33,12 @@ apis:
       - type: Documentation
         url: https://developer.secureframe.com/
 common:
+  - type: TrustCenter
+    url: security/secureframe-trust-center.yml
+  - type: VulnerabilityDisclosure
+    url: security/secureframe-vulnerability-disclosure.yml
+  - type: DomainSecurity
+    url: security/secureframe-domain-security.yml
   - type: GitHubOrganization
     url: https://github.com/secureframe
   - type: LinkedIn
@@ -49,6 +55,8 @@ common:
     url: finops/secureframe-finops.yml
   - type: Integrations
     url: https://secureframe.com/integrations
+  - url: https://secureframe.com/blog
+    type: Blog
 integrations:
   - name: Service Providers
 maintainers:
