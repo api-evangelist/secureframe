@@ -3,21 +3,27 @@ url: https://raw.githubusercontent.com/api-evangelist/secureframe/refs/heads/mai
 name: Secureframe
 kind: company
 description: >-
-  Secureframe automates security and privacy compliance for SOC 2, ISO 27001,
-  HIPAA, PCI DSS, GDPR, NIST, and more. The Secureframe Public API exposes
-  controls, frameworks, evidence, tests, personnel, and vendor data.
+  Secureframe automates security and privacy compliance for SOC 2, ISO 27001, HIPAA,
+  PCI DSS, GDPR, CMMC, FedRAMP, NIST 800-171 and more. Its Public API is a
+  112-operation, JSON:API-shaped REST contract over the compliance record of truth —
+  frameworks, requirements, controls, tests, evidence, policies, risks, personnel,
+  devices, cloud resources, repositories, third-party vendors, trust center requests,
+  and the System Security Plan and POA&M artifacts CMMC and FedRAMP assessments are
+  conducted against. Secureframe also runs a first-party hosted MCP server that
+  exposes all 112 operations as agent-callable tools over OAuth 2.1.
 accessModel:
   pricing: paid
-  onboarding: unknown
+  onboarding: sales
   trial: false
   try_now: false
   public: false
   label: Paid
-  confidence: medium
+  confidence: high
   source:
-  - plans
-  generated: '2026-07-22'
-  method: derived
+    - plans
+    - https://secureframe.com/pricing
+  generated: '2026-08-27'
+  method: searched
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/secureframe.png
 tags:
   - GRC
@@ -25,52 +31,177 @@ tags:
   - SOC 2
   - ISO 27001
   - Risk
+  - CMMC
+  - FedRAMP
+  - Security
+  - Audit
+  - Trust
 created: '2026-05-08'
-modified: '2026-05-08'
+modified: '2026-08-27'
 specificationVersion: '0.23'
 apis:
   - aid: secureframe:public-api
     name: Secureframe Public API
     description: >-
       REST API providing programmatic access to Secureframe controls, frameworks,
-      tests, evidence, personnel, vendors, and audit data. Authenticated with
-      API access tokens.
+      framework requirements, tests, evidence, policies, tasks, risks, personnel,
+      devices, cloud resources, repositories, third-party risk vendors, knowledge base
+      answers, trust center requests, and the SSP and POA&M records used in CMMC and
+      FedRAMP assessments. 76 paths, 112 operations, 41 resource tags. Resource-oriented
+      and JSON:API-shaped, with Lucene-syntax search, page/per_page pagination and
+      include/relationships compound documents. Authenticated with an API key and secret
+      sent as a single space-separated Authorization header; permissions are inherited
+      from the RBAC role of the user the key belongs to.
     humanURL: https://developer.secureframe.com/
     baseURL: https://api.secureframe.com
     tags:
       - GRC
       - Compliance
       - REST
+      - CMMC
+      - Audit
     properties:
+      - type: OpenAPI
+        url: openapi/secureframe-public-api-openapi.yml
+      - type: Overlay
+        url: overlays/secureframe-public-api-overlay.yaml
       - type: Documentation
         url: https://developer.secureframe.com/
+      - type: APIReference
+        url: https://api.secureframe.com/docs
+      - type: Authentication
+        url: authentication/secureframe-authentication.yml
+      - type: ErrorCatalog
+        url: errors/secureframe-problem-types.yml
+      - type: Conventions
+        url: conventions/secureframe-conventions.yml
+      - type: DataModel
+        url: data-model/secureframe-data-model.yml
+      - type: Lifecycle
+        url: lifecycle/secureframe-lifecycle.yml
+      - type: Deprecation
+        url: lifecycle/secureframe-lifecycle.yml
+      - type: RateLimits
+        url: rate-limits/secureframe-rate-limits.yml
+  - aid: secureframe:mcp-server
+    name: Secureframe MCP Server
+    description: >-
+      First-party hosted (remote) Model Context Protocol server exposing the Secureframe
+      compliance platform as 112 tools across 41 categories — 63 read, 49 write — mapped
+      one-for-one onto the Public API operations. Authenticated with OAuth 2.1
+      (authorization code + PKCE S256, dynamic client registration) or with a REST API
+      key and secret for headless clients. Every request runs as a specific Secureframe
+      user in a specific company and is bounded by that user's RBAC permissions.
+    humanURL: https://mcp.secureframe.com/mcp_docs
+    baseURL: https://mcp.secureframe.com
+    tags:
+      - MCP
+      - Agents
+      - GRC
+      - Compliance
+    properties:
+      - type: MCPServer
+        url: mcp/secureframe-mcp.yml
+      - type: ToolCrosswalk
+        url: mcp/secureframe-tool-crosswalk.yml
+      - type: Documentation
+        url: https://mcp.secureframe.com/mcp_docs
+      - type: OAuthScopes
+        url: scopes/secureframe-scopes.yml
+      - type: WellKnown
+        url: well-known/secureframe-well-known.yml
 common:
-  - type: TrustCenter
-    url: security/secureframe-trust-center.yml
-  - type: VulnerabilityDisclosure
-    url: security/secureframe-vulnerability-disclosure.yml
-  - type: DomainSecurity
-    url: security/secureframe-domain-security.yml
-  - type: GitHubOrganization
-    url: https://github.com/secureframe
-  - type: LinkedIn
-    url: https://www.linkedin.com/company/secureframe
   - type: Website
     url: https://secureframe.com/
+  - type: DeveloperPortal
+    url: https://developer.secureframe.com/
   - type: Developer
     url: https://developer.secureframe.com/
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Pricing
+    url: https://secureframe.com/pricing
   - type: Plans
     url: plans/secureframe-plans-pricing.yml
   - type: RateLimits
     url: rate-limits/secureframe-rate-limits.yml
-  - type: FinOps
-    url: finops/secureframe-finops.yml
+  - type: Login
+    url: https://app.secureframe.com/login
+  - type: SignUp
+    url: https://secureframe.com/request-demo
+  - type: Support
+    url: https://secureframe.com/contact
+  - type: HelpCenter
+    url: https://help.secureframe.com/
+  - type: StatusPage
+    url: https://status.secureframe.com/
+  - type: ChangeLog
+    url: https://secureframe.com/product-updates
+  - type: ChangeLog
+    url: changelog/secureframe-changelog.yml
+  - type: TermsOfService
+    url: https://secureframe.com/terms
+  - type: PrivacyPolicy
+    url: https://secureframe.com/privacy-policy
+  - type: GitHubOrganization
+    url: https://github.com/secureframe
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/secureframe
+  - type: Blog
+    url: https://secureframe.com/blog
   - type: Integrations
     url: https://secureframe.com/integrations
-  - url: https://secureframe.com/blog
-    type: Blog
+  - type: MCPServer
+    url: mcp/secureframe-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/secureframe-tool-crosswalk.yml
+  - type: AgentSkill
+    url: skills/_index.yml
+  - type: LLMsTxt
+    url: llms/secureframe-llms.txt
+  - type: WellKnown
+    url: well-known/secureframe-well-known.yml
+  - type: Conformance
+    url: conformance/secureframe-conformance.yml
+  - type: Compliance
+    url: https://trust.secureframe.com/
+  - type: TrustCenter
+    url: security/secureframe-trust-center.yml
+  - type: Security
+    url: security/secureframe-vulnerability-disclosure.yml
+  - type: VulnerabilityDisclosure
+    url: security/secureframe-vulnerability-disclosure.yml
+  - type: DomainSecurity
+    url: security/secureframe-domain-security.yml
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: OAuthScopes
+    url: scopes/secureframe-scopes.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Packages
+    url: packages/secureframe-packages.yml
+  - type: Overlay
+    url: overlays/secureframe-public-api-overlay.yaml
+  - type: FinOps
+    url: finops/secureframe-finops.yml
 integrations:
   - name: Service Providers
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
+x-enrichment:
+  date: '2026-08-27'
+  status: enriched
+  artifacts_added: 22
+  pass: local-v1
