@@ -11,6 +11,17 @@ description: >-
   and the System Security Plan and POA&M artifacts CMMC and FedRAMP assessments are
   conducted against. Secureframe also runs a first-party hosted MCP server that
   exposes all 112 operations as agent-callable tools over OAuth 2.1.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: paid
   onboarding: sales
