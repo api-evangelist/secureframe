@@ -1,0 +1,119 @@
+specification: API Commons Lifecycle
+specificationVersion: '0.1'
+provider: Secureframe
+providerId: secureframe
+generated: '2026-08-27'
+modified: '2026-08-27'
+method: searched
+source: https://api.secureframe.com/docs (Versioning + API Changelog sections of info.description), https://status.secureframe.com/, https://secureframe.com/product-updates
+description: >-
+  Secureframe publishes an explicit, written versioning contract inside its API reference: a
+  dated-version scheme, a named list of what counts as a backwards-compatible additive change
+  versus a breaking change, a version table with a Deprecation Date column, and an API changelog.
+  Only one dated version has ever been released — 2023-10-18 — and its Deprecation Date is "-".
+versioning:
+  scheme: dated
+  strategy: >-
+    Additive changes ship into the existing dated version. Breaking changes require Secureframe to
+    cut a NEW dated API version; existing integrations stay on the version they were built against.
+  current_version: '2023-10-18'
+  version_in_spec: '2023-10-18'
+  in_url: false
+  in_header: false
+  note: >-
+    The dated version is not carried in the URL or a header — https://api.secureframe.com/ IS the
+    2023-10-18 version. A client has no runtime signal telling it which dated version it is talking to.
+  versions:
+  - version: '2023-10-18'
+    url: https://api.secureframe.com/
+    released: '2023-10-18'
+    deprecation_date: null
+    status: current
+  backwards_compatible_changes:
+  - Adding operations
+  - Adding optional parameters
+  - Adding optional request headers
+  - Adding response attributes
+  - Adding response headers
+  breaking_changes:
+  - Removing operations
+  - Removing, renaming, or changing the type of a parameter
+  - Adding a required parameter or making a previously optional parameter now required
+  - Removing attributes from request responses
+  - Adding a required header
+  - Introducing new parameter data validation constraints
+  - Updating authentication and authorization mechanisms
+deprecation:
+  policy_published: true
+  policy_url: https://api.secureframe.com/docs
+  policy_summary: >-
+    Breaking changes are handled by releasing a new dated version rather than by deprecating in place.
+    The version table carries a Deprecation Date column, currently empty for the only released version.
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  note: >-
+    No Sunset or Deprecation response header is declared anywhere in the OpenAPI, so RFC 8594 is not
+    implemented — a deprecation is discoverable only by reading the docs.
+  deprecated_operations:
+  - operationId: companyVendorsIndex
+    operation: GET /vendors
+    marker: prose
+    replacement: tprmVendorRiskDetailsIndex (GET /tprm/vendors)
+  - operationId: companyVendorsShow
+    operation: GET /vendors/{id}
+    marker: prose
+    replacement: tprmVendorRiskDetailsShow (GET /tprm/vendors/{id})
+  - operationId: companyVendorsArchive
+    operation: PUT /vendors/{id}/archive
+    marker: prose
+    replacement: tprmVendorRiskDetailsArchive (PUT /tprm/vendors/{id}/archive)
+  deprecated_operations_note: >-
+    The whole legacy "Vendor" tag is marked "[DEPRECATED - Use the Third Party Risk Management Vendor
+    endpoint]" in the operation descriptions, but NOT ONE of those three operations carries
+    `deprecated: true` in the OpenAPI. A code generator or an agent reading the machine-readable
+    contract will treat the superseded surface as current. This is the single highest-value fix
+    available on this spec.
+  deprecated_components:
+  - repo: https://github.com/secureframe/secureframe-mcp-server
+    status: archived
+    date: '2026-07-17'
+    replacement: https://mcp.secureframe.com/ (hosted MCP server)
+    evidence: 'README first line reads "# Deprecated / This repository is no longer maintained."'
+status_page:
+  url: https://status.secureframe.com/
+  provider: Atlassian Statuspage
+  api: https://status.secureframe.com/api/v2/summary.json
+  components:
+  - Marketing Website
+  - Web Application
+  - API
+  - Help Desk
+  - Secureframe Agent
+  - Trust
+  - Security Questionnaires
+  probed: '2026-08-27'
+  probed_status: 200
+  observed: All Systems Operational
+  note: The API is a separately tracked Statuspage component, and the machine-readable summary endpoint is public and unauthenticated.
+sla:
+  published: false
+  note: >-
+    Secureframe advertises "99.99%" uptime on its pricing/support footer, but no contractual SLA
+    document is published on the public site; commercial terms are quote-based.
+changelog:
+  api_changelog: https://api.secureframe.com/docs
+  api_changelog_entries:
+  - version: '2023-10-18'
+    date: '2023-10-18'
+    changes:
+    - Released API Dated Version 2023-10-18
+    - Initial release.
+  api_changelog_note: >-
+    The API changelog has exactly one entry, dated 2023-10-18, and has not been added to since —
+    while the product changelog at https://secureframe.com/product-updates ships monthly.
+  product_changelog: https://secureframe.com/product-updates
+  artifact: changelog/secureframe-changelog.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

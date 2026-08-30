@@ -1,0 +1,198 @@
+specification: API Commons Conventions
+specificationVersion: '0.1'
+provider: Secureframe
+providerId: secureframe
+generated: '2026-08-27'
+modified: '2026-08-27'
+method: searched
+source: https://api.secureframe.com/docs (info.description + 112 operations), https://mcp.secureframe.com/mcp_docs
+description: >-
+  Cross-cutting runtime semantics for the Secureframe Public API — a JSON:API-shaped, resource-oriented
+  REST surface with Lucene-syntax search, page/per_page pagination and relationship inclusion, but no
+  idempotency keys, no rate-limit response headers, and no request-id tracing.
+authentication:
+  style: api-key-pair
+  header: 'Authorization: <API_KEY> <API_SECRET>'
+  note: >-
+    Two space-separated opaque values in one Authorization header — not a Bearer token, not Basic.
+    Keys are issued per company <> user; the secret is displayed once at creation. Generic HTTP
+    clients and OpenAPI code generators that assume a scheme prefix will build the header wrong.
+  scopes: none (permissions come from the user's RBAC role, not the key)
+  rotation: Revoke and regenerate in Console -> Your Profile -> Company settings -> API keys (RBAC-gated page).
+  transport: HTTP requests are redirected to HTTPS.
+  artifact: authentication/secureframe-authentication.yml
+authorization:
+  model: RBAC, inherited from the user the API key belongs to
+  note: >-
+    A request with a valid key still fails 403 if the owning user's role lacks the permission — so the
+    same key returns different capability surfaces for different users. An agent cannot discover its own
+    permissions from the API; there is no /me or introspection operation.
+  discovery: 'Console -> Personnel -> Personnel settings -> Roles'
+idempotency:
+  supported: false
+  header: null
+  evidence: >-
+    No Idempotency-Key, X-Idempotency-Key or equivalent appears in any of the 112 operations, and the
+    string "idempoten" does not occur anywhere in the OpenAPI or the reference prose.
+  impact: >-
+    20 POST operations create resources (comments, POA&M items, SSP duties/roles/policies/vendors,
+    knowledge base questions and answers, tests, evidence, framework asset scopes, security
+    questionnaires, file uploads). A retried POST after a timeout creates a duplicate. This is the
+    single most consequential gap for an autonomous agent writing into a compliance record of truth.
+  safe_retry_methods: [GET, PUT, DELETE]
+  note: >-
+    All 21 update operations are PUT (not PATCH) and are naturally idempotent; DELETE is idempotent.
+    Only creation is unsafe to retry.
+pagination:
+  style: page-number
+  params:
+  - name: page
+    in: query
+    default: 1
+    used_on_operations: 31
+  - name: per_page
+    in: query
+    used_on_operations: 31
+  response_fields: JSON:API-style envelope with a `data` array; a `meta` block carries page counts.
+  cursor: false
+  note: Page-number pagination is not stable across concurrent writes; a resource created mid-walk can be missed or repeated.
+filtering_and_search:
+  query_param: q
+  syntax: Apache Lucene query syntax
+  syntax_reference: https://lucene.apache.org/core/2_9_4/queryparsersyntax.html
+  used_on_operations: 28
+  sort: '`sort` query parameter, on 28 list operations'
+  per_resource_filters: >-
+    Each list operation documents its own named search parameters in the operation description
+    (e.g. `archived`, `discarded`, `due_date`, `acceptance_status`), not as declared OpenAPI parameters.
+  note: >-
+    This is a real machine-readability gap — the filter vocabulary is in prose inside `description`,
+    so a generated client or an MCP inputSchema exposes `q` but not the field names it accepts.
+expansion:
+  include:
+    param: include
+    used_on_operations: 36
+    description: JSON:API-style compound documents — sideload related resources into the response.
+  relationships:
+    param: relationships
+    used_on_operations: 36
+  sparse_fieldsets: false
+metadata:
+  custom_fields: >-
+    Custom Frameworks, Controls and Tests are first-class product features, and `custom_risk_*` search
+    parameters appear on /risks — but there is no generic key/value `metadata` object on resources.
+request_tracing:
+  request_id_header: false
+  evidence: No X-Request-Id, Request-Id or correlation header is declared on any response.
+  audit_trail: >-
+    API requests ARE recorded in the Secureframe Audit Log (Console -> Company settings -> Audit Log),
+    but the docs state API and Console requests are not visually differentiated, and the Audit Log is
+    not exposed through the API. An agent cannot retrieve its own action history programmatically.
+versioning:
+  scheme: dated
+  current: '2023-10-18'
+  in_url: false
+  artifact: lifecycle/secureframe-lifecycle.yml
+error_envelope:
+  format: vendor-json
+  rfc9457: false
+  observed: '{"message": "<string>"}'
+  declared_schema: none
+  artifact: errors/secureframe-problem-types.yml
+rate_limit_signaling:
+  limit: 500 requests per minute per IP address
+  status_on_exhaustion: 429
+  response_headers: none published
+  retry_after: not documented
+  note: >-
+    The limit is stated in the reference prose but there is no X-RateLimit-*/RateLimit-* header
+    contract and 429 is declared on ZERO of the 112 operations — an agent has no runtime budget
+    signal and must discover the ceiling by hitting it.
+  artifact: rate-limits/secureframe-rate-limits.yml
+bulk_operations:
+  supported: false
+  quote: 'Our API does not directly support bulk updates - only one object can be updated per request.'
+  note: >-
+    Combined with a 500 req/min per-IP ceiling and no idempotency keys, any fleet-wide compliance
+    write (scoping 10,000 cloud resources, for example) is a serial loop with an unsafe retry path.
+file_uploads:
+  model: three-step direct-to-storage handshake
+  steps:
+  - 'POST /file_uploads with filename, byte_size and checksum -> returns url, headers and id'
+  - 'PUT the raw bytes to that url, replaying every returned header unaltered'
+  - 'Pass the id as upload_id to companyTestsEvidencesCreate, companyUsersEvidencesCreate or trustCenterRequestsUpdate'
+  max_size: 32 MB
+  url_expires: 15 minutes (url_expires_at)
+  id_expires: 1 hour (id_expires_at)
+  redeemable: once per id
+  source: https://mcp.secureframe.com/mcp_docs (create_file_upload tool description)
+dry_run_mode:
+  supported: false
+  evidence: No dry_run, validate_only, preview or simulate parameter appears on any operation.
+reversibility:
+  grade: documented
+  rationale: >-
+    Secureframe ships real reversal paths — archive and discard operations that soft-remove rather
+    than destroy, and matching `archived`/`discarded` filters that prove the records remain
+    queryable afterwards — but it publishes NO window for any of them, and no un-archive or
+    un-discard operation exists in the API. That is a documented reversal path without a stated
+    window, which grades `documented`, not `verified`.
+  write_surface: true
+  write_operations: 49  # 20 POST + 21 PUT + 8 DELETE = 49, matching the 49 write-badged MCP tools
+  reversal_paths:
+  - operation: PUT /integration_connections/{id}/archive
+    operationId: companyVendorConnectionsArchive
+    reverses: an active integration connection
+    kind: archive (soft)
+    window: null
+    reverse_of_reversal: none published — no un-archive operation exists in the API
+    docs: https://api.secureframe.com/docs
+  - operation: PUT /tprm/vendors/{id}/archive
+    operationId: tprmVendorRiskDetailsArchive
+    reverses: an active third-party-risk vendor record
+    kind: archive (soft)
+    window: null
+    evidence_of_recoverability: 'GET /tprm/vendors accepts an `archived` search parameter (true/false), so archived vendors remain retrievable.'
+    reverse_of_reversal: none published
+    docs: https://api.secureframe.com/docs
+  - operation: PUT /vendors/{id}/archive
+    operationId: companyVendorsArchive
+    reverses: an active legacy vendor record
+    kind: archive (soft)
+    window: null
+    note: deprecated in prose in favour of the TPRM endpoint
+  - operation: PUT /poam_items/{id}/discard
+    operationId: poamItemsDiscard
+    reverses: an open POA&M item
+    kind: discard (soft)
+    window: null
+    evidence_of_recoverability: 'GET /poam_items accepts a `discarded` search parameter (true/false), so discarded items remain retrievable.'
+    reverse_of_reversal: none published
+    docs: https://api.secureframe.com/docs
+  irreversible_operations:
+  - 'DELETE /comments/{id}'
+  - 'DELETE /knowledge_base_answers/{id}'
+  - 'DELETE /knowledge_base_questions/{id}'
+  - 'DELETE /ssp_duties/{id}'
+  - 'DELETE /ssp_duty_roles/{id}'
+  - 'DELETE /ssp_policies/{id}'
+  - 'DELETE /ssp_roles/{id}'
+  - 'DELETE /ssp_vendors/{id}'
+  irreversible_note: >-
+    Eight hard DELETE operations have no documented restore path and no stated retention window.
+    Five of them (ssp_*) act on System Security Plan records that are audit evidence for CMMC and
+    FedRAMP assessments. An agent has no way to know from the contract whether a deleted SSP duty
+    is recoverable.
+  no_window_stated: true
+  warning: >-
+    No retention or restore window is stated anywhere in the Secureframe public documentation for
+    archive, discard or delete. Nothing here should be read as asserting one.
+related:
+- errors/secureframe-problem-types.yml
+- lifecycle/secureframe-lifecycle.yml
+- authentication/secureframe-authentication.yml
+- rate-limits/secureframe-rate-limits.yml
+- mcp/secureframe-tool-crosswalk.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

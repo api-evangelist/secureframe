@@ -1,0 +1,139 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Secureframe Public API
+  version: 1.0.0
+extends: ../openapi/secureframe-public-api-openapi.yml
+x-provenance:
+  generated: '2026-08-27'
+  method: generated
+  source: >-
+    Authored by API Evangelist from findings recorded in conventions/, lifecycle/,
+    errors/, rate-limits/ and mcp/secureframe-tool-crosswalk.yml. Applies our
+    enhancements without mutating the harvested Secureframe contract.
+  note: >-
+    Every action below corrects something the published spec states in PROSE but not
+    in the machine-readable contract. Nothing here invents behaviour; each action cites
+    where Secureframe already says it.
+actions:
+  - target: $.info
+    description: >-
+      Record the machine-readable contact and licence facts the spec omits, and pin the
+      dated API version Secureframe's own versioning table names.
+    update:
+      x-api-version-scheme: dated
+      x-api-dated-version: '2023-10-18'
+      x-mcp-server: https://mcp.secureframe.com/
+      x-mcp-documentation: https://mcp.secureframe.com/mcp_docs
+      x-status-page: https://status.secureframe.com/
+      x-trust-center: https://trust.secureframe.com/
+
+  - target: $.servers
+    description: >-
+      Label the two published regional servers. Secureframe's MCP docs and its archived
+      SDK both name the UK host as a data-residency peer of the US host, but the spec
+      lists them bare.
+    update:
+      - url: https://api.secureframe.com
+        description: United States data region (default)
+        x-region: us
+      - url: https://api-uk.secureframe.com
+        description: United Kingdom data region
+        x-region: uk
+
+  - target: $.components.securitySchemes.header_authorization
+    description: >-
+      The scheme is declared as a bare apiKey in the Authorization header, which leads
+      every generator to emit a single opaque value. The reference prose specifies TWO
+      space-separated values.
+    update:
+      description: >-
+        Send the API key and its secret in one header, separated by a single space:
+        `Authorization: <YOUR_API_KEY> <YOUR_KEY_SECRET>`. This is NOT a Bearer token and
+        NOT Basic auth. Keys are issued per company <> user in Console -> Your Profile ->
+        Company settings -> API keys; the secret is displayed once at creation. The key
+        inherits the RBAC role of the user it belongs to, so a valid key can still return
+        403 on a resource that user cannot see.
+      x-format: '<api_key> <api_secret>'
+      x-issued-per: company-user pair
+      x-permission-model: rbac-inherited
+
+  - target: $
+    description: >-
+      Apply the security scheme globally. The harvested spec declares the scheme but sets
+      no top-level `security`, so a generated client is free to call every operation
+      anonymously — which returns 401 on all 112.
+    update:
+      security:
+        - header_authorization: []
+
+  - target: $.paths['/vendors'].get
+    description: >-
+      Mark deprecated in the contract, not only in the description prose. Secureframe's own
+      text reads "[DEPRECATED - Use the Third Party Risk Management Vendor endpoint]".
+    update:
+      deprecated: true
+      x-replaced-by: tprmVendorRiskDetailsIndex
+
+  - target: $.paths['/vendors/{id}'].get
+    description: Mark deprecated in the contract; superseded by the TPRM vendor surface.
+    update:
+      deprecated: true
+      x-replaced-by: tprmVendorRiskDetailsShow
+
+  - target: $.paths['/vendors/{id}/archive'].put
+    description: Mark deprecated in the contract; superseded by the TPRM vendor surface.
+    update:
+      deprecated: true
+      x-replaced-by: tprmVendorRiskDetailsArchive
+
+  - target: $.paths['/tprm/vendors/{id}/archive'].put
+    description: >-
+      Record reversibility semantics. Archiving is a soft removal — GET /tprm/vendors
+      accepts an `archived` filter, so the record stays queryable — but Secureframe
+      publishes no un-archive operation and no retention window.
+    update:
+      x-reversibility:
+        kind: soft-archive
+        reversible-via-api: false
+        window: null
+        recoverable-evidence: 'GET /tprm/vendors?archived=true still returns the record'
+
+  - target: $.paths['/poam_items/{id}/discard'].put
+    description: >-
+      Record reversibility semantics for the POA&M register. Discard is soft — GET
+      /poam_items accepts a `discarded` filter — but no un-discard operation is published.
+    update:
+      x-reversibility:
+        kind: soft-discard
+        reversible-via-api: false
+        window: null
+        recoverable-evidence: 'GET /poam_items?discarded=true still returns the item'
+
+  - target: $.paths['/file_uploads'].post
+    description: >-
+      Carry the two expiry windows and the size ceiling into the contract. Secureframe
+      publishes them in the create_file_upload MCP tool description, not in the OpenAPI.
+    update:
+      x-upload-handshake:
+        steps: 3
+        max-size-bytes: 33554432
+        url-expires-after: 15 minutes
+        id-expires-after: 1 hour
+        id-redeemable: once
+        redeemed-by:
+          - companyTestsEvidencesCreate
+          - companyUsersEvidencesCreate
+          - trustCenterRequestsUpdate
+        source: https://mcp.secureframe.com/mcp_docs
+
+  - target: $.tags
+    description: >-
+      Flag the legacy Vendor tag so tooling that groups by tag can surface the
+      supersession rather than presenting two equal vendor surfaces.
+    update:
+      - name: Vendor
+        description: >-
+          DEPRECATED. Legacy vendor surface, superseded by the Third Party Risk Management
+          Vendor tag. Retained for existing integrations.
+        x-deprecated: true
+        x-replaced-by: Third Party Risk Management Vendor

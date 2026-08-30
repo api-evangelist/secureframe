@@ -1,0 +1,77 @@
+specification: API Commons Error Catalog
+specificationVersion: '0.1'
+provider: Secureframe
+providerId: secureframe
+generated: '2026-08-27'
+modified: '2026-08-27'
+method: derived
+source: derived from openapi/secureframe-public-api-openapi.yml 4xx responses, enriched from the error table in
+  the spec info.description (https://api.secureframe.com/docs)
+format: vendor-json
+description: Secureframe returns standard JSON, JSON:API-shaped, and does NOT implement RFC 9457 application/problem+json.
+  The published error table lives in the API reference introduction; the OpenAPI declares 400/401/403/404 on every
+  operation with a bare description and no error schema, so the response body shape for a failure is undocumented
+  in the contract. The observed anonymous failure body on api.secureframe.com is {"message":"Authorization failed"}.
+envelope:
+  documented: false
+  observed: '{"message": "<string>"}'
+  observed_source: anonymous GET https://api.secureframe.com/ on 2026-08-27 -> 401
+  note: No error schema is declared in components.schemas; no error code vocabulary is published.
+rfc9457:
+  conforms: false
+  evidence: No application/problem+json media type appears anywhere in the spec; no type/title/detail/instance members
+    are declared.
+coverage:
+  operations: 112
+  with_400: 112
+  with_401: 112
+  with_403: 112
+  with_404: 67
+  with_429: 0
+  with_500: 0
+  note: 429 and 500 are documented in the reference prose but declared on ZERO operations in the OpenAPI — a client
+    generated from the spec will not model the rate-limit or server-error path.
+problem_types:
+- status: 400
+  title: Bad Request
+  description: Invalid request.
+  declared_on_operations: 112
+  remediation: Validate query/path parameters and the request body against the operation schema. Note that Secureframe
+    does not support bulk updates — only one object per request.
+- status: 401
+  title: Unauthorized
+  description: Invalid authentication to make requested response. API key and/or secret are invalid.
+  declared_on_operations: 112
+  observed_body: '{"message":"Authorization failed"}'
+  remediation: 'Send "Authorization: <API_KEY> <API_SECRET>" — key and secret separated by a space, not a Bearer
+    token. Secrets are shown once at creation; regenerate the key if lost.'
+- status: 403
+  title: Forbidden
+  description: Invalid authorization to requested resource. Insufficient permissions based on RBAC.
+  declared_on_operations: 112
+  remediation: The API key inherits the RBAC role of the user it was issued to. Check Console -> Personnel -> Personnel
+    settings -> Roles for the permissions on that role.
+- status: 404
+  title: Resource not found
+  description: The requested resource does not exist, or is not visible to this company.
+  declared_on_operations: 67
+  remediation: API keys are scoped per company <> user; a UUID from another workspace reads as absent, not forbidden.
+- status: 429
+  title: Too Many Requests
+  description: Rate limit of 500 requests per minute has been reached for the IP address.
+  declared_on_operations: 0
+  source: reference prose only
+  remediation: Back off and retry; the limit is per IP address per minute. See rate-limits/secureframe-rate-limits.yml.
+- status: 500
+  title: Internal Server Error
+  description: Internal server error.
+  declared_on_operations: 0
+  source: reference prose only
+  remediation: Retry with exponential backoff; check https://status.secureframe.com/ for the API component.
+related:
+- rate-limits/secureframe-rate-limits.yml
+- conventions/secureframe-conventions.yml
+- authentication/secureframe-authentication.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,0 +1,46 @@
+specification: API Commons OAuth Scopes
+specificationVersion: '0.1'
+provider: Secureframe
+providerId: secureframe
+generated: '2026-08-27'
+modified: '2026-08-27'
+method: probed
+source: https://mcp.secureframe.com/.well-known/oauth-authorization-server (200, 2026-08-27) + https://mcp.secureframe.com/mcp_docs
+docs: https://mcp.secureframe.com/mcp_docs
+description: 'Secureframe publishes OAuth scopes on ONE surface only: the hosted MCP server. The REST API at
+  api.secureframe.com uses an API key/secret pair with no OAuth flow and no scopes at all — authorization there
+  comes entirely from the RBAC role of the user the key belongs to.'
+surfaces:
+- surface: MCP server
+  endpoint: https://mcp.secureframe.com/
+  flow: OAuth 2.1 authorization_code + PKCE (S256), refresh_token
+  authorization_server: https://mcp.secureframe.com
+  dynamic_client_registration: true
+  scopes_supported:
+  - mcp
+- surface: REST API
+  endpoint: https://api.secureframe.com
+  flow: none — apiKey in the Authorization header
+  scopes_supported: []
+  note: 'components.securitySchemes declares exactly one scheme, header_authorization (apiKey, in: header).
+    No oauth2 or openIdConnect scheme exists.'
+scopes:
+- name: mcp
+  description: Permission for an MCP client to use the Secureframe API as the authorizing user, inside one
+    selected company.
+  surface: MCP
+  granted_by: the consent screen during the browser sign-in flow
+  source: scopes_supported in the RFC 8414 metadata; described at https://mcp.secureframe.com/mcp_docs
+granularity: coarse
+note: A single scope named "mcp" grants the whole surface. There is no read-only scope, no per-resource scope
+  and no way to grant an agent a subset — even though the provider labels 63 of its 112 tools read and 49 write.
+  Effective permissions are whatever the authorizing user's RBAC role allows, which the agent cannot enumerate
+  through the API.
+token:
+  access_token_lifetime: 1 hour
+  refresh: silent; the refresh credential rotates on each use
+  revocation_endpoint: https://mcp.secureframe.com/oauth/revoke
+  introspection_endpoint: https://mcp.secureframe.com/oauth/introspect
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

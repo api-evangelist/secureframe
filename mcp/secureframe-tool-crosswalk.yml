@@ -1,0 +1,943 @@
+specification: API Commons Tool Crosswalk
+specificationVersion: '0.1'
+provider: Secureframe
+providerId: secureframe
+generated: '2026-08-27'
+modified: '2026-08-27'
+method: derived
+source: derived from https://mcp.secureframe.com/mcp_docs (112 published tools) bound to openapi/secureframe-public-api-openapi.yml
+  (112 operations)
+description: Binds every published Secureframe MCP tool to its backing OpenAPI operationId. The mapping is exactly
+  1:1 — 112 tools, 112 REST operations, 41 MCP categories against 41 OpenAPI tags — and Secureframe states plainly
+  that "any query filters and parameters available on an API endpoint are also available on its matching tool",
+  so each tool inherits the parameters and requestBody of the operation named here as its real inputSchema.
+surfaces:
+  openapi:
+    file: openapi/secureframe-public-api-openapi.yml
+    servers:
+    - https://api.secureframe.com
+    - https://api-uk.secureframe.com
+    gated: false
+    note: Spec is served publicly, inlined in the reference page at https://api.secureframe.com/docs; calling it
+      requires an API key.
+  mcp:
+    url: https://mcp.secureframe.com/
+    gated: true
+    note: anonymous tools/list returns 401; live inputSchemas require an authenticated introspection
+  graphql: null
+coverage:
+  tools: 112
+  rest_operations: 112
+  mapped: 112
+  unmapped_tools: 0
+  rest_only: 0
+  high_confidence: 112
+  medium_confidence: 0
+  read_tools: 63
+  write_tools: 49
+crosswalk:
+- tool: get_cloud_resource
+  category: Cloud Resource
+  access: read
+  rest:
+  - cloudResourcesShow
+  operation: GET /cloud_resources/{id}
+  binding: '1:1'
+  confidence: high
+- tool: list_cloud_resources
+  category: Cloud Resource
+  access: read
+  rest:
+  - cloudResourcesIndex
+  operation: GET /cloud_resources
+  binding: '1:1'
+  confidence: high
+- tool: update_cloud_resource
+  category: Cloud Resource
+  access: write
+  rest:
+  - cloudResourcesUpdate
+  operation: PUT /cloud_resources/{id}
+  binding: '1:1'
+  confidence: high
+- tool: create_cloud_resource_framework_asset_scope
+  category: Cloud Resource Framework Asset Scope
+  access: write
+  rest:
+  - cloudResourcesCompanyFrameworkAssetScopesCreate
+  operation: POST /cloud_resources/{cloud_resource_id}/framework_asset_scopes
+  binding: '1:1'
+  confidence: high
+- tool: list_cloud_resource_framework_asset_scopes
+  category: Cloud Resource Framework Asset Scope
+  access: read
+  rest:
+  - cloudResourcesCompanyFrameworkAssetScopesIndex
+  operation: GET /cloud_resources/{cloud_resource_id}/framework_asset_scopes
+  binding: '1:1'
+  confidence: high
+- tool: create_comment
+  category: Comment
+  access: write
+  rest:
+  - commentsCreate
+  operation: POST /comments
+  binding: '1:1'
+  confidence: high
+- tool: delete_comment
+  category: Comment
+  access: write
+  rest:
+  - commentsDestroy
+  operation: DELETE /comments/{id}
+  binding: '1:1'
+  confidence: high
+- tool: get_comment
+  category: Comment
+  access: read
+  rest:
+  - commentsShow
+  operation: GET /comments/{id}
+  binding: '1:1'
+  confidence: high
+- tool: list_comments
+  category: Comment
+  access: read
+  rest:
+  - commentsIndex
+  operation: GET /comments
+  binding: '1:1'
+  confidence: high
+- tool: update_comment
+  category: Comment
+  access: write
+  rest:
+  - commentsUpdate
+  operation: PUT /comments/{id}
+  binding: '1:1'
+  confidence: high
+- tool: get_control
+  category: Control
+  access: read
+  rest:
+  - companyControlV2sShow
+  operation: GET /controls/{id}
+  binding: '1:1'
+  confidence: high
+- tool: list_controls
+  category: Control
+  access: read
+  rest:
+  - companyControlV2sIndex
+  operation: GET /controls
+  binding: '1:1'
+  confidence: high
+- tool: data_custom_integration
+  category: Custom Integration
+  access: write
+  rest:
+  - customConnectionsResourceDataCreate
+  operation: POST /custom_connections/{id}/data
+  binding: '1:1'
+  confidence: high
+- tool: get_device
+  category: Device
+  access: read
+  rest:
+  - devicesShow
+  operation: GET /devices/{id}
+  binding: '1:1'
+  confidence: high
+- tool: list_devices
+  category: Device
+  access: read
+  rest:
+  - devicesIndex
+  operation: GET /devices
+  binding: '1:1'
+  confidence: high
+- tool: create_device_framework_asset_scope
+  category: Device Framework Asset Scope
+  access: write
+  rest:
+  - devicesCompanyFrameworkAssetScopesCreate
+  operation: POST /devices/{device_id}/framework_asset_scopes
+  binding: '1:1'
+  confidence: high
+- tool: list_device_framework_asset_scopes
+  category: Device Framework Asset Scope
+  access: read
+  rest:
+  - devicesCompanyFrameworkAssetScopesIndex
+  operation: GET /devices/{device_id}/framework_asset_scopes
+  binding: '1:1'
+  confidence: high
+- tool: get_evidence
+  category: Evidence
+  access: read
+  rest:
+  - evidencesShow
+  operation: GET /evidences/{id}
+  binding: '1:1'
+  confidence: high
+- tool: list_evidences
+  category: Evidence
+  access: read
+  rest:
+  - evidencesIndex
+  operation: GET /evidences
+  binding: '1:1'
+  confidence: high
+- tool: create_file_upload
+  category: File Upload
+  access: write
+  rest:
+  - fileUploadsCreate
+  operation: POST /file_uploads
+  binding: '1:1'
+  confidence: high
+  note: Tool description is expanded provider prose (file-upload handshake); bound by category + verb.
+- tool: get_framework
+  category: Framework
+  access: read
+  rest:
+  - companyFrameworksShow
+  operation: GET /frameworks/{id}
+  binding: '1:1'
+  confidence: high
+- tool: list_frameworks
+  category: Framework
+  access: read
+  rest:
+  - companyFrameworksIndex
+  operation: GET /frameworks
+  binding: '1:1'
+  confidence: high
+- tool: get_framework_requirement
+  category: Framework Requirement
+  access: read
+  rest:
+  - companyFrameworkRequirementsShow
+  operation: GET /framework_requirements/{id}
+  binding: '1:1'
+  confidence: high
+- tool: list_framework_requirements
+  category: Framework Requirement
+  access: read
+  rest:
+  - companyFrameworkRequirementsIndex
+  operation: GET /framework_requirements
+  binding: '1:1'
+  confidence: high
+- tool: archive_integration_connection
+  category: Integration Connection
+  access: write
+  rest:
+  - companyVendorConnectionsArchive
+  operation: PUT /integration_connections/{id}/archive
+  binding: '1:1'
+  confidence: high
+- tool: get_integration_connection
+  category: Integration Connection
+  access: read
+  rest:
+  - companyVendorConnectionsShow
+  operation: GET /integration_connections/{id}
+  binding: '1:1'
+  confidence: high
+- tool: list_integration_connections
+  category: Integration Connection
+  access: read
+  rest:
+  - companyVendorConnectionsIndex
+  operation: GET /integration_connections
+  binding: '1:1'
+  confidence: high
+- tool: create_knowledge_base_answer
+  category: Knowledge Base Answer
+  access: write
+  rest:
+  - knowledgeBaseAnswersCreate
+  operation: POST /knowledge_base_answers
+  binding: '1:1'
+  confidence: high
+- tool: delete_knowledge_base_answer
+  category: Knowledge Base Answer
+  access: write
+  rest:
+  - knowledgeBaseAnswersDestroy
+  operation: DELETE /knowledge_base_answers/{id}
+  binding: '1:1'
+  confidence: high
+- tool: get_knowledge_base_answer
+  category: Knowledge Base Answer
+  access: read
+  rest:
+  - knowledgeBaseAnswersShow
+  operation: GET /knowledge_base_answers/{id}
+  binding: '1:1'
+  confidence: high
+- tool: update_knowledge_base_answer
+  category: Knowledge Base Answer
+  access: write
+  rest:
+  - knowledgeBaseAnswersUpdate
+  operation: PUT /knowledge_base_answers/{id}
+  binding: '1:1'
+  confidence: high
+- tool: create_knowledge_base_question
+  category: Knowledge Base Question
+  access: write
+  rest:
+  - knowledgeBaseQuestionsCreate
+  operation: POST /knowledge_base_questions
+  binding: '1:1'
+  confidence: high
+- tool: delete_knowledge_base_question
+  category: Knowledge Base Question
+  access: write
+  rest:
+  - knowledgeBaseQuestionsDestroy
+  operation: DELETE /knowledge_base_questions/{id}
+  binding: '1:1'
+  confidence: high
+- tool: get_knowledge_base_question
+  category: Knowledge Base Question
+  access: read
+  rest:
+  - knowledgeBaseQuestionsShow
+  operation: GET /knowledge_base_questions/{id}
+  binding: '1:1'
+  confidence: high
+- tool: update_knowledge_base_question
+  category: Knowledge Base Question
+  access: write
+  rest:
+  - knowledgeBaseQuestionsUpdate
+  operation: PUT /knowledge_base_questions/{id}
+  binding: '1:1'
+  confidence: high
+- tool: create_poam_item
+  category: POA&M Item
+  access: write
+  rest:
+  - poamItemsCreate
+  operation: POST /poam_items
+  binding: '1:1'
+  confidence: high
+- tool: discard_poam_item
+  category: POA&M Item
+  access: write
+  rest:
+  - poamItemsDiscard
+  operation: PUT /poam_items/{id}/discard
+  binding: '1:1'
+  confidence: high
+- tool: get_poam_item
+  category: POA&M Item
+  access: read
+  rest:
+  - poamItemsShow
+  operation: GET /poam_items/{id}
+  binding: '1:1'
+  confidence: high
+- tool: list_poam_items
+  category: POA&M Item
+  access: read
+  rest:
+  - poamItemsIndex
+  operation: GET /poam_items
+  binding: '1:1'
+  confidence: high
+- tool: update_poam_item
+  category: POA&M Item
+  access: write
+  rest:
+  - poamItemsUpdate
+  operation: PUT /poam_items/{id}
+  binding: '1:1'
+  confidence: high
+- tool: get_policy
+  category: Policy
+  access: read
+  rest:
+  - policiesShow
+  operation: GET /policies/{id}
+  binding: '1:1'
+  confidence: high
+- tool: list_policies
+  category: Policy
+  access: read
+  rest:
+  - policiesIndex
+  operation: GET /policies
+  binding: '1:1'
+  confidence: high
+- tool: get_repository
+  category: Repository
+  access: read
+  rest:
+  - repositoriesShow
+  operation: GET /repositories/{id}
+  binding: '1:1'
+  confidence: high
+- tool: list_repositories
+  category: Repository
+  access: read
+  rest:
+  - repositoriesIndex
+  operation: GET /repositories
+  binding: '1:1'
+  confidence: high
+- tool: update_repository
+  category: Repository
+  access: write
+  rest:
+  - repositoriesUpdate
+  operation: PUT /repositories/{id}
+  binding: '1:1'
+  confidence: high
+- tool: create_repository_framework_asset_scope
+  category: Repository Framework Asset Scope
+  access: write
+  rest:
+  - repositoriesCompanyFrameworkAssetScopesCreate
+  operation: POST /repositories/{id}/framework_asset_scopes
+  binding: '1:1'
+  confidence: high
+- tool: list_repository_framework_asset_scopes
+  category: Repository Framework Asset Scope
+  access: read
+  rest:
+  - repositoriesCompanyFrameworkAssetScopesIndex
+  operation: GET /repositories/{id}/framework_asset_scopes
+  binding: '1:1'
+  confidence: high
+- tool: get_risk
+  category: Risk
+  access: read
+  rest:
+  - companyRisksShow
+  operation: GET /risks/{id}
+  binding: '1:1'
+  confidence: high
+- tool: list_risks
+  category: Risk
+  access: read
+  rest:
+  - companyRisksIndex
+  operation: GET /risks
+  binding: '1:1'
+  confidence: high
+- tool: create_ssp_duty
+  category: SSP Duty
+  access: write
+  rest:
+  - companySspDutyAssignmentMatrixDutiesCreate
+  operation: POST /ssp_duties
+  binding: '1:1'
+  confidence: high
+- tool: delete_ssp_duty
+  category: SSP Duty
+  access: write
+  rest:
+  - companySspDutyAssignmentMatrixDutiesDestroy
+  operation: DELETE /ssp_duties/{id}
+  binding: '1:1'
+  confidence: high
+- tool: get_ssp_duty
+  category: SSP Duty
+  access: read
+  rest:
+  - companySspDutyAssignmentMatrixDutiesShow
+  operation: GET /ssp_duties/{id}
+  binding: '1:1'
+  confidence: high
+- tool: list_ssp_duties
+  category: SSP Duty
+  access: read
+  rest:
+  - companySspDutyAssignmentMatrixDutiesIndex
+  operation: GET /ssp_duties
+  binding: '1:1'
+  confidence: high
+- tool: update_ssp_duty
+  category: SSP Duty
+  access: write
+  rest:
+  - companySspDutyAssignmentMatrixDutiesUpdate
+  operation: PUT /ssp_duties/{id}
+  binding: '1:1'
+  confidence: high
+- tool: create_ssp_duty_role
+  category: SSP Duty Role
+  access: write
+  rest:
+  - companySspDutyAssignmentMatrixAssignmentsCreate
+  operation: POST /ssp_duty_roles
+  binding: '1:1'
+  confidence: high
+- tool: delete_ssp_duty_role
+  category: SSP Duty Role
+  access: write
+  rest:
+  - companySspDutyAssignmentMatrixAssignmentsDestroy
+  operation: DELETE /ssp_duty_roles/{id}
+  binding: '1:1'
+  confidence: high
+- tool: get_ssp_duty_role
+  category: SSP Duty Role
+  access: read
+  rest:
+  - companySspDutyAssignmentMatrixAssignmentsShow
+  operation: GET /ssp_duty_roles/{id}
+  binding: '1:1'
+  confidence: high
+- tool: list_ssp_duty_roles
+  category: SSP Duty Role
+  access: read
+  rest:
+  - companySspDutyAssignmentMatrixAssignmentsIndex
+  operation: GET /ssp_duty_roles
+  binding: '1:1'
+  confidence: high
+- tool: create_ssp_policy
+  category: SSP Policy
+  access: write
+  rest:
+  - companySspPoliciesCreate
+  operation: POST /ssp_policies
+  binding: '1:1'
+  confidence: high
+- tool: delete_ssp_policy
+  category: SSP Policy
+  access: write
+  rest:
+  - companySspPoliciesDestroy
+  operation: DELETE /ssp_policies/{id}
+  binding: '1:1'
+  confidence: high
+- tool: get_ssp_policy
+  category: SSP Policy
+  access: read
+  rest:
+  - companySspPoliciesShow
+  operation: GET /ssp_policies/{id}
+  binding: '1:1'
+  confidence: high
+- tool: list_ssp_policies
+  category: SSP Policy
+  access: read
+  rest:
+  - companySspPoliciesIndex
+  operation: GET /ssp_policies
+  binding: '1:1'
+  confidence: high
+- tool: update_ssp_policy
+  category: SSP Policy
+  access: write
+  rest:
+  - companySspPoliciesUpdate
+  operation: PUT /ssp_policies/{id}
+  binding: '1:1'
+  confidence: high
+- tool: create_ssp_report
+  category: SSP Report
+  access: write
+  rest:
+  - companySspReportsCreate
+  operation: POST /ssp_reports
+  binding: '1:1'
+  confidence: high
+- tool: get_ssp_report
+  category: SSP Report
+  access: read
+  rest:
+  - companySspReportsShow
+  operation: GET /ssp_reports/{id}
+  binding: '1:1'
+  confidence: high
+- tool: list_ssp_reports
+  category: SSP Report
+  access: read
+  rest:
+  - companySspReportsIndex
+  operation: GET /ssp_reports
+  binding: '1:1'
+  confidence: high
+- tool: get_ssp_report_assessment_objective
+  category: SSP Report Assessment Objective
+  access: read
+  rest:
+  - companySspReportAssessmentObjectivesShow
+  operation: GET /ssp_report_assessment_objectives/{id}
+  binding: '1:1'
+  confidence: high
+- tool: list_ssp_report_assessment_objectives
+  category: SSP Report Assessment Objective
+  access: read
+  rest:
+  - companySspReportAssessmentObjectivesIndex
+  operation: GET /ssp_report_assessment_objectives
+  binding: '1:1'
+  confidence: high
+- tool: update_ssp_report_assessment_objective
+  category: SSP Report Assessment Objective
+  access: write
+  rest:
+  - companySspReportAssessmentObjectivesUpdate
+  operation: PUT /ssp_report_assessment_objectives/{id}
+  binding: '1:1'
+  confidence: high
+- tool: get_ssp_report_section
+  category: SSP Report Section
+  access: read
+  rest:
+  - companySspReportSectionsShow
+  operation: GET /ssp_report_sections/{id}
+  binding: '1:1'
+  confidence: high
+- tool: list_ssp_report_sections
+  category: SSP Report Section
+  access: read
+  rest:
+  - companySspReportSectionsIndex
+  operation: GET /ssp_report_sections
+  binding: '1:1'
+  confidence: high
+- tool: update_ssp_report_section
+  category: SSP Report Section
+  access: write
+  rest:
+  - companySspReportSectionsUpdate
+  operation: PUT /ssp_report_sections/{id}
+  binding: '1:1'
+  confidence: high
+- tool: get_ssp_report_section_block
+  category: SSP Report Section Block
+  access: read
+  rest:
+  - companySspReportSectionBlocksShow
+  operation: GET /ssp_report_section_blocks/{id}
+  binding: '1:1'
+  confidence: high
+- tool: list_ssp_report_section_blocks
+  category: SSP Report Section Block
+  access: read
+  rest:
+  - companySspReportSectionBlocksIndex
+  operation: GET /ssp_report_section_blocks
+  binding: '1:1'
+  confidence: high
+- tool: update_ssp_report_section_block
+  category: SSP Report Section Block
+  access: write
+  rest:
+  - companySspReportSectionBlocksUpdate
+  operation: PUT /ssp_report_section_blocks/{id}
+  binding: '1:1'
+  confidence: high
+- tool: create_ssp_role
+  category: SSP Role
+  access: write
+  rest:
+  - companySspDutyAssignmentMatrixRolesCreate
+  operation: POST /ssp_roles
+  binding: '1:1'
+  confidence: high
+- tool: delete_ssp_role
+  category: SSP Role
+  access: write
+  rest:
+  - companySspDutyAssignmentMatrixRolesDestroy
+  operation: DELETE /ssp_roles/{id}
+  binding: '1:1'
+  confidence: high
+- tool: get_ssp_role
+  category: SSP Role
+  access: read
+  rest:
+  - companySspDutyAssignmentMatrixRolesShow
+  operation: GET /ssp_roles/{id}
+  binding: '1:1'
+  confidence: high
+- tool: list_ssp_roles
+  category: SSP Role
+  access: read
+  rest:
+  - companySspDutyAssignmentMatrixRolesIndex
+  operation: GET /ssp_roles
+  binding: '1:1'
+  confidence: high
+- tool: update_ssp_role
+  category: SSP Role
+  access: write
+  rest:
+  - companySspDutyAssignmentMatrixRolesUpdate
+  operation: PUT /ssp_roles/{id}
+  binding: '1:1'
+  confidence: high
+- tool: create_ssp_vendor
+  category: SSP Vendor
+  access: write
+  rest:
+  - companySspVendorsCreate
+  operation: POST /ssp_vendors
+  binding: '1:1'
+  confidence: high
+- tool: delete_ssp_vendor
+  category: SSP Vendor
+  access: write
+  rest:
+  - companySspVendorsDestroy
+  operation: DELETE /ssp_vendors/{id}
+  binding: '1:1'
+  confidence: high
+- tool: get_ssp_vendor
+  category: SSP Vendor
+  access: read
+  rest:
+  - companySspVendorsShow
+  operation: GET /ssp_vendors/{id}
+  binding: '1:1'
+  confidence: high
+- tool: list_ssp_vendors
+  category: SSP Vendor
+  access: read
+  rest:
+  - companySspVendorsIndex
+  operation: GET /ssp_vendors
+  binding: '1:1'
+  confidence: high
+- tool: update_ssp_vendor
+  category: SSP Vendor
+  access: write
+  rest:
+  - companySspVendorsUpdate
+  operation: PUT /ssp_vendors/{id}
+  binding: '1:1'
+  confidence: high
+- tool: create_security_questionnaire
+  category: Security Questionnaire
+  access: write
+  rest:
+  - securityQuestionnairesCreate
+  operation: POST /security_questionnaires
+  binding: '1:1'
+  confidence: high
+- tool: get_task
+  category: Task
+  access: read
+  rest:
+  - tasksShow
+  operation: GET /tasks/{id}
+  binding: '1:1'
+  confidence: high
+- tool: list_tasks
+  category: Task
+  access: read
+  rest:
+  - tasksIndex
+  operation: GET /tasks
+  binding: '1:1'
+  confidence: high
+- tool: create_test
+  category: Test
+  access: write
+  rest:
+  - companyTestsCreate
+  operation: POST /tests
+  binding: '1:1'
+  confidence: high
+- tool: get_test
+  category: Test
+  access: read
+  rest:
+  - companyTestsShow
+  operation: GET /tests/{id}
+  binding: '1:1'
+  confidence: high
+- tool: list_tests
+  category: Test
+  access: read
+  rest:
+  - companyTestsIndex
+  operation: GET /tests
+  binding: '1:1'
+  confidence: high
+- tool: update_test
+  category: Test
+  access: write
+  rest:
+  - companyTestsUpdate
+  operation: PUT /tests/{id}
+  binding: '1:1'
+  confidence: high
+- tool: create_test_evidence
+  category: Test Evidence
+  access: write
+  rest:
+  - companyTestsEvidencesCreate
+  operation: POST /tests/{test_id}/evidences
+  binding: '1:1'
+  confidence: high
+  note: Tool description is expanded provider prose (file-upload handshake); bound by category + verb.
+- tool: create_test_export
+  category: Test Export
+  access: write
+  rest:
+  - companyTestsTestExportsCreate
+  operation: POST /tests/{test_id}/exports
+  binding: '1:1'
+  confidence: high
+- tool: get_test_export_reading
+  category: Test Export Reading
+  access: read
+  rest:
+  - testExportsShow
+  operation: GET /test_exports/{id}
+  binding: '1:1'
+  confidence: high
+- tool: archive_third_party_risk_management_vendor
+  category: Third Party Risk Management Vendor
+  access: write
+  rest:
+  - tprmVendorRiskDetailsArchive
+  operation: PUT /tprm/vendors/{id}/archive
+  binding: '1:1'
+  confidence: high
+- tool: get_third_party_risk_management_vendor
+  category: Third Party Risk Management Vendor
+  access: read
+  rest:
+  - tprmVendorRiskDetailsShow
+  operation: GET /tprm/vendors/{id}
+  binding: '1:1'
+  confidence: high
+- tool: list_third_party_risk_management_vendors
+  category: Third Party Risk Management Vendor
+  access: read
+  rest:
+  - tprmVendorRiskDetailsIndex
+  operation: GET /tprm/vendors
+  binding: '1:1'
+  confidence: high
+- tool: get_trust_center_request
+  category: Trust Center Request
+  access: read
+  rest:
+  - trustCenterRequestsShow
+  operation: GET /trust_center_requests/{id}
+  binding: '1:1'
+  confidence: high
+- tool: list_trust_center_requests
+  category: Trust Center Request
+  access: read
+  rest:
+  - trustCenterRequestsIndex
+  operation: GET /trust_center_requests
+  binding: '1:1'
+  confidence: high
+- tool: update_trust_center_request
+  category: Trust Center Request
+  access: write
+  rest:
+  - trustCenterRequestsUpdate
+  operation: PUT /trust_center_requests/{id}
+  binding: '1:1'
+  confidence: high
+  note: Tool description is expanded provider prose (file-upload handshake); bound by category + verb.
+- tool: get_user
+  category: User
+  access: read
+  rest:
+  - companyUsersShow
+  operation: GET /users/{id}
+  binding: '1:1'
+  confidence: high
+- tool: list_users
+  category: User
+  access: read
+  rest:
+  - companyUsersIndex
+  operation: GET /users
+  binding: '1:1'
+  confidence: high
+- tool: update_user
+  category: User
+  access: write
+  rest:
+  - companyUsersUpdate
+  operation: PUT /users/{id}
+  binding: '1:1'
+  confidence: high
+- tool: get_user_account
+  category: User Account
+  access: read
+  rest:
+  - companyUserVendorsShow
+  operation: GET /user_accounts/{id}
+  binding: '1:1'
+  confidence: high
+- tool: link_user_account
+  category: User Account
+  access: write
+  rest:
+  - companyUserVendorsLink
+  operation: PUT /user_accounts/{id}/link
+  binding: '1:1'
+  confidence: high
+- tool: list_user_accounts
+  category: User Account
+  access: read
+  rest:
+  - companyUserVendorsIndex
+  operation: GET /user_accounts
+  binding: '1:1'
+  confidence: high
+- tool: create_user_evidence
+  category: User Evidence
+  access: write
+  rest:
+  - companyUsersEvidencesCreate
+  operation: POST /users/{user_id}/evidences
+  binding: '1:1'
+  confidence: high
+  note: Tool description is expanded provider prose (file-upload handshake); bound by category + verb.
+- tool: list_user_security_settings
+  category: User Security Settings
+  access: read
+  rest:
+  - userSecuritySettingsIndex
+  operation: GET /user_security_settings
+  binding: '1:1'
+  confidence: high
+- tool: archive_vendor
+  category: Vendor
+  access: write
+  rest:
+  - companyVendorsArchive
+  operation: PUT /vendors/{id}/archive
+  binding: '1:1'
+  confidence: high
+- tool: get_vendor
+  category: Vendor
+  access: read
+  rest:
+  - companyVendorsShow
+  operation: GET /vendors/{id}
+  binding: '1:1'
+  confidence: high
+- tool: list_vendors
+  category: Vendor
+  access: read
+  rest:
+  - companyVendorsIndex
+  operation: GET /vendors
+  binding: '1:1'
+  confidence: high
+mcp_only: []
+rest_only: []
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

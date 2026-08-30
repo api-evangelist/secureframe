@@ -1,0 +1,104 @@
+specification: API Commons Well-Known
+specificationVersion: '0.1'
+provider: Secureframe
+providerId: secureframe
+generated: '2026-08-27'
+modified: '2026-08-27'
+method: probed
+source: live anonymous HTTP probes of every apis.yml and OpenAPI servers[] host
+description: >-
+  /.well-known/ probe of every Secureframe host. The marketing, docs and REST API
+  hosts serve nothing at any standard well-known path. The hosted MCP server at
+  mcp.secureframe.com does: it publishes RFC 8414 authorization-server metadata and
+  RFC 9728 protected-resource metadata, which is how an MCP client discovers the
+  OAuth 2.1 flow described at https://mcp.secureframe.com/mcp_docs.
+notes: >-
+  api.secureframe.com did not answer any /.well-known/ request within a 10s ceiling
+  on 2026-08-27 (curl exit 28, no bytes received) — recorded as a non-response rather
+  than a status. Every other path on that host answers 401 immediately, so the
+  timeout is specific to /.well-known/. developer.secureframe.com 301s all
+  /.well-known/ requests, and secureframe.com (Next.js) returns a real 404 page.
+hosts:
+- host: mcp.secureframe.com
+  documents:
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: secureframe-mcp-oauth-authorization-server.json
+    content_type: application/json
+    note: RFC 8414. issuer https://mcp.secureframe.com, PKCE S256, dynamic client registration.
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    file: secureframe-mcp-oauth-protected-resource.json
+    content_type: application/json
+    note: RFC 9728. resource https://mcp.secureframe.com, bearer via Authorization header.
+  - path: /.well-known/security.txt
+    status: 401
+  - path: /.well-known/openid-configuration
+    status: 401
+  - path: /.well-known/api-catalog
+    status: 401
+  - path: /.well-known/ai-plugin.json
+    status: 401
+  - path: /.well-known/agent-card.json
+    status: 401
+- host: secureframe.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: api.secureframe.com
+  documents:
+  - path: /.well-known/security.txt
+    status: null
+    note: '<no response> — 10s ceiling, curl(28), zero bytes'
+  - path: /.well-known/openid-configuration
+    status: null
+    note: '<no response> — 10s ceiling, curl(28), zero bytes'
+  - path: /.well-known/oauth-authorization-server
+    status: null
+    note: '<no response> — 10s ceiling, curl(28), zero bytes'
+  - path: /.well-known/api-catalog
+    status: null
+    note: '<no response> — 10s ceiling, curl(28), zero bytes'
+  - path: /.well-known/ai-plugin.json
+    status: null
+    note: '<no response> — 10s ceiling, curl(28), zero bytes'
+  - path: /.well-known/agent-card.json
+    status: null
+    note: '<no response> — 10s ceiling, curl(28), zero bytes'
+- host: developer.secureframe.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 301
+  - path: /.well-known/openid-configuration
+    status: 301
+  - path: /.well-known/oauth-authorization-server
+    status: 301
+  - path: /.well-known/api-catalog
+    status: 301
+  - path: /.well-known/ai-plugin.json
+    status: 301
+  - path: /.well-known/agent-card.json
+    status: 301
+  - path: /.well-known/agent.json
+    status: 301
+- host: status.secureframe.com
+  documents:
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

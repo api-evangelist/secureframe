@@ -1,0 +1,416 @@
+specification: API Commons Data Model
+specificationVersion: '0.1'
+provider: Secureframe
+providerId: secureframe
+generated: '2026-08-27'
+modified: '2026-08-27'
+method: derived
+source: derived from components.schemas $ref links and *_id reference fields in openapi/secureframe-public-api-openapi.yml
+description: 'Entity-relationship graph of the Secureframe compliance data model as the public contract declares
+  it: 40 component schemas addressed by 112 operations across 41 resource tags. Identifiers are UUIDs throughout
+  — there are no typed id prefixes.'
+identifiers:
+  style: uuid
+  prefixed: false
+  note: 'Every resource id is a bare UUID (format: uuid). Nothing in an id says what it identifies, so an agent
+    holding a loose id cannot route it to the right endpoint without external context — the opposite of a prefixed-id
+    scheme.'
+clusters:
+- name: Compliance program
+  entities:
+  - Framework
+  - FrameworkRequirement
+  - Control
+  - Test
+  - Evidence
+  - Policy
+  - PolicyDetail
+  - Task
+  note: 'The SOC 2 / ISO 27001 / HIPAA core: a Framework decomposes into FrameworkRequirements, satisfied by
+    Controls, proven by Tests and Evidence.'
+- name: System Security Plan (NIST 800-171 / CMMC)
+  entities:
+  - SspReport
+  - SspReportSection
+  - SspReportSectionBlock
+  - SspReportAssessmentObjective
+  - SspPolicy
+  - SspRole
+  - SspDuty
+  - SspDutyRole
+  - SspVendor
+  - PoamItem
+  note: A composed document tree — report, sections, section blocks — plus the duty-assignment matrix (duties
+    x roles) and the POA&M register.
+- name: Asset inventory
+  entities:
+  - CloudResource
+  - Device
+  - Repository
+  - FrameworkAssetScope
+  note: Each asset type carries its own framework_asset_scopes subresource, which is how an asset is scoped
+    into or out of a given framework audit.
+- name: People and access
+  entities:
+  - User
+  - UserAccount
+  - UserSecuritySetting
+  note: User is personnel; UserAccount is an account discovered in a connected integration, linkable to a User
+    via PUT /user_accounts/{id}/link.
+- name: Third-party risk
+  entities:
+  - Vendor
+  - VendorRiskDetail
+  - VendorRiskSubassessmentResponse
+  - IntegrationConnection
+  note: Vendor is the deprecated legacy surface; VendorRiskDetail is the current TPRM model.
+- name: Trust and questionnaires
+  entities:
+  - TrustCenterRequest
+  - TrustCenterResource
+  - TrustCenterResourceRequest
+  - SecurityQuestionnaire
+  - KnowledgeBaseQuestion
+  - KnowledgeBaseAnswer
+  note: 'The outward-facing trust surface: prospects request resources, and questionnaires are answered from
+    a reusable knowledge base.'
+- name: Cross-cutting
+  entities:
+  - Comment
+  - FileUpload
+  - TestExport
+  - Models_CustomConnections_CreateResourceDataRequest
+  note: FileUpload is not a resource so much as a staging handshake — see conventions/.
+entities:
+- name: Test
+  field_count: 37
+  id_field: true
+  id_format: uuid
+  reference_fields: []
+- name: CompanyRisk
+  field_count: 27
+  id_field: true
+  id_format: uuid
+  reference_fields:
+  - company_id
+  - custom_risk_id
+  - owner_id
+- name: User
+  field_count: 26
+  id_field: true
+  id_format: uuid
+  reference_fields:
+  - department_id
+- name: Control
+  field_count: 23
+  id_field: true
+  id_format: uuid
+  reference_fields: []
+- name: Vendor
+  field_count: 22
+  id_field: true
+  id_format: uuid
+  reference_fields:
+  - owner_id
+- name: Device
+  field_count: 20
+  id_field: true
+  id_format: uuid
+  reference_fields: []
+- name: VendorRiskDetail
+  field_count: 20
+  id_field: true
+  id_format: uuid
+  reference_fields:
+  - owner_id
+- name: Policy
+  field_count: 18
+  id_field: true
+  id_format: uuid
+  reference_fields:
+  - company_id
+  - owner_id
+  - parent_policy_id
+- name: Task
+  field_count: 18
+  id_field: true
+  id_format: uuid
+  reference_fields:
+  - creator_id
+  - owner_id
+  - taskable_id
+- name: Framework
+  field_count: 13
+  id_field: true
+  id_format: uuid
+  reference_fields: []
+- name: PoamItem
+  field_count: 12
+  id_field: true
+  id_format: uuid
+  reference_fields:
+  - owner_id
+- name: TrustCenterRequest
+  field_count: 12
+  id_field: true
+  id_format: uuid
+  reference_fields: []
+- name: UserAccount
+  field_count: 11
+  id_field: true
+  id_format: uuid
+  reference_fields:
+  - third_party_id
+- name: SecurityQuestionnaire
+  field_count: 11
+  id_field: true
+  id_format: uuid
+  reference_fields: []
+- name: CloudResource
+  field_count: 10
+  id_field: true
+  id_format: uuid
+  reference_fields:
+  - third_party_id
+- name: FrameworkAssetScope
+  field_count: 10
+  id_field: true
+  id_format: uuid
+  reference_fields:
+  - asset_id
+  - framework_id
+- name: SspVendor
+  field_count: 10
+  id_field: true
+  id_format: uuid
+  reference_fields:
+  - ssp_report_id
+  - vendor_risk_detail_id
+- name: Evidence
+  field_count: 10
+  id_field: true
+  id_format: uuid
+  reference_fields:
+  - document_id
+  - evidenceable_id
+  - vendor_id
+- name: FrameworkRequirement
+  field_count: 9
+  id_field: true
+  id_format: uuid
+  reference_fields:
+  - company_id
+- name: SspReportSection
+  field_count: 9
+  id_field: true
+  id_format: uuid
+  reference_fields:
+  - ssp_report_id
+- name: Repository
+  field_count: 9
+  id_field: true
+  id_format: uuid
+  reference_fields:
+  - third_party_id
+- name: SspPolicy
+  field_count: 8
+  id_field: true
+  id_format: uuid
+  reference_fields:
+  - control_id
+  - owner
+  - ssp_report_id
+- name: SspReportAssessmentObjective
+  field_count: 8
+  id_field: true
+  id_format: uuid
+  reference_fields:
+  - framework_requirement_id
+  - ssp_report_id
+  - ssp_report_requirement_id
+- name: SspReportSectionBlock
+  field_count: 8
+  id_field: true
+  id_format: uuid
+  reference_fields:
+  - ssp_report_id
+  - ssp_report_section_id
+- name: SspReport
+  field_count: 7
+  id_field: true
+  id_format: uuid
+  reference_fields:
+  - framework_id
+- name: FileUpload
+  field_count: 7
+  id_field: true
+  id_format: null
+  reference_fields: []
+- name: KnowledgeBaseQuestion
+  field_count: 7
+  id_field: true
+  id_format: uuid
+  reference_fields: []
+- name: Comment
+  field_count: 6
+  id_field: true
+  id_format: uuid
+  reference_fields:
+  - commentable_id
+- name: SspDutyRole
+  field_count: 6
+  id_field: true
+  id_format: uuid
+  reference_fields:
+  - ssp_duty_id
+  - ssp_report_id
+  - ssp_role_id
+- name: SspDuty
+  field_count: 6
+  id_field: true
+  id_format: uuid
+  reference_fields:
+  - ssp_report_id
+- name: SspRole
+  field_count: 6
+  id_field: true
+  id_format: uuid
+  reference_fields:
+  - ssp_report_id
+- name: KnowledgeBaseAnswer
+  field_count: 6
+  id_field: true
+  id_format: uuid
+  reference_fields: []
+- name: UserSecuritySetting
+  field_count: 6
+  id_field: true
+  id_format: uuid
+  reference_fields: []
+- name: IntegrationConnection
+  field_count: 5
+  id_field: true
+  id_format: uuid
+  reference_fields: []
+- name: TestExport
+  field_count: 5
+  id_field: true
+  id_format: uuid
+  reference_fields: []
+- name: TrustCenterResource
+  field_count: 5
+  id_field: true
+  id_format: uuid
+  reference_fields: []
+- name: VendorRiskSubassessmentResponse
+  field_count: 5
+  id_field: true
+  id_format: uuid
+  reference_fields:
+  - tprm_vendor_id
+- name: Models_CustomConnections_CreateResourceDataRequest
+  field_count: 4
+  id_field: false
+  id_format: null
+  reference_fields: []
+- name: TrustCenterResourceRequest
+  field_count: 3
+  id_field: true
+  id_format: uuid
+  reference_fields: []
+- name: PolicyDetail
+  field_count: 0
+  id_field: false
+  id_format: null
+  reference_fields: []
+relationships:
+- from: FrameworkAssetScope
+  to: Framework
+  type: belongs_to
+  via: framework_id
+- from: SspDutyRole
+  to: SspDuty
+  type: belongs_to
+  via: ssp_duty_id
+- from: SspDutyRole
+  to: SspReport
+  type: belongs_to
+  via: ssp_report_id
+- from: SspDutyRole
+  to: SspRole
+  type: belongs_to
+  via: ssp_role_id
+- from: SspDuty
+  to: SspReport
+  type: belongs_to
+  via: ssp_report_id
+- from: SspRole
+  to: SspReport
+  type: belongs_to
+  via: ssp_report_id
+- from: SspPolicy
+  to: Control
+  type: belongs_to
+  via: control_id
+- from: SspPolicy
+  to: SspReport
+  type: belongs_to
+  via: ssp_report_id
+- from: SspReportAssessmentObjective
+  to: FrameworkRequirement
+  type: belongs_to
+  via: framework_requirement_id
+- from: SspReportAssessmentObjective
+  to: SspReport
+  type: belongs_to
+  via: ssp_report_id
+- from: SspReportSectionBlock
+  to: SspReport
+  type: belongs_to
+  via: ssp_report_id
+- from: SspReportSectionBlock
+  to: SspReportSection
+  type: belongs_to
+  via: ssp_report_section_id
+- from: SspReportSection
+  to: SspReport
+  type: belongs_to
+  via: ssp_report_id
+- from: SspReport
+  to: Framework
+  type: belongs_to
+  via: framework_id
+- from: SspVendor
+  to: SspReport
+  type: belongs_to
+  via: ssp_report_id
+- from: SspVendor
+  to: VendorRiskDetail
+  type: belongs_to
+  via: vendor_risk_detail_id
+- from: Evidence
+  to: Vendor
+  type: belongs_to
+  via: vendor_id
+- from: TrustCenterRequest
+  to: TrustCenterResourceRequest
+  type: has_many
+  via: trust_center_resource_requests
+- from: TrustCenterResourceRequest
+  to: TrustCenterResource
+  type: has_one
+  via: trust_center_resource
+- from: VendorRiskDetail
+  to: VendorRiskSubassessmentResponse
+  type: has_many
+  via: vendor_risk_subassessment_responses
+relationship_count: 20
+note: The spec declares relationships mostly through JSON:API `relationships` blocks and `include`/`relationships`
+  query parameters rather than through $ref between schemas, so this graph is thinner than the real model.
+  Where a link is not declared in the contract it is not asserted here.
+related:
+- openapi/secureframe-public-api-openapi.yml
+- conventions/secureframe-conventions.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

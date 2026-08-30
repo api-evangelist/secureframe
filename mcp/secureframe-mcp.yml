@@ -1,0 +1,521 @@
+specification: API Commons MCP Server
+specificationVersion: '0.1'
+provider: Secureframe
+providerId: secureframe
+generated: '2026-08-27'
+modified: '2026-08-27'
+method: searched
+source: https://mcp.secureframe.com/mcp_docs
+name: Secureframe MCP Server
+description: Secureframe publishes a first-party hosted (remote) MCP server that exposes its compliance
+  platform — controls, tests, evidence, frameworks, risks, vendors, personnel, SSP and POA&M records —
+  as 112 MCP tools across 41 categories. The tools wrap the Secureframe REST API one-for-one; every request
+  runs as a specific Secureframe user in a specific company and is bounded by that user's existing RBAC
+  permissions.
+status: live
+deployment:
+  mode: remote
+  endpoint: https://mcp.secureframe.com/
+  auth: oauth
+  verified: probed
+  note: 'Probed 2026-08-27: POST https://mcp.secureframe.com/mcp with an anonymous tools/list returned
+    HTTP 401 {"message":"Authorization failed"}, and /.well-known/oauth-authorization-server + /.well-known/oauth-protected-resource
+    both returned 200 — a live, OAuth-gated remote MCP endpoint. Secureframe also accepts a REST API key/secret
+    pair in the Authorization header for headless clients. A first-party local-stdio server once existed
+    at github.com/secureframe/secureframe-mcp-server (Python, MIT, 11 read-only tools) but its README
+    now reads "Deprecated ... please use the Secureframe hosted MCP server instead" and the repo is archived,
+    so mode is remote, not both.'
+endpoints:
+- region: United States
+  url: https://mcp.secureframe.com/
+  probed_status: 401
+  note: anonymous tools/list rejected; OAuth or API-key required
+- region: United Kingdom
+  url: https://mcp-uk.secureframe.com/
+  probed_status: null
+  note: published in the provider docs region table; not probed
+transport: streamable-http
+authentication:
+  primary: OAuth 2.1 authorization code + PKCE (S256) with dynamic client registration
+  authorization_server: https://mcp.secureframe.com
+  authorization_endpoint: https://mcp.secureframe.com/oauth/authorize
+  token_endpoint: https://mcp.secureframe.com/oauth/token
+  registration_endpoint: https://mcp.secureframe.com/register
+  revocation_endpoint: https://mcp.secureframe.com/oauth/revoke
+  scopes:
+  - mcp
+  access_token_lifetime: 1 hour, silently refreshed; refresh credential rotates on each use
+  alternative: 'REST API key + secret sent as "Authorization: <API_KEY> <API_SECRET>" (no browser flow)'
+  authorization_model: Runs as the signed-in Secureframe user in one selected company; bounded by that
+    user's RBAC role.
+  who_can_authorize: Active member who is an admin/super admin, whose role can create API keys, or who
+    already owns an active API key.
+install:
+  claude_code: claude mcp add --transport http secureframe https://mcp.secureframe.com/
+  json_client:
+    mcpServers:
+      secureframe:
+        type: http
+        url: https://mcp.secureframe.com/
+tool_count: 112
+category_count: 41
+access_breakdown:
+  read: 63
+  write: 49
+tools:
+- name: get_cloud_resource
+  category: Cloud Resource
+  access: read
+  description: Get a Cloud Resource
+- name: list_cloud_resources
+  category: Cloud Resource
+  access: read
+  description: List Cloud Resources
+- name: update_cloud_resource
+  category: Cloud Resource
+  access: write
+  description: Update a Cloud Resource
+- name: create_cloud_resource_framework_asset_scope
+  category: Cloud Resource Framework Asset Scope
+  access: write
+  description: Create Framework Asset Scope
+- name: list_cloud_resource_framework_asset_scopes
+  category: Cloud Resource Framework Asset Scope
+  access: read
+  description: List Framework Asset Scopes
+- name: create_comment
+  category: Comment
+  access: write
+  description: Create a Comment
+- name: delete_comment
+  category: Comment
+  access: write
+  description: Delete a Comment
+- name: get_comment
+  category: Comment
+  access: read
+  description: Get a Comment
+- name: list_comments
+  category: Comment
+  access: read
+  description: List Comments
+- name: update_comment
+  category: Comment
+  access: write
+  description: Update a Comment
+- name: get_control
+  category: Control
+  access: read
+  description: Get a Control
+- name: list_controls
+  category: Control
+  access: read
+  description: List Controls
+- name: data_custom_integration
+  category: Custom Integration
+  access: write
+  description: Publish data
+- name: get_device
+  category: Device
+  access: read
+  description: Get a Device
+- name: list_devices
+  category: Device
+  access: read
+  description: List Devices
+- name: create_device_framework_asset_scope
+  category: Device Framework Asset Scope
+  access: write
+  description: Create Framework Asset Scope
+- name: list_device_framework_asset_scopes
+  category: Device Framework Asset Scope
+  access: read
+  description: List Framework Asset Scopes
+- name: get_evidence
+  category: Evidence
+  access: read
+  description: Get an Evidence
+- name: list_evidences
+  category: Evidence
+  access: read
+  description: List Evidence
+- name: create_file_upload
+  category: File Upload
+  access: write
+  description: Stage a file so its bytes go straight to storage rather than through this API, and get
+- name: get_framework
+  category: Framework
+  access: read
+  description: Get a Framework
+- name: list_frameworks
+  category: Framework
+  access: read
+  description: List Frameworks
+- name: get_framework_requirement
+  category: Framework Requirement
+  access: read
+  description: Get a Framework Requirement
+- name: list_framework_requirements
+  category: Framework Requirement
+  access: read
+  description: List Framework Requirements
+- name: archive_integration_connection
+  category: Integration Connection
+  access: write
+  description: Archive an Integration Connection
+- name: get_integration_connection
+  category: Integration Connection
+  access: read
+  description: Get an Integration Connection
+- name: list_integration_connections
+  category: Integration Connection
+  access: read
+  description: List Integration Connections
+- name: create_knowledge_base_answer
+  category: Knowledge Base Answer
+  access: write
+  description: Create a Knowledge Base Answer
+- name: delete_knowledge_base_answer
+  category: Knowledge Base Answer
+  access: write
+  description: Delete a Knowledge Base Answer
+- name: get_knowledge_base_answer
+  category: Knowledge Base Answer
+  access: read
+  description: Get a Knowledge Base Answer
+- name: update_knowledge_base_answer
+  category: Knowledge Base Answer
+  access: write
+  description: Update a Knowledge Base Answer
+- name: create_knowledge_base_question
+  category: Knowledge Base Question
+  access: write
+  description: Create a Knowledge Base Question
+- name: delete_knowledge_base_question
+  category: Knowledge Base Question
+  access: write
+  description: Delete a Knowledge Base Question
+- name: get_knowledge_base_question
+  category: Knowledge Base Question
+  access: read
+  description: Get a Knowledge Base Question
+- name: update_knowledge_base_question
+  category: Knowledge Base Question
+  access: write
+  description: Update a Knowledge Base Question
+- name: create_poam_item
+  category: POA&M Item
+  access: write
+  description: Create a POA&M item
+- name: discard_poam_item
+  category: POA&M Item
+  access: write
+  description: Discard a POA&M item
+- name: get_poam_item
+  category: POA&M Item
+  access: read
+  description: Get a POA&M item
+- name: list_poam_items
+  category: POA&M Item
+  access: read
+  description: List POA&M items
+- name: update_poam_item
+  category: POA&M Item
+  access: write
+  description: Update a POA&M item
+- name: get_policy
+  category: Policy
+  access: read
+  description: Get a Policy
+- name: list_policies
+  category: Policy
+  access: read
+  description: List Policies
+- name: get_repository
+  category: Repository
+  access: read
+  description: Get a Repository
+- name: list_repositories
+  category: Repository
+  access: read
+  description: List Repositories
+- name: update_repository
+  category: Repository
+  access: write
+  description: Update a Repository
+- name: create_repository_framework_asset_scope
+  category: Repository Framework Asset Scope
+  access: write
+  description: Create Framework Asset Scope
+- name: list_repository_framework_asset_scopes
+  category: Repository Framework Asset Scope
+  access: read
+  description: List Framework Asset Scopes
+- name: get_risk
+  category: Risk
+  access: read
+  description: Get a Risk
+- name: list_risks
+  category: Risk
+  access: read
+  description: List Risks
+- name: create_ssp_duty
+  category: SSP Duty
+  access: write
+  description: Create an SSP Duty
+- name: delete_ssp_duty
+  category: SSP Duty
+  access: write
+  description: Delete an SSP Duty
+- name: get_ssp_duty
+  category: SSP Duty
+  access: read
+  description: Get an SSP Duty
+- name: list_ssp_duties
+  category: SSP Duty
+  access: read
+  description: List SSP Duties
+- name: update_ssp_duty
+  category: SSP Duty
+  access: write
+  description: Update an SSP Duty
+- name: create_ssp_duty_role
+  category: SSP Duty Role
+  access: write
+  description: Create an SSP Duty Role
+- name: delete_ssp_duty_role
+  category: SSP Duty Role
+  access: write
+  description: Delete an SSP Duty Role
+- name: get_ssp_duty_role
+  category: SSP Duty Role
+  access: read
+  description: Get an SSP Duty Role
+- name: list_ssp_duty_roles
+  category: SSP Duty Role
+  access: read
+  description: List SSP Duty Roles
+- name: create_ssp_policy
+  category: SSP Policy
+  access: write
+  description: Create an SSP Policy
+- name: delete_ssp_policy
+  category: SSP Policy
+  access: write
+  description: Delete an SSP Policy
+- name: get_ssp_policy
+  category: SSP Policy
+  access: read
+  description: Get an SSP Policy
+- name: list_ssp_policies
+  category: SSP Policy
+  access: read
+  description: List SSP Policies
+- name: update_ssp_policy
+  category: SSP Policy
+  access: write
+  description: Update an SSP Policy
+- name: create_ssp_report
+  category: SSP Report
+  access: write
+  description: Create an SSP Report
+- name: get_ssp_report
+  category: SSP Report
+  access: read
+  description: Get an SSP Report
+- name: list_ssp_reports
+  category: SSP Report
+  access: read
+  description: List SSP Reports
+- name: get_ssp_report_assessment_objective
+  category: SSP Report Assessment Objective
+  access: read
+  description: Get an SSP Report Assessment Objective
+- name: list_ssp_report_assessment_objectives
+  category: SSP Report Assessment Objective
+  access: read
+  description: List SSP Report Assessment Objectives
+- name: update_ssp_report_assessment_objective
+  category: SSP Report Assessment Objective
+  access: write
+  description: Update an SSP Report Assessment Objective
+- name: get_ssp_report_section
+  category: SSP Report Section
+  access: read
+  description: Get an SSP Report Section
+- name: list_ssp_report_sections
+  category: SSP Report Section
+  access: read
+  description: List SSP Report Sections
+- name: update_ssp_report_section
+  category: SSP Report Section
+  access: write
+  description: Update an SSP Report Section
+- name: get_ssp_report_section_block
+  category: SSP Report Section Block
+  access: read
+  description: Get an SSP Report Section Block
+- name: list_ssp_report_section_blocks
+  category: SSP Report Section Block
+  access: read
+  description: List SSP Report Section Blocks
+- name: update_ssp_report_section_block
+  category: SSP Report Section Block
+  access: write
+  description: Update an SSP Report Section Block
+- name: create_ssp_role
+  category: SSP Role
+  access: write
+  description: Create a SSP Role
+- name: delete_ssp_role
+  category: SSP Role
+  access: write
+  description: Delete a SSP Role
+- name: get_ssp_role
+  category: SSP Role
+  access: read
+  description: Get a SSP Role
+- name: list_ssp_roles
+  category: SSP Role
+  access: read
+  description: List SSP Roles
+- name: update_ssp_role
+  category: SSP Role
+  access: write
+  description: Update a SSP Role
+- name: create_ssp_vendor
+  category: SSP Vendor
+  access: write
+  description: Create an SSP Vendor
+- name: delete_ssp_vendor
+  category: SSP Vendor
+  access: write
+  description: Delete an SSP Vendor
+- name: get_ssp_vendor
+  category: SSP Vendor
+  access: read
+  description: Get an SSP Vendor
+- name: list_ssp_vendors
+  category: SSP Vendor
+  access: read
+  description: List SSP Vendors
+- name: update_ssp_vendor
+  category: SSP Vendor
+  access: write
+  description: Update an SSP Vendor
+- name: create_security_questionnaire
+  category: Security Questionnaire
+  access: write
+  description: Create a Security Questionnaire
+- name: get_task
+  category: Task
+  access: read
+  description: Get a Task
+- name: list_tasks
+  category: Task
+  access: read
+  description: List Tasks
+- name: create_test
+  category: Test
+  access: write
+  description: Create a Test
+- name: get_test
+  category: Test
+  access: read
+  description: Get a Test
+- name: list_tests
+  category: Test
+  access: read
+  description: List Tests
+- name: update_test
+  category: Test
+  access: write
+  description: Update a Test
+- name: create_test_evidence
+  category: Test Evidence
+  access: write
+  description: Attach an evidence file to a Test.
+- name: create_test_export
+  category: Test Export
+  access: write
+  description: Create a Test Export
+- name: get_test_export_reading
+  category: Test Export Reading
+  access: read
+  description: Get a Test Export
+- name: archive_third_party_risk_management_vendor
+  category: Third Party Risk Management Vendor
+  access: write
+  description: Archive a Third Party Risk Management Vendor.
+- name: get_third_party_risk_management_vendor
+  category: Third Party Risk Management Vendor
+  access: read
+  description: Get a Third Party Risk Management Vendor.
+- name: list_third_party_risk_management_vendors
+  category: Third Party Risk Management Vendor
+  access: read
+  description: List Third Party Risk Management Vendors
+- name: get_trust_center_request
+  category: Trust Center Request
+  access: read
+  description: Get a Trust Center Request
+- name: list_trust_center_requests
+  category: Trust Center Request
+  access: read
+  description: List Trust Center Requests
+- name: update_trust_center_request
+  category: Trust Center Request
+  access: write
+  description: 'Update a Trust Center Request: approve or reject the resources it asks for, set its'
+- name: get_user
+  category: User
+  access: read
+  description: Get a User
+- name: list_users
+  category: User
+  access: read
+  description: List Users
+- name: update_user
+  category: User
+  access: write
+  description: Update a User
+- name: get_user_account
+  category: User Account
+  access: read
+  description: Get a User Account
+- name: link_user_account
+  category: User Account
+  access: write
+  description: Link a User Account
+- name: list_user_accounts
+  category: User Account
+  access: read
+  description: List User Accounts
+- name: create_user_evidence
+  category: User Evidence
+  access: write
+  description: Attach an evidence file to a User.
+- name: list_user_security_settings
+  category: User Security Settings
+  access: read
+  description: Get user security settings
+- name: archive_vendor
+  category: Vendor
+  access: write
+  description: Archive a Vendor
+- name: get_vendor
+  category: Vendor
+  access: read
+  description: Get a Vendor
+- name: list_vendors
+  category: Vendor
+  access: read
+  description: List Vendors
+documentation: https://mcp.secureframe.com/mcp_docs
+crosswalk: mcp/secureframe-tool-crosswalk.yml
+notes: 'Tool inputSchemas were not captured: the live tools/list is auth-gated. The provider states that
+  every query filter and parameter available on a REST endpoint is also available on its matching tool,
+  so the authoritative parameter schema for each tool is the backing OpenAPI operation recorded in mcp/secureframe-tool-crosswalk.yml.'
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

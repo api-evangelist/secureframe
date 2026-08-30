@@ -1,0 +1,15 @@
+generated: '2026-08-27'
+method: derived
+source: openapi/secureframe-public-api-openapi.yml
+summary:
+  types:
+  - apiKey
+  api_key_in:
+  - header
+schemes:
+- name: header_authorization
+  type: apiKey
+  in: header
+  parameter: Authorization
+  sources:
+  - openapi/secureframe-public-api-openapi.yml
