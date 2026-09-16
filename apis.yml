@@ -51,76 +51,1230 @@ created: '2026-05-08'
 modified: '2026-08-27'
 specificationVersion: '0.23'
 apis:
-  - aid: secureframe:public-api
-    name: Secureframe Public API
-    description: >-
-      REST API providing programmatic access to Secureframe controls, frameworks,
-      framework requirements, tests, evidence, policies, tasks, risks, personnel,
-      devices, cloud resources, repositories, third-party risk vendors, knowledge base
-      answers, trust center requests, and the SSP and POA&M records used in CMMC and
-      FedRAMP assessments. 76 paths, 112 operations, 41 resource tags. Resource-oriented
-      and JSON:API-shaped, with Lucene-syntax search, page/per_page pagination and
-      include/relationships compound documents. Authenticated with an API key and secret
-      sent as a single space-separated Authorization header; permissions are inherited
-      from the RBAC role of the user the key belongs to.
-    humanURL: https://developer.secureframe.com/
-    baseURL: https://api.secureframe.com
-    tags:
-      - GRC
-      - Compliance
-      - REST
-      - CMMC
-      - Audit
-    properties:
-      - type: OpenAPI
-        url: openapi/secureframe-public-api-openapi.yml
-      - type: Overlay
-        url: overlays/secureframe-public-api-overlay.yaml
-      - type: Documentation
-        url: https://developer.secureframe.com/
-      - type: APIReference
-        url: https://api.secureframe.com/docs
-      - type: Authentication
-        url: authentication/secureframe-authentication.yml
-      - type: ErrorCatalog
-        url: errors/secureframe-problem-types.yml
-      - type: Conventions
-        url: conventions/secureframe-conventions.yml
-      - type: DataModel
-        url: data-model/secureframe-data-model.yml
-      - type: Lifecycle
-        url: lifecycle/secureframe-lifecycle.yml
-      - type: Deprecation
-        url: lifecycle/secureframe-lifecycle.yml
-      - type: RateLimits
-        url: rate-limits/secureframe-rate-limits.yml
-  - aid: secureframe:mcp-server
-    name: Secureframe MCP Server
-    description: >-
-      First-party hosted (remote) Model Context Protocol server exposing the Secureframe
-      compliance platform as 112 tools across 41 categories — 63 read, 49 write — mapped
-      one-for-one onto the Public API operations. Authenticated with OAuth 2.1
-      (authorization code + PKCE S256, dynamic client registration) or with a REST API
-      key and secret for headless clients. Every request runs as a specific Secureframe
-      user in a specific company and is bounded by that user's RBAC permissions.
-    humanURL: https://mcp.secureframe.com/mcp_docs
-    baseURL: https://mcp.secureframe.com
-    tags:
-      - MCP
-      - Agents
-      - GRC
-      - Compliance
-    properties:
-      - type: MCPServer
-        url: mcp/secureframe-mcp.yml
-      - type: ToolCrosswalk
-        url: mcp/secureframe-tool-crosswalk.yml
-      - type: Documentation
-        url: https://mcp.secureframe.com/mcp_docs
-      - type: OAuthScopes
-        url: scopes/secureframe-scopes.yml
-      - type: WellKnown
-        url: well-known/secureframe-well-known.yml
+- aid: secureframe:mcp-server
+  name: Secureframe MCP Server
+  description: >-
+    First-party hosted (remote) Model Context Protocol server exposing the Secureframe compliance platform
+    as 112 tools across 41 categories — 63 read, 49 write — mapped one-for-one onto the Public API operations.
+    Authenticated with OAuth 2.1 (authorization code + PKCE S256, dynamic client registration) or with
+    a REST API key and secret for headless clients. Every request runs as a specific Secureframe user
+    in a specific company and is bounded by that user's RBAC permissions.
+  humanURL: https://mcp.secureframe.com/mcp_docs
+  baseURL: https://mcp.secureframe.com
+  tags:
+  - MCP
+  - Agents
+  - GRC
+  - Compliance
+  properties:
+  - type: MCPServer
+    url: mcp/secureframe-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/secureframe-tool-crosswalk.yml
+  - type: Documentation
+    url: https://mcp.secureframe.com/mcp_docs
+  - type: OAuthScopes
+    url: scopes/secureframe-scopes.yml
+  - type: WellKnown
+    url: well-known/secureframe-well-known.yml
+- aid: secureframe:secureframe-cloud-resource-api
+  name: Secureframe Cloud Resource API
+  description: This document describes the API for reading and updating Cloud Resources.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - Cloud Resource
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-cloud-resource-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-cloud-resource-framework-asset-scope-api
+  name: Secureframe Cloud Resource Framework Asset Scope API
+  description: >-
+    This document describes the API for reading and creating Framework Asset Scopes.
+
+
+    A Framework Asset Scope defines the scope of an asset (e.g., a Cloud Resource) within a Framework.
+
+
+    Framework Asset Scopes are immutable. Once created, they cannot be modified. To update a scope, create
+    a new resource with the updated information.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - Cloud Resource Framework Asset Scope
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-cloud-resource-framework-asset-scope-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-comment-api
+  name: Secureframe Comment API
+  description: This document describes the API for reading, creating, updating, and deleting Comments.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - Comment
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-comment-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-control-api
+  name: Secureframe Control API
+  description: This document describes the API for reading Controls.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - Control
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-control-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-custom-integration-api
+  name: Secureframe Custom Integration API
+  description: This document describes the API for publishing data to a custom integration.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - Custom Integration
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-custom-integration-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-device-api
+  name: Secureframe Device API
+  description: This document describes the API for reading Devices.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - Device
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-device-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-device-framework-asset-scope-api
+  name: Secureframe Device Framework Asset Scope API
+  description: >-
+    This document describes the API for reading and creating Framework Asset Scopes.
+
+
+    A Framework Asset Scope defines the scope of an asset (e.g., a Device) within a Framework.
+
+
+    Framework Asset Scopes are immutable. Once created, they cannot be modified. To update a scope, create
+    a new resource with the updated information.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - Device Framework Asset Scope
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-device-framework-asset-scope-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-evidence-api
+  name: Secureframe Evidence API
+  description: This document describes the API for reading Evidence.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - Evidence
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-evidence-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-file-upload-api
+  name: Secureframe File Upload API
+  description: This document describes the API for staging a direct-to-storage file upload.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - File Upload
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-file-upload-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-framework-api
+  name: Secureframe Framework API
+  description: This document describes the API for reading Frameworks.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - Framework
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-framework-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-framework-requirement-api
+  name: Secureframe Framework Requirement API
+  description: This document describes the API for reading Framework Requirements.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - Framework Requirement
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-framework-requirement-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-integration-connection-api
+  name: Secureframe Integration Connection API
+  description: This document describes the API for reading and archiving Integration Connections.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - Integration Connection
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-integration-connection-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-knowledge-base-answer-api
+  name: Secureframe Knowledge Base Answer API
+  description: >-
+    This document describes the API for reading, creating, updating, and deleting Knowledge Base Answers.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - Knowledge Base Answer
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-knowledge-base-answer-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-knowledge-base-question-api
+  name: Secureframe Knowledge Base Question API
+  description: >-
+    This document describes the API for reading, creating, updating, and deleting Knowledge Base Questions.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - Knowledge Base Question
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-knowledge-base-question-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-poa-m-item-api
+  name: Secureframe POA&M Item API
+  description: >-
+    This document describes the API for reading, creating, updating, and discarding POA&M
+
+    (Plan of Action & Milestones) items.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - POA&M Item
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-poa-m-item-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-policy-api
+  name: Secureframe Policy API
+  description: >-
+    This document describes the API for reading Policies.
+
+
+    Policies are returned in every status, including drafts and archived ones. Filter with
+
+    `?q=status:published` to narrow.
+
+
+    Note that `q` free-text search covers a Policy's name and owner, not the content of the Policy
+
+    itself.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - Policy
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-policy-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-repository-api
+  name: Secureframe Repository API
+  description: This document describes the API for reading and updating Repositories.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - Repository
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-repository-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-repository-framework-asset-scope-api
+  name: Secureframe Repository Framework Asset Scope API
+  description: >-
+    This document describes the API for reading Framework Asset Scopes.
+
+
+    A Framework Asset Scope defines the scope of an asset (e.g., a Repository) within a Framework.
+
+
+    Framework Asset Scopes are immutable. Once created, they cannot be modified. To update a scope, create
+    a new resource with the updated information.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - Repository Framework Asset Scope
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-repository-framework-asset-scope-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-risk-api
+  name: Secureframe Risk API
+  description: This document describes the API for reading Risks.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - Risk
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-risk-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-security-questionnaire-api
+  name: Secureframe Security Questionnaire API
+  description: This document describes the API for creating Security Questionnaires.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - Security Questionnaire
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-security-questionnaire-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-ssp-duty-api
+  name: Secureframe SSP Duty API
+  description: >-
+    This document describes the API for reading, creating, updating, and deleting SSP Duties.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - SSP Duty
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-ssp-duty-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-ssp-duty-role-api
+  name: Secureframe SSP Duty Role API
+  description: This document describes the API for reading, creating, and deleting SSP Duty Roles.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - SSP Duty Role
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-ssp-duty-role-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-ssp-policy-api
+  name: Secureframe SSP Policy API
+  description: >-
+    This document describes the API for reading, creating, updating, and deleting SSP Policies.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - SSP Policy
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-ssp-policy-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-ssp-report-api
+  name: Secureframe SSP Report API
+  description: This document describes the API for reading and creating SSP Reports.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - SSP Report
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-ssp-report-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-ssp-report-assessment-objective-api
+  name: Secureframe SSP Report Assessment Objective API
+  description: >-
+    This document describes the API for reading and updating SSP Report Assessment Objectives.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - SSP Report Assessment Objective
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-ssp-report-assessment-objective-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-ssp-report-section-api
+  name: Secureframe SSP Report Section API
+  description: This document describes the API for reading and updating SSP Report Sections.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - SSP Report Section
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-ssp-report-section-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-ssp-report-section-block-api
+  name: Secureframe SSP Report Section Block API
+  description: This document describes the API for reading and updating SSP Report Section Blocks.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - SSP Report Section Block
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-ssp-report-section-block-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-ssp-role-api
+  name: Secureframe SSP Role API
+  description: This document describes the API for reading, creating, updating, and deleting SSP Roles.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - SSP Role
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-ssp-role-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-ssp-vendor-api
+  name: Secureframe SSP Vendor API
+  description: >-
+    This document describes the API for reading, creating, updating, and deleting SSP Vendors.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - SSP Vendor
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-ssp-vendor-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-task-api
+  name: Secureframe Task API
+  description: This document describes the API for reading Tasks.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - Task
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-task-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-test-api
+  name: Secureframe Test API
+  description: This document describes the API for reading, creating, and updating Tests.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - Test
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-test-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-test-evidence-api
+  name: Secureframe Test Evidence API
+  description: This document describes the API for creating Evidence for a Test.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - Test Evidence
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-test-evidence-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-test-export-api
+  name: Secureframe Test Export API
+  description: This document describes the API for creating a Test Export for a Test.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - Test Export
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-test-export-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-test-export-reading-api
+  name: Secureframe Test Export Reading API
+  description: This document describes the API for reading a Test Export.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - Test Export Reading
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-test-export-reading-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-third-party-risk-management-vendor-api
+  name: Secureframe Third Party Risk Management Vendor API
+  description: >-
+    This document describes the API for reading and archiving Vendors for companies using the Third Party
+    Risk Management.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - Third Party Risk Management Vendor
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-third-party-risk-management-vendor-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-trust-center-request-api
+  name: Secureframe Trust Center Request API
+  description: >-
+    This document describes the API for reading and updating Trust Center Requests.\
+
+    Note: In order to access this API, you need to have paid features enabled for Trust.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - Trust Center Request
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-trust-center-request-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-user-account-api
+  name: Secureframe User Account API
+  description: This document describes the API for reading and linking User Accounts.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - User Account
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-user-account-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-user-api
+  name: Secureframe User API
+  description: This document describes the API for reading and updating Users.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - User
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-user-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-user-evidence-api
+  name: Secureframe User Evidence API
+  description: This document describes the API for creating Evidence for a User.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - User Evidence
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-user-evidence-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-user-security-settings-api
+  name: Secureframe User Security Settings API
+  description: >-
+    This document describes the API for retrieving user security settings for the provided API key's company.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - User Security Settings
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-user-security-settings-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
+- aid: secureframe:secureframe-vendor-api
+  name: Secureframe Vendor API
+  description: This document describes the API for reading and archiving Vendors.
+  humanURL: https://developer.secureframe.com/
+  baseURL: https://api.secureframe.com
+  tags:
+  - Vendor
+  properties:
+  - type: OpenAPI
+    url: openapi/secureframe-vendor-api-openapi.yml
+  - type: Documentation
+    url: https://developer.secureframe.com/
+  - type: APIReference
+    url: https://api.secureframe.com/docs
+  - type: Authentication
+    url: authentication/secureframe-authentication.yml
+  - type: ErrorCatalog
+    url: errors/secureframe-problem-types.yml
+  - type: Conventions
+    url: conventions/secureframe-conventions.yml
+  - type: DataModel
+    url: data-model/secureframe-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/secureframe-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/secureframe-rate-limits.yml
 common:
   - type: Website
     url: https://secureframe.com/
