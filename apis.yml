@@ -966,7 +966,8 @@ apis:
   description: This document describes the API for reading, creating, and updating Tests.
   humanURL: https://developer.secureframe.com/
   baseURL: https://api.secureframe.com
-  tags:
+  tags: []
+  tags_raw:
   - Test
   properties:
   - type: OpenAPI
