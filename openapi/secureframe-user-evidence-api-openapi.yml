@@ -1,0 +1,547 @@
+openapi: 3.2.0
+info:
+  title: Secureframe User Evidence API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: User Evidence
+  description: This document describes the API for creating Evidence for a User.
+paths:
+  /users/{user_id}/evidences:
+    post:
+      tags:
+      - User Evidence
+      operationId: companyUsersEvidencesCreate
+      parameters:
+      - name: activity_completion
+        description: The date the activity was completed, as `YYYY-MM-DD`.
+        required: false
+        in: query
+        schema:
+          type: string
+          format: date
+      - name: document_type
+        description: The type of evidence being uploaded for this user
+        required: true
+        in: query
+        schema:
+          type: string
+          enum:
+          - background_check_report
+          - ccpa_training_screenshot
+          - gdpr_training_screenshot
+          - handling_cui_training_screenshot
+          - hipaa_training_screenshot
+          - password_manager_screenshot
+          - password_policy_screenshot
+          - pci_secure_code_training_screenshot
+          - pci_training_screenshot
+          - security_training_screenshot
+          - security_training_new_hire_screenshot
+      - name: upload_id
+        description: The `id` returned by `POST /file_uploads` — the `create_file_upload` tool — whose bytes you have already PUT to storage. The way to attach a preloaded file. Required unless `file` is given.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: user_id
+        description: The id of the user to attach the evidence
+        required: true
+        in: path
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/Evidence'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: 'Uploads evidence for a User.
+
+
+        Send the file one of two ways, and provide exactly one of them.
+
+
+        `upload_id` attaches a file whose bytes you sent straight to storage, which is the right
+
+        choice for anything large and the only workable one for a caller that cannot send
+
+        multipart. Three steps:
+
+
+        1. Call `POST /file_uploads` with the file''s `filename`, `byte_size` and `checksum`. It
+
+        returns a short-lived `url`, the `headers` to send with it, and an `id`.
+
+        2. PUT the file''s bytes to that `url`, with exactly the `headers` returned. The request
+
+        body is the file''s contents as they are on disk — raw bytes, not base64, not multipart,
+
+        not wrapped in JSON — so there is nothing to encode or convert.
+
+        3. Send the `id` here as `upload_id`.
+
+
+        `file` is the alternative for a direct REST caller — the file''s bytes as a multipart
+
+        upload in this request, with no preloading step.'
+      summary: Create User Evidence
+      security:
+      - header_authorization: []
+      x-controller: api/company_users/evidences
+      x-action: create
+      x-mcp-description: 'Attach an evidence file to a User.
+
+
+        The bytes are not sent here. Stage the file first with the `create_file_upload` tool,
+
+        which hands back a `url` and an `id`; PUT the file''s raw bytes to that `url`; then call
+
+        this tool with that `id` as `upload_id`. The bytes must already be in storage by the
+
+        time you call this — an `upload_id` whose PUT never happened is refused rather than
+
+        attached empty. `create_file_upload` documents the size limit and the two expiry
+
+        windows.
+
+
+        Each `upload_id` is redeemable once. Attaching the same file to a second User means
+
+        staging it again.'
+      requestBody:
+        required: false
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The evidence file's bytes, as a multipart upload in this request. The alternative to `upload_id`, for a direct REST caller. Required unless `upload_id` is given.
+                  example: Users/Downloads/some_file.png
+components:
+  schemas:
+    Evidence:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this Evidence.
+        accepted:
+          type: boolean
+          description: Flag to indicate if this Evidence has been accepted.
+        activity_completion:
+          type: string
+          format: date
+          description: The date the activity was completed
+        created_at:
+          type: string
+          format: date-time
+          description: The date this Evidence was created.
+        document_id:
+          type: string
+          format: uuid
+          description: The identifier of the Document this Evidence was uploaded from.
+        evidence_type:
+          type: string
+          enum:
+          - accepted_policies
+          - access_change_ticket
+          - access_key_management_cloud_service_provider
+          - access_request_forms
+          - access_review
+          - access_termination_forms
+          - access_termination_ticket
+          - account_lockout_cloud_services
+          - account_lockout_duration_cloud_services
+          - administrative_access_encryption
+          - alerting_cloud_infrastructure
+          - alerting_web_application
+          - anti_malware
+          - anti_malware_scans
+          - anti_malware_server_endpoints
+          - anti_spoofing
+          - approved_scanning_vendor
+          - architecture_diagram
+          - asset_inventory_cloud_service_provider
+          - asset_inventory_cloud_service_provider_owners
+          - asset_inventory_removable_media
+          - asset_inventory_user_endpoint_owners
+          - asset_inventory_user_endpoint_screenshot
+          - asset_inventory_user_endpoints
+          - asset_inventory_version_control_repositories
+          - asset_inventory_version_control_repository_owners
+          - asset_inventory_wireless_access_points
+          - asset_review
+          - audit_evidence
+          - authentication_and_encryption_configurations
+          - authentication_credentials
+          - autoscaling_cloud_service_providers
+          - availability_zones_cloud_service_providers
+          - background_check_report
+          - background_check_report_unassigned
+          - backup_restoration_template
+          - backup_restoration_test_cloud_datastores
+          - backup_retention_cloud_datastores
+          - backup_schedule_cloud_datastores
+          - baseline_configurations_cloud_service_providers
+          - board_of_directors_bylaws
+          - board_of_directors_meeting_minutes
+          - board_of_directors_members
+          - branch_access_restriction
+          - bug_ticket_resolved
+          - business_continuity_and_disaster_recovery_tabletop_exercise
+          - business_impact_analysis
+          - business_objective_document
+          - card_reading_devices_inspection
+          - card_reading_devices_inventory
+          - card_reading_devices_training
+          - career_page
+          - ccpa_training_screenshot
+          - centralized_repository_cryptographic_keys
+          - cloud_infrastructure_users_export
+          - cloud_report
+          - cloud_resources_export
+          - cloud_resource_inventory_export
+          - cloud_services_screenshot
+          - code_change_ticket
+          - common_vulnerability_scan_result
+          - company_ssp_report_section_block_attachment
+          - company_ssp_report_assessment_objecttive
+          - company_updates_page
+          - compliance_and_regulation_inventory
+          - compliance_report_hipaa
+          - confidentiality_agreement
+          - confidentiality_agreement_customers
+          - confidentiality_agreement_vendors
+          - configuration_change_ticket
+          - configurations_for_obfuscating_sensitive_data
+          - continuous_integration
+          - contract_business_associate_agreement
+          - contract_business_associate_subcontractor_agreement
+          - contractors_export
+          - controls_export
+          - corrective_action_report
+          - critical_change_communication
+          - current_employees_export
+          - custom
+          - customer_notice_pci_dss
+          - cybersecurity_insurance
+          - data_disposal_log
+          - data_flow_diagram
+          - data_loss_prevention_alert_business_suite
+          - data_disposal_prevention_business_suite
+          - data_retention_requirements
+          - database_backups
+          - default_config_removal_cloud_services
+          - default_config_removal_wireless_networks
+          - detected_applications_export
+          - development_dummy_data
+          - devices_export
+          - device_inventory_export
+          - device_management_screenshot
+          - devices_management_report
+          - dast_scan
+          - dynamic_application_security_testing_post_change
+          - encryption_at_rest_cloud_datastores
+          - encryption_at_rest_user_endpoints
+          - encryption_in_transit_datastores
+          - encryption_in_transit_web_application
+          - encryption_keys
+          - environment_segregation
+          - file_integrity_monitoring_software
+          - firewall_and_router_configuration_changes
+          - firewall_cloud_service_provider
+          - firewall_ruleset_cloud_service_provider
+          - firewall_user_endpoints
+          - firewall_web_application
+          - framework_controls_export
+          - framework_test_evidence_export
+          - framework_tests_export
+          - framework_isms_statement_of_applicability_export
+          - gdpr_training_screenshot
+          - generic_evidence
+          - handling_cui_training_screenshot
+          - help_desk_customers
+          - hipaa_training_screenshot
+          - ids_ips_configurations
+          - incident_24_7_personnel
+          - incident_response_tabletop_exercise
+          - industry_membership
+          - information_security_certification
+          - intellectual_property_rights_inventory
+          - internal_audit
+          - internal_communications
+          - internal_control_matrix_owners
+          - interview_notes
+          - isms_scope
+          - isms_statement_of_applicability
+          - job_descriptions
+          - kpi_document
+          - lessons_learned
+          - log_retention_cloud_infrastructure
+          - logging_cloud_infrastructure
+          - logging_web_application
+          - logical_access
+          - master_service_agreement
+          - mfa_business_suite
+          - mfa_cloud_service_provider
+          - mfa_human_resources_system
+          - mfa_sso
+          - mfa_version_control
+          - minimum_password_age_cloud_services
+          - monitoring_cloud_infrastructure
+          - monitoring_web_application
+          - nat_translation
+          - network_configuration_changes
+          - network_configurations_cloud_service_provider
+          - network_configurations_wireless_settings
+          - onboarding_ticket
+          - organization_chart
+          - organization_chart_distribution
+          - oscal_diff
+          - other
+          - pan_details
+          - password_age
+          - password_complexity_business_suite
+          - password_complexity_cloud_service_provider
+          - password_complexity_human_resources_system
+          - password_complexity_sso
+          - password_complexity_version_control
+          - password_creation
+          - password_manager_screenshot
+          - password_policy_screenshot
+          - password_reuse_prevention_cloud_services
+          - password_validation
+          - patching_cloud_service_provider
+          - pci_secure_code_training_screenshot
+          - pci_training_screenshot
+          - penetration_test_and_asv_scan
+          - penetration_test_report
+          - penetration_test_report_post_change
+          - performance_review
+          - personnel_export
+          - poam_attachments
+          - poam_items_export
+          - policy_export
+          - policy_review_calendar_invite
+          - policy_review_meeting_minutes
+          - privacy_policy
+          - privacy_policy_last_updated
+          - proprietary_software_products_inventory
+          - rbac_matrix
+          - recent_logging_activity
+          - repositories_export
+          - resume
+          - review_findings_export
+          - review_firewall_rules
+          - review_verification_pci_dss
+          - risk
+          - risk_assessment
+          - risk_assessment_answers_export
+          - risk_assessment_vendors
+          - risk_export
+          - risk_register
+          - risk_register_export
+          - risk_register_snapshot_export
+          - risk_treatment_plan
+          - roles_and_responsibilities
+          - route_table_screenshot
+          - secure_certificate_and_trusted_keys
+          - security_awareness_training
+          - security_committee_meeting_minutes
+          - security_control_failures
+          - security_email
+          - security_feature
+          - security_incident_log
+          - security_incident_ticket
+          - security_incident_ticket_resolved
+          - security_objective_document
+          - security_review
+          - security_training_screenshot
+          - security_training_new_hire_screenshot
+          - security_training_export
+          - security_update_user_endpoints
+          - security_web_page
+          - sensitive_authentication_data_deleted
+          - sensitive_authentication_data_not_stored
+          - server_primary_function
+          - service_contract
+          - service_contract_pci_dss
+          - session_timeout_cloud_services
+          - session_timeout_user_endpoints
+          - shared_accounts
+          - sla
+          - special_interest_group
+          - ssh_key_management_cloud_service_provider
+          - ssl_certificate
+          - ssp_policy
+          - system_description
+          - system_installation
+          - system_service
+          - system_software_test
+          - table_view
+          - tabletop_exercise_bcdr
+          - terminated_employees_export
+          - terms_of_service
+          - terms_of_service_last_updated
+          - test_data_and_accounts
+          - test_export
+          - testing_wireless_access_points
+          - third_party_accounts
+          - third_party_anti_malware_endpoints
+          - third_party_anti_malware_updates_endpoints
+          - threat_detection_cloud_infrastructure
+          - tickets_export
+          - unique_password_authentication
+          - unreadable_pan
+          - user_access_review_accounts_export
+          - user_identification
+          - users_business_suite
+          - users_cloud_service_provider
+          - users_communication_tool
+          - users_human_resources_system
+          - users_mdm
+          - users_password_manager
+          - users_sso
+          - users_version_control
+          - vendor_access_list_export
+          - vendor_risk
+          - vendors_approved
+          - vendors_export
+          - vendor_risk_register_export
+          - vendor_risk_register_snapshot_export
+          - vendor_risk_review_answers_export
+          - version_control_code_change_ticket
+          - version_control_code_dependency_testing
+          - version_control_code_pull_request_independent_approval_ticket
+          - version_control_code_pull_request_template
+          - version_control_code_static_application_security_testing
+          - version_control_users_export
+          - version_control_vendor
+          - vulnerability_scanning_cloud_infrastructure
+          - vulnerability_scanning_cloud_infrastructure_post_change
+          - vulnerability_ticket
+          - wireless_encryption
+          - trust_center_nda_acceptances
+          - editor_image
+          description: The type of this Evidence.
+        evidenceable_id:
+          type: string
+          format: uuid
+          description: The identifier of the resource this Evidence is associated with.
+        evidenceable_type:
+          type: string
+          enum:
+          - Company
+          - CompanyUser
+          - CompanySspPolicy
+          description: The type of resource this Evidence is associated with.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date this Evidence was updated.
+        vendor_id:
+          type: string
+          format: uuid
+          description: The identifier of the Vendor associated with this Evidence.
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

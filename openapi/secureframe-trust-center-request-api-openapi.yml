@@ -1,0 +1,544 @@
+openapi: 3.2.0
+info:
+  title: Secureframe Trust Center Request API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: Trust Center Request
+  description: 'This document describes the API for reading and updating Trust Center Requests.\
+
+    Note: In order to access this API, you need to have paid features enabled for Trust.'
+paths:
+  /trust_center_requests:
+    get:
+      tags:
+      - Trust Center Request
+      operationId: trustCenterRequestsIndex
+      parameters:
+      - name: include
+        description: Comma delimited string of relationships to include.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - trust_center_resource_requests
+        explode: false
+        style: form
+      - name: page
+        description: 'Used for pagination of response data (default: page 1). Specifies the offset of the next block of data to receive.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: per_page
+        description: 'Used for pagination of response data (default: 100 items per response). Specifies the number of results for a given page.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: q
+        description: Search and filter the Trust Center Request data using Lucene syntax.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      - name: sort
+        description: 'Comma delimited string of fields to sort the results by, applied in the order given. Prefix a field with `-` to sort it in descending order, for example `?sort=-id,created_at`. Sortable fields: `id`, `created_at`, `email`, `requester_name`, `reviewed`.'
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: List of resources matching the query
+                    items:
+                      type: object
+                      description: Data envelope for the response
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+                        type:
+                          type: string
+                          description: The type of resource this object is
+                        attributes:
+                          $ref: '#/components/schemas/TrustCenterRequest'
+                        relationships:
+                          type: object
+                          description: Nested objects related to the top level object
+                        links:
+                          type: object
+                          description: Links to related API resources
+                  meta:
+                    type: object
+                    description: Metadata about the list response
+                    properties:
+                      total:
+                        type: integer
+                        description: Total number of records matching the query across all pages, independent of page and per_page
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: 'Returns a list of Trust Center Requests
+
+        ### Search parameters
+
+
+        - `id` — The ID of the Trust Center Request
+
+        - `created_at` — The date when this Trust Center Request was created
+
+        - `email` — The email of the requester for this Trust Center Request
+
+        - `requester_name` — The name of the requester for the Trust Center Request
+
+        - `reviewed` — True if this Trust Center Request has been reviewed, false otherwise
+
+        - Valid values: `true`, `false`'
+      summary: List Trust Center Requests
+      security:
+      - header_authorization: []
+      x-controller: api/trust_center_requests
+      x-action: index
+  /trust_center_requests/{id}:
+    get:
+      tags:
+      - Trust Center Request
+      operationId: trustCenterRequestsShow
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: include
+        description: Comma delimited string of relationships to include.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - trust_center_resource_requests
+        explode: false
+        style: form
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/TrustCenterRequest'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Returns a single Trust Center Request by ID
+      summary: Get a Trust Center Request
+      security:
+      - header_authorization: []
+      x-controller: api/trust_center_requests
+      x-action: show
+    put:
+      tags:
+      - Trust Center Request
+      operationId: trustCenterRequestsUpdate
+      parameters:
+      - name: approve_all_resources
+        description: Approve all resources for this trust center request.
+        required: false
+        in: query
+        schema:
+          type: boolean
+      - name: approved_trust_center_resource_request_ids
+        description: The IDs of the trust center resource requests for approval. Empty array will reject the request
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+      - name: custom_response
+        description: Send custom message in email response
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: do_not_send_notification
+        description: Set this to true prevent email notifications from being sent
+        required: false
+        in: query
+        schema:
+          type: boolean
+      - name: document_security
+        description: The document security level for this trust center request.
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - clickwrap
+          - external
+          - waived
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: rejected_trust_center_resource_request_ids
+        description: The IDs of the trust center resource requests for rejection.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+      - name: rejection_reasons
+        description: Send custom rejection messages per resource
+        required: false
+        in: query
+        schema:
+          type: object
+      - name: upload_id
+        description: The `id` returned by `POST /file_uploads` — the `create_file_upload` tool — whose bytes you have already PUT to storage. The way to attach a preloaded signed nda agreement. The alternative to `file`.
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/TrustCenterRequest'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: 'Update a TrustCenterRequest by ID
+
+
+        Most updates send no file at all. When you are attaching a signed NDA agreement, send it
+
+        one of two ways, and provide at most one of them.
+
+
+        `upload_id` attaches a file whose bytes you sent straight to storage, which is the right
+
+        choice for anything large and the only workable one for a caller that cannot send
+
+        multipart. Three steps:
+
+
+        1. Call `POST /file_uploads` with the file''s `filename`, `byte_size` and `checksum`. It
+
+        returns a short-lived `url`, the `headers` to send with it, and an `id`.
+
+        2. PUT the file''s bytes to that `url`, with exactly the `headers` returned. The request
+
+        body is the file''s contents as they are on disk — raw bytes, not base64, not multipart,
+
+        not wrapped in JSON — so there is nothing to encode or convert.
+
+        3. Send the `id` here as `upload_id`.
+
+
+        `file` is the alternative for a direct REST caller — the file''s bytes as a multipart
+
+        upload in this request, with no preloading step.'
+      summary: Update a Trust Center Request
+      security:
+      - header_authorization: []
+      x-controller: api/trust_center_requests
+      x-action: update
+      x-mcp-description: 'Update a Trust Center Request: approve or reject the resources it asks for, set its
+
+        document security, or send a custom response. Most calls attach no file at all.
+
+
+        To attach a signed NDA agreement, the bytes are not sent here. Stage the file first with
+
+        the `create_file_upload` tool, which hands back a `url` and an `id`; PUT the file''s raw
+
+        bytes to that `url`; then call this tool with that `id` as `upload_id`. The bytes must
+
+        already be in storage by the time you call this — an `upload_id` whose PUT never
+
+        happened is refused rather than attached empty. `create_file_upload` documents the size
+
+        limit and the two expiry windows.
+
+
+        Each `upload_id` is redeemable once. Attaching the same file to a second request means
+
+        staging it again.'
+      requestBody:
+        required: false
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The signed trust center nda agreement pdf file's bytes, as a multipart upload in this request. The alternative to `upload_id`, for a direct REST caller.
+                  example: Users/Downloads/some_file.png
+components:
+  schemas:
+    TrustCenterResourceRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this trust center resource request.
+        approved_at:
+          type: string
+          format: date-time
+          description: The date this trust center resource request was approved.
+        trust_center_resource:
+          $ref: '#/components/schemas/TrustCenterResource'
+    TrustCenterRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this trust center request.
+        company_name:
+          type: string
+          description: The company name of the requester.
+        created_at:
+          type: string
+          format: date-time
+          description: The date this trust center request was created.
+        document_security:
+          type: string
+          enum:
+          - clickwrap
+          - external
+          - waived
+          description: The document security level for this trust center request.
+        requester_name:
+          type: string
+          description: The full name of the requester.
+        job_title:
+          type: string
+          description: The job title of the requester.
+        reason:
+          type: string
+          description: The reason for this trust center request.
+        resources:
+          type: array
+          items:
+            type: string
+          description: The names of the resources requested.
+        reviewed:
+          type: boolean
+          description: True if this trust center request was reviewed.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date this trust center request was updated.
+        email:
+          type: string
+          description: The email address of the requester.
+        trust_center_resource_requests:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrustCenterResourceRequest'
+          description: The trust center resource requests associated with this trust center request.
+    TrustCenterResource:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this trust center resource.
+        description:
+          type: string
+          description: The description of the resource.
+        name:
+          type: string
+          description: The name of the resource.
+        nda_required:
+          type: boolean
+          description: Whether an NDA is required to access this resource.
+        resource_type:
+          type: string
+          enum:
+          - compliance_item
+          - other_document
+          - link
+          description: The type of resource.
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

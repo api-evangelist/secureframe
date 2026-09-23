@@ -1,0 +1,362 @@
+openapi: 3.2.0
+info:
+  title: Secureframe SSP Report Assessment Objective API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: SSP Report Assessment Objective
+  description: This document describes the API for reading and updating SSP Report Assessment Objectives.
+paths:
+  /ssp_report_assessment_objectives:
+    get:
+      tags:
+      - SSP Report Assessment Objective
+      operationId: companySspReportAssessmentObjectivesIndex
+      parameters:
+      - name: page
+        description: 'Used for pagination of response data (default: page 1). Specifies the offset of the next block of data to receive.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: per_page
+        description: 'Used for pagination of response data (default: 100 items per response). Specifies the number of results for a given page.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: q
+        description: Search and filter the SSP Report Assessment Objective data using Lucene syntax.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: sort
+        description: 'Comma delimited string of fields to sort the results by, applied in the order given. Prefix a field with `-` to sort it in descending order, for example `?sort=-created_at,framework_requirement_id`. Sortable fields: `created_at`, `framework_requirement_id`, `framework_requirement_name`, `id`, `implementation_statement`, `response`, `ssp_report_id`, `ssp_report_requirement_id`, `updated_at`.'
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: List of resources matching the query
+                    items:
+                      type: object
+                      description: Data envelope for the response
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+                        type:
+                          type: string
+                          description: The type of resource this object is
+                        attributes:
+                          $ref: '#/components/schemas/SspReportAssessmentObjective'
+                        relationships:
+                          type: object
+                          description: Nested objects related to the top level object
+                        links:
+                          type: object
+                          description: Links to related API resources
+                  meta:
+                    type: object
+                    description: Metadata about the list response
+                    properties:
+                      total:
+                        type: integer
+                        description: Total number of records matching the query across all pages, independent of page and per_page
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: 'Returns a list of SSP Report Assessment Objectives.
+
+        ### Search parameters
+
+
+        - `created_at` — The date this Assessment Objective was created
+
+        - `framework_requirement_id` — The ID of the Framework Requirement
+
+        - `framework_requirement_name` — The name of the Framework Requirement
+
+        - `id` — The ID of the SSP Report Assessment Objective
+
+        - `implementation_statement` — The implementation statement
+
+        - `response` — The response status of the Assessment Objective
+
+        - Valid values: `implemented`, `not_applicable`, `no_response`, `partially_implemented`, `poam`
+
+        - `ssp_report_id` — The ID of the associated SSP Report
+
+        - `ssp_report_requirement_id` — The ID of the SSP Report Requirement
+
+        - `updated_at` — The date this Assessment Objective was last updated'
+      summary: List SSP Report Assessment Objectives
+      security:
+      - header_authorization: []
+      x-controller: api/company_ssp_report_assessment_objectives
+      x-action: index
+  /ssp_report_assessment_objectives/{id}:
+    get:
+      tags:
+      - SSP Report Assessment Objective
+      operationId: companySspReportAssessmentObjectivesShow
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/SspReportAssessmentObjective'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Returns an SSP Report Assessment Objective by ID
+      summary: Get an SSP Report Assessment Objective
+      security:
+      - header_authorization: []
+      x-controller: api/company_ssp_report_assessment_objectives
+      x-action: show
+    put:
+      tags:
+      - SSP Report Assessment Objective
+      operationId: companySspReportAssessmentObjectivesUpdate
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: implementation_statement
+        description: The implementation statement for this Assessment Objective.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: response
+        description: The response status.
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - implemented
+          - not_applicable
+          - no_response
+          - partially_implemented
+          - poam
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/SspReportAssessmentObjective'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Update an SSP Report Assessment Objective by ID
+      summary: Update an SSP Report Assessment Objective
+      security:
+      - header_authorization: []
+      x-controller: api/company_ssp_report_assessment_objectives
+      x-action: update
+components:
+  schemas:
+    SspReportAssessmentObjective:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this SSP Report Assessment Objective.
+        created_at:
+          type: string
+          format: date-time
+          description: The date this Assessment Objective was created.
+        framework_requirement_id:
+          type: string
+          format: uuid
+          description: The identifier for the Framework Requirement.
+        implementation_statement:
+          type: string
+          description: The implementation statement for this Assessment Objective.
+        response:
+          type: string
+          enum:
+          - implemented
+          - not_applicable
+          - no_response
+          - partially_implemented
+          - poam
+          description: The response status for this Assessment Objective.
+        ssp_report_id:
+          type: string
+          format: uuid
+          description: The identifier for the associated SSP report.
+        ssp_report_requirement_id:
+          type: string
+          format: uuid
+          description: The identifier for the SSP Report Requirement.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date this Assessment Objective was last updated.
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

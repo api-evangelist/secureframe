@@ -1,0 +1,531 @@
+openapi: 3.2.0
+info:
+  title: Secureframe SSP Vendor API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: SSP Vendor
+  description: This document describes the API for reading, creating, updating, and deleting SSP Vendors.
+paths:
+  /ssp_vendors:
+    get:
+      tags:
+      - SSP Vendor
+      operationId: companySspVendorsIndex
+      parameters:
+      - name: page
+        description: 'Used for pagination of response data (default: page 1). Specifies the offset of the next block of data to receive.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: per_page
+        description: 'Used for pagination of response data (default: 100 items per response). Specifies the number of results for a given page.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: q
+        description: Search and filter the SSP Vendor data using Lucene syntax.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: sort
+        description: 'Comma delimited string of fields to sort the results by, applied in the order given. Prefix a field with `-` to sort it in descending order, for example `?sort=-categories,id`. Sortable fields: `categories`, `id`, `name`, `purpose`, `ssp_report_id`, `vendor_type`, `website`.'
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: List of resources matching the query
+                    items:
+                      type: object
+                      description: Data envelope for the response
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+                        type:
+                          type: string
+                          description: The type of resource this object is
+                        attributes:
+                          $ref: '#/components/schemas/SspVendor'
+                        relationships:
+                          type: object
+                          description: Nested objects related to the top level object
+                        links:
+                          type: object
+                          description: Links to related API resources
+                  meta:
+                    type: object
+                    description: Metadata about the list response
+                    properties:
+                      total:
+                        type: integer
+                        description: Total number of records matching the query across all pages, independent of page and per_page
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: 'Returns a list of SSP Vendors.
+
+        ### Search parameters
+
+
+        - `categories` — The asset categories for this SSP Vendor
+
+        - Valid values: `cui_asset`, `security_protection_asset`, `contractor_risk_management_asset`, `specialized_asset`, `out_of_scope_asset`
+
+        - `id` — The ID of the SSP Vendor
+
+        - `name` — The name of the SSP Vendor
+
+        - `purpose` — The purpose of the SSP Vendor
+
+        - `ssp_report_id` — The ID of the associated SSP Report
+
+        - `vendor_type` — The type of the SSP Vendor
+
+        - Valid values: `on_prem`, `csp`, `msp_mspp`, `other`
+
+        - `website` — The website of the SSP Vendor'
+      summary: List SSP Vendors
+      security:
+      - header_authorization: []
+      x-controller: api/company_ssp_vendors
+      x-action: index
+    post:
+      tags:
+      - SSP Vendor
+      operationId: companySspVendorsCreate
+      parameters:
+      - name: categories
+        description: The asset categories for the SSP Vendor.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - cui_asset
+            - security_protection_asset
+            - contractor_risk_management_asset
+            - specialized_asset
+            - out_of_scope_asset
+        explode: true
+      - name: name
+        description: The name of the SSP Vendor.
+        required: true
+        in: query
+        schema:
+          type: string
+      - name: purpose
+        description: The purpose of the SSP Vendor.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: ssp_report_id
+        description: The ID of the SSP Report to associate this Vendor with.
+        required: true
+        in: query
+        schema:
+          type: string
+          format: uuid
+      - name: vendor_type
+        description: The vendor type for the SSP Vendor.
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - on_prem
+          - csp
+          - msp_mspp
+          - other
+      - name: website
+        description: The website of the SSP Vendor.
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/SspVendor'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Create a new SSP Vendor.
+      summary: Create an SSP Vendor
+      security:
+      - header_authorization: []
+      x-controller: api/company_ssp_vendors
+      x-action: create
+  /ssp_vendors/{id}:
+    get:
+      tags:
+      - SSP Vendor
+      operationId: companySspVendorsShow
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/SspVendor'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Returns a single SSP Vendor by ID.
+      summary: Get an SSP Vendor
+      security:
+      - header_authorization: []
+      x-controller: api/company_ssp_vendors
+      x-action: show
+    put:
+      tags:
+      - SSP Vendor
+      operationId: companySspVendorsUpdate
+      parameters:
+      - name: categories
+        description: The asset categories for the SSP Vendor.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - cui_asset
+            - security_protection_asset
+            - contractor_risk_management_asset
+            - specialized_asset
+            - out_of_scope_asset
+        explode: true
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: name
+        description: The name of the SSP Vendor.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: purpose
+        description: The purpose of the SSP Vendor.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: vendor_type
+        description: The vendor type for the SSP Vendor.
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - on_prem
+          - csp
+          - msp_mspp
+          - other
+      - name: website
+        description: The website of the SSP Vendor.
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/SspVendor'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Update an SSP Vendor by ID.
+      summary: Update an SSP Vendor
+      security:
+      - header_authorization: []
+      x-controller: api/company_ssp_vendors
+      x-action: update
+    delete:
+      tags:
+      - SSP Vendor
+      operationId: companySspVendorsDestroy
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Delete an SSP Vendor by ID.
+      summary: Delete an SSP Vendor
+      security:
+      - header_authorization: []
+      x-controller: api/company_ssp_vendors
+      x-action: destroy
+components:
+  schemas:
+    SspVendor:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this SSP vendor.
+        categories:
+          type: array
+          items:
+            type: string
+            enum:
+            - cui_asset
+            - security_protection_asset
+            - contractor_risk_management_asset
+            - specialized_asset
+            - out_of_scope_asset
+          description: The asset categories for the SSP vendor.
+        created_at:
+          type: string
+          format: date-time
+          description: The date the SSP vendor was created.
+        name:
+          type: string
+          description: The name of the SSP vendor.
+        purpose:
+          type: string
+          description: The purpose of the SSP vendor.
+        ssp_report_id:
+          type: string
+          format: uuid
+          description: The identifier for the associated SSP report.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date the SSP vendor was last updated.
+        vendor_risk_detail_id:
+          type: string
+          format: uuid
+          description: The identifier of the linked Vendor Risk Detail.
+        vendor_type:
+          type: string
+          enum:
+          - on_prem
+          - csp
+          - msp_mspp
+          - other
+          description: The vendor type for the SSP vendor.
+        website:
+          type: string
+          description: The website of the SSP vendor.
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

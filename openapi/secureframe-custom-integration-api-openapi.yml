@@ -1,0 +1,146 @@
+openapi: 3.2.0
+info:
+  title: Secureframe Custom Integration API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: Custom Integration
+  description: This document describes the API for publishing data to a custom integration.
+paths:
+  /custom_connections/{id}/data:
+    post:
+      tags:
+      - Custom Integration
+      operationId: customConnectionsResourceDataCreate
+      parameters:
+      - name: id
+        description: The ID of the custom connection.
+        required: true
+        in: path
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '202':
+          description: Accepted      The data is enqueued for processing.
+        '400':
+          description: Bad Request   The request body was not in the correct format.
+        '401':
+          description: Unauthorized  The Authorization header was invalid.
+        '403':
+          description: Forbidden     The API key provided was not authorized to push data for this custom connection.
+        '404':
+          description: Not Found     A custom connection could not be found for the provided ID.
+      description: Publish resource data to a custom integration.
+      summary: Publish data
+      security:
+      - header_authorization: []
+      x-controller: api/custom_connections/resource_data
+      x-action: create
+      requestBody:
+        description: request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Models_CustomConnections_CreateResourceDataRequest'
+components:
+  schemas:
+    Models_CustomConnections_CreateResourceDataRequest:
+      type: object
+      properties:
+        schema_slug:
+          type: string
+          description: 'The slug identifying the data type this data conforms to. This is used to
+
+            identify the schema to use for processing the data.'
+          example: users
+        vendor_slug:
+          type: string
+          description: 'The slug identifying the vendor this data should be attributed to. This
+
+            must match the vendor configured for the connection.'
+          example: acme
+        resource_data:
+          type: array
+          items:
+            type: object
+          description: 'An array of objects representing the current state of a set of
+
+            resources provided by this data source.'
+          example:
+          - id: '123'
+            name: John Doe
+            email: john.doe@example.com
+          - id: '456'
+            name: Jane Doe
+            email: jane.doe@example.com
+        partial:
+          type: boolean
+          description: 'If true, the data will be processed as a partial update. If set, only
+
+            the fields that are present in the data will be updated, and any fields that
+
+            are not present will be left unchanged. The primary ID of the resource
+
+            must always be present in the data.'
+      required:
+      - schema_slug
+      - vendor_slug
+      - resource_data
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

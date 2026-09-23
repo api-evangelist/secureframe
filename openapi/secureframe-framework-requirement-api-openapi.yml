@@ -1,0 +1,307 @@
+openapi: 3.2.0
+info:
+  title: Secureframe Framework Requirement API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: Framework Requirement
+  description: This document describes the API for reading Framework Requirements.
+paths:
+  /framework_requirements:
+    get:
+      tags:
+      - Framework Requirement
+      operationId: companyFrameworkRequirementsIndex
+      parameters:
+      - name: include
+        description: Comma delimited string of relationships to include.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - framework
+        explode: false
+        style: form
+      - name: page
+        description: 'Used for pagination of response data (default: page 1). Specifies the offset of the next block of data to receive.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: per_page
+        description: 'Used for pagination of response data (default: 100 items per response). Specifies the number of results for a given page.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: q
+        description: Search and filter the Framework Requirement data using Lucene syntax.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      - name: sort
+        description: 'Comma delimited string of fields to sort the results by, applied in the order given. Prefix a field with `-` to sort it in descending order, for example `?sort=-enabled,health_status`. Sortable fields: `enabled`, `health_status`, `id`, `key`, `name`.'
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: List of resources matching the query
+                    items:
+                      type: object
+                      description: Data envelope for the response
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+                        type:
+                          type: string
+                          description: The type of resource this object is
+                        attributes:
+                          $ref: '#/components/schemas/FrameworkRequirement'
+                        relationships:
+                          type: object
+                          description: Nested objects related to the top level object
+                        links:
+                          type: object
+                          description: Links to related API resources
+                  meta:
+                    type: object
+                    description: Metadata about the list response
+                    properties:
+                      total:
+                        type: integer
+                        description: Total number of records matching the query across all pages, independent of page and per_page
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: 'Returns a list of Framework Requirements.
+
+        ### Search parameters
+
+
+        - `enabled` — True if the Framework Requirement is currently enabled
+
+        - Valid values: `true`, `false`
+
+        - `health_status` — The overall health of the Framework Requirement
+
+        - Valid values: `at_risk`, `deleted`, `draft`, `healthy`, `not_applicable`, `not_tested`, `unhealthy`
+
+        - `id` — The ID of the Framework Requirement
+
+        - `key` — The key of the Framework Requirement
+
+        - `name` — The name of the Framework Requirement'
+      summary: List Framework Requirements
+      security:
+      - header_authorization: []
+      x-controller: api/company_framework_requirements
+      x-action: index
+  /framework_requirements/{id}:
+    get:
+      tags:
+      - Framework Requirement
+      operationId: companyFrameworkRequirementsShow
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: include
+        description: Comma delimited string of relationships to include.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - framework
+        explode: false
+        style: form
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/FrameworkRequirement'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Returns a Framework Requirement by ID
+      summary: Get a Framework Requirement
+      security:
+      - header_authorization: []
+      x-controller: api/company_framework_requirements
+      x-action: show
+components:
+  schemas:
+    FrameworkRequirement:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this Framework Requirement.
+        company_id:
+          type: string
+          format: uuid
+          description: The identifier for the Company.
+        created_at:
+          type: string
+          format: date-time
+          description: The date this Framework Requirement was created.
+        description:
+          type: string
+          description: The description of the Framework Requirement.
+        enabled:
+          type: boolean
+          description: Whether this Framework Requirement is enabled.
+        health_status:
+          type: string
+          description: The overall health of the Framework Requirement.
+        key:
+          type: string
+          description: The key of the Framework Requirement.
+        name:
+          type: string
+          description: The name of the Framework Requirement.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date this Framework Requirement was updated.
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

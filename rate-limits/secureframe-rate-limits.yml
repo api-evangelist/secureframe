@@ -4,11 +4,12 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: Secureframe
 providerId: secureframe
 created: '2026-05-08'
-# Provenance stamped 2026-08-11: this artifact was written by the API Evangelist
-# bulk sweep dated 2026-05-08, not harvested from the provider. See roadmap#35.
-method: generated
-modified: '2026-05-08'
-reconciled: false
+modified: '2026-08-27'
+generated: '2026-08-27'
+method: searched
+source: https://api.secureframe.com/docs — "Rate Limiting" and "Errors" sections of the OpenAPI info.description
+  (fetched 2026-08-27)
+reconciled: true
 tags:
 - GRC
 - Compliance
@@ -18,22 +19,49 @@ tags:
 - Rate Limiting
 - Quotas
 - Throttling
-description: Secureframe Public API rate limits. Specific quotas are not publicly published;
-  HTTP 429 is returned on throttling.
-notes: Tenant-specific quotas; consult Secureframe support for exact thresholds.
-sources:
-- https://developer.secureframe.com/
+description: 'Secureframe publishes exactly one rate limit and it is stated as a quoted number in the API reference:
+  500 requests per minute per IP address, 429 on exhaustion. The value is documented; the runtime signal is
+  not.'
+limit_count: 1
 responseCodes:
   throttled: 429
+response_headers:
+  published: false
+  x_ratelimit: false
+  ratelimit_draft: false
+  retry_after: false
+  note: No X-RateLimit-*, RateLimit-* or Retry-After header is documented anywhere, and 429 is declared on
+    ZERO of the 112 OpenAPI operations. A client cannot see its remaining budget, and a client generated from
+    the spec will not even model the throttled path — it discovers the ceiling by hitting it.
 limits:
-- name: Default Public API
-  scope: tenant
+- name: Public API default
+  scope: per-ip
   metric: requests
-  limit: not publicly documented
-  notes: HTTP 429 returned when throttled; honor Retry-After header.
+  limit: 500
+  window: 1 minute
+  burst: null
+  status_on_exhaustion: 429
+  quote: Requests are limited to 500 requests per minute per IP address. If the limit is exceeded, requests
+    will be blocked until requests are available based on the aforementioned limit.
+  source: https://api.secureframe.com/docs
+  note: Per IP address, NOT per API key or per company — so every process behind one NAT egress shares one
+    budget, and a customer cannot buy headroom by issuing more keys.
+mcp:
+  endpoint: https://mcp.secureframe.com/
+  published_limit: null
+  note: No rate limit is published for the hosted MCP server. Its tools wrap the same REST API, so the 500/min
+    per-IP ceiling is the assumed effective bound, but Secureframe does not state this.
+interaction_with_bulk: The reference also states the API does not support bulk updates — one object per request.
+  A 500/min per-IP ceiling with no bulk endpoints and no idempotency key makes any large compliance write a
+  slow serial loop with an unsafe retry path.
 policies:
-- name: Backoff Strategy
-  description: Clients should implement exponential backoff with jitter and honor any Retry-After header.
+- name: Backoff strategy
+  description: Not published by Secureframe. Clients should implement exponential backoff with jitter; no Retry-After
+    value is returned to honour.
+  method: inferred
+related:
+- errors/secureframe-problem-types.yml
+- conventions/secureframe-conventions.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com

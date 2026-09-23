@@ -1,0 +1,600 @@
+openapi: 3.2.0
+info:
+  title: Secureframe POA&M Item API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: POA&M Item
+  description: 'This document describes the API for reading, creating, updating, and discarding POA&M
+
+    (Plan of Action & Milestones) items.'
+paths:
+  /poam_items:
+    get:
+      tags:
+      - POA&M Item
+      operationId: poamItemsIndex
+      parameters:
+      - name: page
+        description: 'Used for pagination of response data (default: page 1). Specifies the offset of the next block of data to receive.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: per_page
+        description: 'Used for pagination of response data (default: 100 items per response). Specifies the number of results for a given page.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: q
+        description: Search and filter the POA&M Item data using Lucene syntax.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: sort
+        description: 'Comma delimited string of fields to sort the results by, applied in the order given. Prefix a field with `-` to sort it in descending order, for example `?sort=-discarded,due_date`. Sortable fields: `discarded`, `due_date`, `estimated_completion_date`, `id`, `identifier`, `issue`, `owner_name`, `risk_level`, `status`.'
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: List of resources matching the query
+                    items:
+                      type: object
+                      description: Data envelope for the response
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+                        type:
+                          type: string
+                          description: The type of resource this object is
+                        attributes:
+                          $ref: '#/components/schemas/PoamItem'
+                        relationships:
+                          type: object
+                          description: Nested objects related to the top level object
+                        links:
+                          type: object
+                          description: Links to related API resources
+                  meta:
+                    type: object
+                    description: Metadata about the list response
+                    properties:
+                      total:
+                        type: integer
+                        description: Total number of records matching the query across all pages, independent of page and per_page
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: 'Returns a list of POA&M items.
+
+        ### Search parameters
+
+
+        - `discarded` — Whether the POA&M item has been discarded
+
+        - Valid values: `true`, `false`
+
+        - `due_date` — The due date of the POA&M item
+
+        - `estimated_completion_date` — The estimated completion date of the POA&M item
+
+        - `id` — The ID of the POA&M item
+
+        - `identifier` — The identifier of the POA&M item
+
+        - `issue` — The issue describing the POA&M item
+
+        - `owner_name` — The name of the POA&M item owner
+
+        - `risk_level` — The risk level of the POA&M item
+
+        - Valid values: `low`, `medium`, `high`
+
+        - `status` — The status of the POA&M item
+
+        - Valid values: `draft`, `in_progress`, `closed`'
+      summary: List POA&M items
+      security:
+      - header_authorization: []
+      x-controller: api/poam_items
+      x-action: index
+    post:
+      tags:
+      - POA&M Item
+      operationId: poamItemsCreate
+      parameters:
+      - name: due_date
+        description: The due date of the POA&M item.
+        required: false
+        in: query
+        schema:
+          type: string
+          format: date
+      - name: estimated_completion_date
+        description: The estimated completion date of the POA&M item.
+        required: false
+        in: query
+        schema:
+          type: string
+          format: date
+      - name: identifier
+        description: The identifier of the POA&M item.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: issue
+        description: The issue describing the POA&M item.
+        required: true
+        in: query
+        schema:
+          type: string
+      - name: owner_id
+        description: The ID of the user who owns this POA&M item.
+        required: true
+        in: query
+        schema:
+          type: string
+          format: uuid
+      - name: remediation_plan
+        description: The remediation plan for the POA&M item.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: risk_level
+        description: The risk level (defaults to low).
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - low
+          - medium
+          - high
+      - name: status
+        description: The status (defaults to draft).
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - draft
+          - in_progress
+          - closed
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/PoamItem'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Create a new POA&M item.
+      summary: Create a POA&M item
+      security:
+      - header_authorization: []
+      x-controller: api/poam_items
+      x-action: create
+  /poam_items/{id}:
+    get:
+      tags:
+      - POA&M Item
+      operationId: poamItemsShow
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/PoamItem'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Returns a POA&M item by ID
+      summary: Get a POA&M item
+      security:
+      - header_authorization: []
+      x-controller: api/poam_items
+      x-action: show
+    put:
+      tags:
+      - POA&M Item
+      operationId: poamItemsUpdate
+      parameters:
+      - name: due_date
+        description: The due date of the POA&M item.
+        required: false
+        in: query
+        schema:
+          type: string
+          format: date
+      - name: estimated_completion_date
+        description: The estimated completion date of the POA&M item.
+        required: false
+        in: query
+        schema:
+          type: string
+          format: date
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: identifier
+        description: The identifier of the POA&M item.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: issue
+        description: The issue describing the POA&M item.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: owner_id
+        description: The ID of the user who owns this POA&M item.
+        required: false
+        in: query
+        schema:
+          type: string
+          format: uuid
+      - name: remediation_plan
+        description: The remediation plan for the POA&M item.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: risk_level
+        description: The risk level.
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - low
+          - medium
+          - high
+      - name: status
+        description: The status.
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - draft
+          - in_progress
+          - closed
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/PoamItem'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Update a POA&M item by ID.
+      summary: Update a POA&M item
+      security:
+      - header_authorization: []
+      x-controller: api/poam_items
+      x-action: update
+  /poam_items/{id}/discard:
+    put:
+      tags:
+      - POA&M Item
+      operationId: poamItemsDiscard
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/PoamItem'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Discard a POA&M item by ID.
+      summary: Discard a POA&M item
+      security:
+      - header_authorization: []
+      x-controller: api/poam_items
+      x-action: discard
+components:
+  schemas:
+    PoamItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this POAM item.
+        created_at:
+          type: string
+          format: date-time
+          description: The date when this POAM item was created.
+        discarded_at:
+          type: string
+          format: date-time
+          description: The date when this POAM item was discarded, if any.
+        due_date:
+          type: string
+          format: date
+          description: The due date of the POAM item.
+        estimated_completion_date:
+          type: string
+          format: date
+          description: The estimated completion date of the POAM item.
+        identifier:
+          type: string
+          description: The identifier of the POAM item.
+        issue:
+          type: string
+          description: The issue describing the POAM item.
+        owner_id:
+          type: string
+          format: uuid
+          description: The ID of the user who owns this POAM item.
+        remediation_plan:
+          type: string
+          description: The remediation plan for the POAM item.
+        risk_level:
+          type: string
+          enum:
+          - low
+          - medium
+          - high
+          description: The risk level of the POAM item.
+        status:
+          type: string
+          enum:
+          - draft
+          - in_progress
+          - closed
+          description: The status of the POAM item.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date when this POAM item was last updated.
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

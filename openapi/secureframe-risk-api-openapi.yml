@@ -1,0 +1,369 @@
+openapi: 3.2.0
+info:
+  title: Secureframe Risk API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: Risk
+  description: This document describes the API for reading Risks.
+paths:
+  /risks:
+    get:
+      tags:
+      - Risk
+      operationId: companyRisksIndex
+      parameters:
+      - name: include
+        description: Comma delimited string of relationships to include.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - owner
+        explode: false
+        style: form
+      - name: page
+        description: 'Used for pagination of response data (default: page 1). Specifies the offset of the next block of data to receive.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: per_page
+        description: 'Used for pagination of response data (default: 100 items per response). Specifies the number of results for a given page.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: q
+        description: Search and filter the Risk data using Lucene syntax.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      - name: sort
+        description: 'Comma delimited string of fields to sort the results by, applied in the order given. Prefix a field with `-` to sort it in descending order, for example `?sort=-archived,id`. Sortable fields: `archived`, `id`, `custom_risk_id`, `owner_name`, `description`.'
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: List of resources matching the query
+                    items:
+                      type: object
+                      description: Data envelope for the response
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+                        type:
+                          type: string
+                          description: The type of resource this object is
+                        attributes:
+                          $ref: '#/components/schemas/CompanyRisk'
+                        relationships:
+                          type: object
+                          description: Nested objects related to the top level object
+                        links:
+                          type: object
+                          description: Links to related API resources
+                  meta:
+                    type: object
+                    description: Metadata about the list response
+                    properties:
+                      total:
+                        type: integer
+                        description: Total number of records matching the query across all pages, independent of page and per_page
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: 'Returns a list of Risks.
+
+        ### Search parameters
+
+
+        - `archived` — Flag to indicate if this risk is archived
+
+        - Valid values: `true`, `false`
+
+        - `id` — The ID of the risk
+
+        - `custom_risk_id` — The custom risk ID
+
+        - `owner_name` — The name of the User that is the owner for this risk
+
+        - `description` — The description of the risk'
+      summary: List Risks
+      security:
+      - header_authorization: []
+      x-controller: api/company_risks
+      x-action: index
+  /risks/{id}:
+    get:
+      tags:
+      - Risk
+      operationId: companyRisksShow
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: include
+        description: Comma delimited string of relationships to include.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - owner
+        explode: false
+        style: form
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/CompanyRisk'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Returns a Risk by ID
+      summary: Get a Risk
+      security:
+      - header_authorization: []
+      x-controller: api/company_risks
+      x-action: show
+components:
+  schemas:
+    CompanyRisk:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this CompanyRisk.
+        annualized_rate_of_occurrence:
+          type: number
+          format: float
+          description: The annualized rate of occurrence for this CompanyRisk.
+        asset_value:
+          type: integer
+          description: The asset value for this CompanyRisk.
+        categories:
+          type: array
+          items:
+            type: string
+          description: The categories for this CompanyRisk.
+        cia:
+          type: array
+          items:
+            type: string
+          description: The CIA for this CompanyRisk.
+        departments:
+          type: array
+          items:
+            type: string
+          description: The departments for this CompanyRisk.
+        description:
+          type: string
+          description: The description for this CompanyRisk.
+        exposure_factor:
+          type: number
+          format: float
+          description: The exposure factor for this CompanyRisk.
+        impact_justification:
+          type: string
+          description: The impact justification for this CompanyRisk.
+        likelihood_justification:
+          type: string
+          description: The likelihood justification for this CompanyRisk.
+        notes:
+          type: string
+          description: The notes for this CompanyRisk.
+        reference_url:
+          type: string
+          description: The reference URL for this CompanyRisk.
+        related_tickets:
+          type: string
+          description: The related tickets for this CompanyRisk.
+        reported_by:
+          type: string
+          description: The reported by for this CompanyRisk.
+        residual_impact_justification:
+          type: string
+          description: The residual impact justification for this CompanyRisk.
+        residual_likelihood_justification:
+          type: string
+          description: The residual likelihood justification for this CompanyRisk.
+        responsible_team:
+          type: string
+          description: The responsible team for this CompanyRisk.
+        source:
+          type: string
+          description: The source for this CompanyRisk.
+        status:
+          type: string
+          description: The status for this CompanyRisk.
+        treatment:
+          type: string
+          description: The treatment for this CompanyRisk.
+        treatment_decision_notes:
+          type: string
+          description: The treatment decision notes for this CompanyRisk.
+        uncertainty:
+          type: number
+          format: float
+          description: The uncertainty for this CompanyRisk.
+        created_at:
+          type: string
+          format: date-time
+          description: The date this CompanyRisk was created.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date this CompanyRisk was updated.
+        company_id:
+          type: string
+          format: uuid
+          description: The identifier for the company for this CompanyRisk.
+        owner_id:
+          type: string
+          format: uuid
+          description: The identifier for the owner for this CompanyRisk.
+        custom_risk_id:
+          type: string
+          description: The custom risk ID for this CompanyRisk.
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

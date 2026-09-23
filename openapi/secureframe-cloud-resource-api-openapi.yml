@@ -1,0 +1,387 @@
+openapi: 3.2.0
+info:
+  title: Secureframe Cloud Resource API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: Cloud Resource
+  description: This document describes the API for reading and updating Cloud Resources.
+paths:
+  /cloud_resources:
+    get:
+      tags:
+      - Cloud Resource
+      operationId: cloudResourcesIndex
+      parameters:
+      - name: include
+        description: 'Comma delimited string of relationships to include. Note: company_vendor_connection is deprecated, please use integration_connection instead.'
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - company_vendor_connection
+            - integration_connection
+            - owner
+        explode: false
+        style: form
+      - name: page
+        description: 'Used for pagination of response data (default: page 1). Specifies the offset of the next block of data to receive.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: per_page
+        description: 'Used for pagination of response data (default: 100 items per response). Specifies the number of results for a given page.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: q
+        description: Search and filter the Cloud Resource data using Lucene syntax.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      - name: sort
+        description: 'Comma delimited string of fields to sort the results by, applied in the order given. Prefix a field with `-` to sort it in descending order, for example `?sort=-cloud_resource_type,created_at`. Sortable fields: `cloud_resource_type`, `created_at`, `id`, `in_audit_scope`, `region`, `third_party_id`, `updated_at`, `vendor_name`.'
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: List of resources matching the query
+                    items:
+                      type: object
+                      description: Data envelope for the response
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+                        type:
+                          type: string
+                          description: The type of resource this object is
+                        attributes:
+                          $ref: '#/components/schemas/CloudResource'
+                        relationships:
+                          type: object
+                          description: Nested objects related to the top level object
+                        links:
+                          type: object
+                          description: Links to related API resources
+                  meta:
+                    type: object
+                    description: Metadata about the list response
+                    properties:
+                      total:
+                        type: integer
+                        description: Total number of records matching the query across all pages, independent of page and per_page
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Returns a list of Cloud Resources.
+      summary: List Cloud Resources
+      security:
+      - header_authorization: []
+      x-controller: api/cloud_resources
+      x-action: index
+  /cloud_resources/{id}:
+    get:
+      tags:
+      - Cloud Resource
+      operationId: cloudResourcesShow
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: include
+        description: 'Comma delimited string of relationships to include. Note: company_vendor_connection is deprecated, please use integration_connection instead.'
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - company_vendor_connection
+            - integration_connection
+            - owner
+        explode: false
+        style: form
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/CloudResource'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Returns a single Cloud Resource by ID
+      summary: Get a Cloud Resource
+      security:
+      - header_authorization: []
+      x-controller: api/cloud_resources
+      x-action: show
+    put:
+      tags:
+      - Cloud Resource
+      operationId: cloudResourcesUpdate
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: in_audit_scope
+        description: Flag to indicate if this Cloud Resource is in scope. [DEPRECATED - Use the Cloud Resource Framework Asset Scope [endpoint](/tag/Cloud-Resource-Framework-Asset-Scope#operation/cloudResourcesCompanyFrameworkAssetScopesCreate)]
+        required: false
+        in: query
+        schema:
+          type: boolean
+      - name: out_of_audit_scope_reason
+        description: Out of scope reason if the Cloud Resource is not in scope. [DEPRECATED - Use the Cloud Resource Framework Asset Scope [endpoint](/tag/Cloud-Resource-Framework-Asset-Scope#operation/cloudResourcesCompanyFrameworkAssetScopesCreate)]
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - development_asset
+          - staging_asset
+          - out_of_scope_production_asset
+      - name: owner_id
+        description: ID of the User that's the owner of this Cloud Resource.
+        required: false
+        in: query
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/CloudResource'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Update a Cloud Resource by ID
+      summary: Update a Cloud Resource
+      security:
+      - header_authorization: []
+      x-controller: api/cloud_resources
+      x-action: update
+components:
+  schemas:
+    CloudResource:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this CloudResource.
+        cloud_resource_type:
+          type: string
+          description: The type of this CloudResource.
+        created_at:
+          type: string
+          format: date-time
+          description: The date this CloudResource was created.
+        in_audit_scope:
+          type: boolean
+          description: Flag to indicate if this CloudResource is in scope.
+        out_of_audit_scope_reason:
+          type: string
+          enum:
+          - development_asset
+          - staging_asset
+          - out_of_scope_production_asset
+          description: Out of scope reason if the repository is not in scope.
+        region:
+          type: string
+          description: The region this CloudResource belongs to.
+        tags:
+          type: array
+          items:
+            type: string
+          description: The tags for this CloudResource.
+        third_party_id:
+          type: string
+          description: The identifier for this CloudResource on the vendor side.
+        vendor_name:
+          type: string
+          description: The name of the vendor that this CloudResource is from.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date this CloudResource was last updated.
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

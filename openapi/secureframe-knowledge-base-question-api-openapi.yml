@@ -1,0 +1,383 @@
+openapi: 3.2.0
+info:
+  title: Secureframe Knowledge Base Question API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: Knowledge Base Question
+  description: This document describes the API for reading, creating, updating, and deleting Knowledge Base Questions.
+paths:
+  /knowledge_base_questions/{id}:
+    get:
+      tags:
+      - Knowledge Base Question
+      operationId: knowledgeBaseQuestionsShow
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: include
+        description: Comma delimited string of relationships to include.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - knowledge_base_answers
+            - owner
+        explode: false
+        style: form
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/KnowledgeBaseQuestion'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Returns a single Knowledge Base Question by ID
+      summary: Get a Knowledge Base Question
+      security:
+      - header_authorization: []
+      x-controller: api/knowledge_base_questions
+      x-action: show
+    put:
+      tags:
+      - Knowledge Base Question
+      operationId: knowledgeBaseQuestionsUpdate
+      parameters:
+      - name: content
+        description: The content of the Knowledge Base Question.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: manual_review_requested
+        description: Flag to indicate if a manual review of the Knowledge Base Question is requested.
+        required: false
+        in: query
+        schema:
+          type: boolean
+      - name: owner_id
+        description: The ID of the owner of the Knowledge Base Question.
+        required: false
+        in: query
+        schema:
+          type: string
+          format: uuid
+      - name: review_frequency
+        description: The frequency of the review of the Knowledge Base Question.
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - Daily
+          - Weekly
+          - Biweekly
+          - Monthly
+          - Quarterly
+          - Biannually
+          - Annually
+          - Never
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/KnowledgeBaseQuestion'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Update a Knowledge Base Question by ID
+      summary: Update a Knowledge Base Question
+      security:
+      - header_authorization: []
+      x-controller: api/knowledge_base_questions
+      x-action: update
+    delete:
+      tags:
+      - Knowledge Base Question
+      operationId: knowledgeBaseQuestionsDestroy
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Delete a Knowledge Base Question by ID
+      summary: Delete a Knowledge Base Question
+      security:
+      - header_authorization: []
+      x-controller: api/knowledge_base_questions
+      x-action: destroy
+  /knowledge_base_questions:
+    post:
+      tags:
+      - Knowledge Base Question
+      operationId: knowledgeBaseQuestionsCreate
+      parameters:
+      - name: content
+        description: The content of the Knowledge Base Question.
+        required: true
+        in: query
+        schema:
+          type: string
+      - name: owner_id
+        description: The ID of the owner of the Knowledge Base Question.
+        required: false
+        in: query
+        schema:
+          type: string
+          format: uuid
+      - name: review_frequency
+        description: The frequency of the review of the Knowledge Base Question.
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - Daily
+          - Weekly
+          - Biweekly
+          - Monthly
+          - Quarterly
+          - Biannually
+          - Annually
+          - Never
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/KnowledgeBaseQuestion'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Create a new Knowledge Base Question
+      summary: Create a Knowledge Base Question
+      security:
+      - header_authorization: []
+      x-controller: api/knowledge_base_questions
+      x-action: create
+components:
+  schemas:
+    KnowledgeBaseQuestion:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this knowledge base question.
+        content:
+          type: string
+          description: The content of the knowledge base question.
+        created_at:
+          type: string
+          format: date-time
+          description: The date this knowledge base question was created.
+        manual_review_requested:
+          type: boolean
+          description: Flag to indicate if a manual review of the knowledge base question is requested.
+        review_frequency:
+          type: number
+          description: The frequency of the review of the knowledge base question.
+        reviewed_at:
+          type: string
+          format: date-time
+          description: The date this knowledge base question was reviewed.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date this knowledge base question was updated.
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

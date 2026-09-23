@@ -1,0 +1,337 @@
+openapi: 3.2.0
+info:
+  title: Secureframe SSP Report Section Block API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: SSP Report Section Block
+  description: This document describes the API for reading and updating SSP Report Section Blocks.
+paths:
+  /ssp_report_section_blocks:
+    get:
+      tags:
+      - SSP Report Section Block
+      operationId: companySspReportSectionBlocksIndex
+      parameters:
+      - name: page
+        description: 'Used for pagination of response data (default: page 1). Specifies the offset of the next block of data to receive.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: per_page
+        description: 'Used for pagination of response data (default: 100 items per response). Specifies the number of results for a given page.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: q
+        description: Search and filter the SSP Report Section Block data using Lucene syntax.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: sort
+        description: 'Field to sort the results by. Prefix it with `-` to sort in descending order, for example `?sort=-block_key`. This endpoint sorts on one field only — supplying more than one comma delimited field returns a 400. Sortable fields: `block_key`, `block_type`, `created_at`, `id`, `ssp_report_id`, `ssp_report_section_id`, `updated_at`.'
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: List of resources matching the query
+                    items:
+                      type: object
+                      description: Data envelope for the response
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+                        type:
+                          type: string
+                          description: The type of resource this object is
+                        attributes:
+                          $ref: '#/components/schemas/SspReportSectionBlock'
+                        relationships:
+                          type: object
+                          description: Nested objects related to the top level object
+                        links:
+                          type: object
+                          description: Links to related API resources
+                  meta:
+                    type: object
+                    description: Metadata about the list response
+                    properties:
+                      total:
+                        type: integer
+                        description: Total number of records matching the query across all pages, independent of page and per_page
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: 'Returns a list of SSP Report Section Blocks.
+
+        ### Search parameters
+
+
+        - `block_key` — The block key of the SSP Report Section Block
+
+        - `block_type` — The block type of the SSP Report Section Block
+
+        - `created_at` — The date when this SSP Report Section Block was created
+
+        - `id` — The ID of the SSP Report Section Block
+
+        - `ssp_report_id` — The ID of the associated SSP report
+
+        - `ssp_report_section_id` — The ID of the associated SSP report section
+
+        - `updated_at` — The date when this SSP Report Section Block was last updated'
+      summary: List SSP Report Section Blocks
+      security:
+      - header_authorization: []
+      x-controller: api/company_ssp_report_section_blocks
+      x-action: index
+  /ssp_report_section_blocks/{id}:
+    get:
+      tags:
+      - SSP Report Section Block
+      operationId: companySspReportSectionBlocksShow
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/SspReportSectionBlock'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Returns an SSP Report Section Block by ID
+      summary: Get an SSP Report Section Block
+      security:
+      - header_authorization: []
+      x-controller: api/company_ssp_report_section_blocks
+      x-action: show
+    put:
+      tags:
+      - SSP Report Section Block
+      operationId: companySspReportSectionBlocksUpdate
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: value
+        description: 'The value for this block. Shape depends on block_type: a scalar for input/textarea/select/checkbox/color_picker/website_extractor, an array for multiselect, or an array of contact objects for contacts.'
+        required: false
+        in: query
+        schema:
+          type: object
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/SspReportSectionBlock'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Update an SSP Report Section Block's value by ID
+      summary: Update an SSP Report Section Block
+      security:
+      - header_authorization: []
+      x-controller: api/company_ssp_report_section_blocks
+      x-action: update
+components:
+  schemas:
+    SspReportSectionBlock:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this SSP Report Section Block.
+        block_key:
+          type: string
+          description: The semantic key identifying what this block represents.
+        block_type:
+          type: string
+          description: The type of the block (e.g. input, textarea, select, multiselect, contacts).
+        child_block_ids:
+          type: array
+          items:
+            type: string
+          description: The ordered IDs of this block's child blocks.
+        required:
+          type: boolean
+          description: Whether this block is required for section completion.
+        ssp_report_id:
+          type: string
+          format: uuid
+          description: The identifier for the associated SSP report.
+        ssp_report_section_id:
+          type: string
+          format: uuid
+          description: The identifier for the associated SSP report section.
+        value:
+          type: object
+          description: The current value of the block.
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

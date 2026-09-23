@@ -1,0 +1,87 @@
+specification: API Commons Change Log
+specificationVersion: '0.1'
+provider: Secureframe
+providerId: secureframe
+generated: '2026-08-27'
+modified: '2026-08-27'
+method: searched
+source: https://secureframe.com/product-updates (200, 2026-08-27) and the API Changelog section of https://api.secureframe.com/docs
+description: 'Secureframe runs two changelogs at very different cadences: a monthly, dated product changelog
+  going back to 2022, and an API changelog with a single entry from 2023.'
+channels:
+- name: Product Updates
+  url: https://secureframe.com/product-updates
+  scheme: monthly, dated
+  cadence: monthly
+  coverage: 2022-06 through 2026-07
+  probed_status: 200
+  machine_readable: false
+  note: HTML only — no RSS/Atom feed and no .md twin (https://secureframe.com/product-updates.md returned 404),
+    despite the site publishing .md twins for most marketing pages in its llms.txt.
+- name: API Changelog
+  url: https://api.secureframe.com/docs
+  scheme: dated API version
+  cadence: once
+  coverage: 2023-10-18 only
+  machine_readable: false
+  note: 'Lives inside the OpenAPI info.description. One entry: the initial release.'
+current_api_version: '2023-10-18'
+entries:
+- date: 2026-07
+  channel: Product Updates
+  breaking: false
+  highlights:
+  - Vulnerability dashboard gains an interactive severity graph, per-finding risk overrides, and bulk dismissal
+    with a documented justification recorded in the audit record
+  - VDI 2.0 — pooled multi-session virtual desktops with roaming profiles and estimated cost shown at provisioning
+  - FIPS-encrypted USB allowlist for Defense endpoints managed through Secureframe Federal MDM
+  - Workload Identity Federation connections for GCP and Azure integrations, replacing static credentials with
+    short-lived tokens
+  - Granular check-name selection for GitHub integrations instead of broad workflow slugs
+- date: 2026-06
+  channel: Product Updates
+  breaking: false
+  highlights:
+  - Multi-select policies on compliance tests
+  - Reopen and delete completed access reviews
+  - Faster Office 365 directory syncs
+- date: 2026-05
+  channel: Product Updates
+  breaking: false
+  highlights:
+  - Automatic scoping of a CMMC compliance program
+  - Defense Navigator path to CMMC readiness
+  - Automated GCC High configuration for CMMC (MFA, conditional access, audit logging, sharing restrictions,
+    CUI segregation)
+  - SSP implementation statements generated automatically
+  - Updated CMMC Level 2 framework
+  - Virtual Desktop enhancements
+- date: 2026-04
+  channel: Product Updates
+  breaking: false
+  highlights:
+  - New Org Picker experience
+  - Updated Personnel Accounts and Devices tables
+- date: 2026-03
+  channel: Product Updates
+  breaking: false
+  highlights:
+  - User Access Reviews now in GA
+  - Enhanced Risk Management experience
+- date: '2023-10-18'
+  channel: API Changelog
+  version: '2023-10-18'
+  breaking: false
+  highlights:
+  - Released API Dated Version 2023-10-18
+  - Initial release.
+finding: The product ships monthly and the API contract has not been versioned since 2023-10-18, yet the OpenAPI
+  has clearly grown since (SSP, POA&M and TPRM resources correspond to CMMC/Defense features shipped in 2025-2026).
+  Those additions are backwards-compatible under Secureframe's own stated policy, so no new dated version was
+  required — but nothing in the API changelog records that they landed. A consumer cannot tell from the changelog
+  when an endpoint appeared.
+related:
+- lifecycle/secureframe-lifecycle.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

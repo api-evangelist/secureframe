@@ -1,0 +1,886 @@
+openapi: 3.2.0
+info:
+  title: Secureframe Test API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: Test
+  description: This document describes the API for reading, creating, and updating Tests.
+paths:
+  /tests:
+    get:
+      tags:
+      - Test
+      operationId: companyTestsIndex
+      parameters:
+      - name: include
+        description: Comma delimited string of relationships to include.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - enabled_field_updated_by
+            - owner
+            - promoted_by
+        explode: false
+        style: form
+      - name: page
+        description: 'Used for pagination of response data (default: page 1). Specifies the offset of the next block of data to receive.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: per_page
+        description: 'Used for pagination of response data (default: 100 items per response). Specifies the number of results for a given page.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: q
+        description: Search and filter the Test data using Lucene syntax.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      - name: sort
+        description: 'Comma delimited string of fields to sort the results by, applied in the order given. Prefix a field with `-` to sort it in descending order, for example `?sort=-author_name,created_at`. Sortable fields: `author_name`, `created_at`, `custom`, `description`, `enabled`, `enabled_field_updated_by_user`, `frameworks`, `health_status`, `id`, `key`, `last_evaluated`, `next_due_date`, `owner_assigned_at`, `owner_name`, `pass`, `passed_with_upload`, `promote_at`, `recommended_action`, `required_implementation_date`, `resource_category`, `status`, `test_domain`, `test_function`, `test_interval_seconds`, `test_type`, `title`, `tolerance_window_seconds`, `updated_at`, `vendor_name`.'
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: List of resources matching the query
+                    items:
+                      type: object
+                      description: Data envelope for the response
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+                        type:
+                          type: string
+                          description: The type of resource this object is
+                        attributes:
+                          $ref: '#/components/schemas/Test'
+                        relationships:
+                          type: object
+                          description: Nested objects related to the top level object
+                        links:
+                          type: object
+                          description: Links to related API resources
+                  meta:
+                    type: object
+                    description: Metadata about the list response
+                    properties:
+                      total:
+                        type: integer
+                        description: Total number of records matching the query across all pages, independent of page and per_page
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: 'Returns a list of Tests.
+
+        ### Search parameters
+
+
+        - `author_name` — The author name of the Test
+
+        - `created_at` — The date when this Test was created
+
+        - `custom` — True if the Test is custom (user generated), false if it''s Secureframe-authored
+
+        - Valid values: `true`, `false`
+
+        - `description` — The description of the Test
+
+        - `enabled` — True if the Test is currently enabled
+
+        - Valid values: `true`, `false`
+
+        - `enabled_field_updated_by_user` — True if the Test''s enabled field was last changed by a user, false otherwise
+
+        - Valid values: `true`, `false`
+
+        - `frameworks` — The framework keys for this Test
+
+        - `health_status` — The overall health of the Test
+
+        - Valid values: `pass`, `at_risk`, `fail`, `disabled`
+
+        - `id` — The ID of the Test
+
+        - `key` — The user-friendly identifier used to reference this Test
+
+        - `last_evaluated` — The date the Test was last evaluated at
+
+        - `next_due_date` — The date new Test evidence is needed by if applicable
+
+        - `owner_assigned_at` — The date the Test owner was assigned
+
+        - `owner_name` — The Test owner''s name
+
+        - `pass` — True if the Test is passing, false otherwise. [DEPRECATED - Use health_status instead]
+
+        - Valid values: `true`, `false`
+
+        - `passed_with_upload` — True if the Test passed from the existence of an upload, false otherwise
+
+        - Valid values: `true`, `false`
+
+        - `promote_at` — The current date set for implementation of the Test
+
+        - `recommended_action` — Actions for completing the Test
+
+        - `required_implementation_date` — The pre-configured date the Test must be implemented by
+
+        - `resource_category` — The category the Test resource belongs to
+
+        - `status` — The status of the Test. [DEPRECATED - Use health_status instead]
+
+        - Valid values: `pass`, `at_risk`, `fail`, `disabled`
+
+        - `test_domain` — The domain the Test belongs to
+
+        - `test_function` — The purpose of the Test
+
+        - `test_interval_seconds` — The interval in which Test evidence should be collected if applicable
+
+        - `test_type` — The type of Test
+
+        - `title` — The title of the Test
+
+        - `tolerance_window_seconds` — The time between the Test interval elapsing and evidence becoming stale and Test failing if applicable
+
+        - `updated_at` — The date the Test was last updated
+
+        - `vendor_name` — The vendor name associated with the Test if applicable'
+      summary: List Tests
+      security:
+      - header_authorization: []
+      x-controller: api/company_tests
+      x-action: index
+    post:
+      tags:
+      - Test
+      operationId: companyTestsCreate
+      parameters:
+      - name: control_ids
+        description: The IDs of the controls to map this test to.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+      - name: description
+        description: The description for the test.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: detailed_remediation_steps
+        description: Guidance for remediating this test in the event it fails.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: owner_id
+        description: The UUID of a user.
+        required: false
+        in: query
+        schema:
+          type: string
+          format: uuid
+      - name: resource_category
+        description: The category the test resource belongs to.
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - Access Key
+          - Access Point
+          - Agent
+          - Authentication Factor
+          - Background Screening
+          - Block Storage
+          - Board of Directors
+          - Cardholder Data
+          - Certificate
+          - Code
+          - Code of Conduct
+          - Confidentiality Agreement
+          - Container
+          - Content Delivery Network
+          - Control
+          - Customer
+          - Data
+          - Data Stream
+          - Data Warehouse
+          - Debug Service
+          - Diagram
+          - Domain Name System
+          - Emergency Lighting
+          - Encryption Key
+          - Endpoint
+          - Equipment
+          - Facility
+          - File Storage
+          - File System
+          - Fire Suppression
+          - Firewall Rule
+          - Hosting Service
+          - IAM Resource
+          - Identity and Management
+          - Information Security Management System
+          - Information Security Team
+          - Infrastructure
+          - Instance
+          - Load Balancer
+          - Log
+          - Machine Learning
+          - Maintenance
+          - Message Service
+          - Metric
+          - Migration Service
+          - Network
+          - Non-Relational Database
+          - Notification Service
+          - Object Storage
+          - Password
+          - Password Vault
+          - Patch
+          - Performance Review
+          - Personnel
+          - Policy
+          - Power
+          - Procedure
+          - Protected Health Information
+          - Regulatory Obligation
+          - Relational Database
+          - Removable Media
+          - Repository
+          - Repository Branch
+          - Risk
+          - Search Service
+          - Serverless Function
+          - Service
+          - Software
+          - Special Interest Group
+          - SSH Key
+          - Storage
+          - Temperature
+          - Test Data
+          - Ticket
+          - Transfer Service
+          - Vendor
+          - Virtual Network
+          - Vulnerability
+          - Web Application
+      - name: test_domain
+        description: The domain the test belongs to.
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - Asset Management
+          - Availability
+          - Change Management
+          - Communications
+          - Data Security
+          - Governance
+          - Identity and Access Management
+          - Incident Response
+          - Network Security
+          - Physical Security
+          - Privacy
+          - Risk Management
+          - Vendor Management
+          - Vulnerability Management
+      - name: test_function
+        description: The purpose of the test.
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - Access Control
+          - Agreements
+          - Approval
+          - Architecture
+          - Backup
+          - Baseline Configuration
+          - Business Continuity
+          - Capacity Monitoring
+          - Certificate Management
+          - Charter
+          - Commitments
+          - Compliance Meetings
+          - Data Handling
+          - Data Loss Prevention
+          - Data Retention
+          - Dependency Testing
+          - Encryption-at-Rest
+          - Encryption-in-Transit
+          - Endpoint Security
+          - Equipment Management
+          - Equipment Tracking
+          - Gap Remediation
+          - High Availability
+          - Human Resources
+          - Incident Management
+          - Infrastructure Security
+          - Integration Testing
+          - Internal and External Channels
+          - Internal Audit
+          - Internal Controls
+          - Inventory
+          - Key Management
+          - Lawful Basis
+          - Least Functionality
+          - Least Privilege
+          - Logging
+          - Media Handling
+          - Multi-factor Authentication
+          - Network Security
+          - Objectives
+          - Password Complexity
+          - Password Management
+          - Password Reset
+          - Patching
+          - Penetration Testing
+          - Physical Security
+          - Policy Acceptance
+          - Policy Management
+          - Procedure Management
+          - Procedures Acceptance
+          - Risk Assessment
+          - Risk Tracking
+          - Risk Treatment
+          - SAST
+          - Security Monitoring
+          - Tracking
+          - Training
+          - Vendor Management
+          - Vendor Review
+          - Version Control
+          - Vulnerability Scans
+          - Vulnerability Tracking
+      - name: test_interval_seconds
+        description: How often new evidence should be collected for the test.
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - one_day
+          - one_week
+          - two_weeks
+          - one_month
+          - three_months
+          - six_months
+          - one_year
+          - none
+      - name: title
+        description: The test title.
+        required: true
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/Test'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: 'Creates an upload Test: a Test that passes while current evidence is attached to it.'
+      summary: Create a Test
+      security:
+      - header_authorization: []
+      x-controller: api/company_tests
+      x-action: create
+  /tests/{id}:
+    get:
+      tags:
+      - Test
+      operationId: companyTestsShow
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: include
+        description: Comma delimited string of relationships to include.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - enabled_field_updated_by
+            - owner
+            - promoted_by
+        explode: false
+        style: form
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/Test'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Returns a Test by ID
+      summary: Get a Test
+      security:
+      - header_authorization: []
+      x-controller: api/company_tests
+      x-action: show
+    put:
+      tags:
+      - Test
+      operationId: companyTestsUpdate
+      parameters:
+      - name: disabled_justification
+        description: The justification reason for why this test is disabled.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: enabled
+        description: true or false for whether this test should be enabled or disabled.
+        required: false
+        in: query
+        schema:
+          type: boolean
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: next_due_date
+        description: Date time in ISO8601 format.
+        required: false
+        in: query
+        schema:
+          type: string
+          format: date-time
+      - name: owner_id
+        description: The UUID of a user.
+        required: false
+        in: query
+        schema:
+          type: string
+          format: uuid
+      - name: passed_with_upload_justification
+        description: The justification reason for why this test is passed with upload.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: promote_at
+        description: Date time in ISO8601 format.
+        required: false
+        in: query
+        schema:
+          type: string
+          format: date-time
+      - name: test_interval_seconds
+        description: How often the test should be run.
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - one_day
+          - one_week
+          - two_weeks
+          - one_month
+          - three_months
+          - six_months
+          - one_year
+          - none
+      - name: tolerance_window_seconds
+        description: The tolerance window representation for a test to be at risk.
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - one_day
+          - one_week
+          - two_weeks
+          - one_month
+          - three_months
+          - six_months
+          - one_year
+          - none
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/Test'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Update a Test by ID
+      summary: Update a Test
+      security:
+      - header_authorization: []
+      x-controller: api/company_tests
+      x-action: update
+components:
+  schemas:
+    Test:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this test.
+        control_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: The IDs of the controls that the test is associated with.
+        control_keys:
+          type: array
+          items:
+            type: string
+          description: The keys of the controls that the test is associated with.
+        created_at:
+          type: string
+          format: date-time
+          description: The date when this test was created.
+        custom:
+          type: boolean
+          description: True if the test is custom (user generated), false if it's Secureframe-authored.
+        description:
+          type: string
+          description: The description for the test.
+        detailed_remediation_steps:
+          type: string
+          description: Guidance for remediating this test in the event it fails.
+        disabled_justification:
+          type: string
+          description: Reason for disabling the test.
+        enabled:
+          type: boolean
+          description: True if the test is currently enabled.
+        enabled_field_updated_by_user_name:
+          type: string
+          description: The name of the user who enabled the test, null if wasn't enabled by a user.
+        failure_message:
+          type: string
+          description: The message to be displayed if the test fails.
+        first_failed_at:
+          type: string
+          format: date-time
+          description: The date the test first failed.
+        framework_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: The IDs of the frameworks that the test is associated with.
+        framework_keys:
+          type: array
+          items:
+            type: string
+          description: The keys of the frameworks that the test is associated with.
+        health_status:
+          type: string
+          description: The overall health of the test.
+        key:
+          type: string
+          description: The user-friendly identifier used to reference this test.
+        last_evaluated:
+          type: string
+          format: date-time
+          description: The date the test was last evaluated at.
+        last_passed_at:
+          type: string
+          format: date-time
+          description: The date the test last had a passing evaluation.
+        next_due_date:
+          type: string
+          format: date-time
+          description: The date new test evidence is needed by if applicable.
+        owner_assigned_at:
+          type: string
+          format: date-time
+          description: The date the test owner was assigned.
+        owner_name:
+          type: string
+          description: The test owner's name.
+        pass:
+          type: boolean
+          description: True if the test is passing, false otherwise.
+        passed_with_upload:
+          type: boolean
+          description: True if the test passed from the existence of an upload, false otherwise.
+        passed_with_upload_justification:
+          type: string
+          description: The justification used on evidence upload to pass the test if applicable.
+        promote_at:
+          type: string
+          format: date-time
+          description: The current date set for implementation of the test.
+        promoted_by_name:
+          type: string
+          description: The name of the user who set the implementation date.
+        recommended_action:
+          type: string
+          description: Actions for completing the test.
+        required_implementation_date:
+          type: string
+          format: date-time
+          description: The pre-configured date the test must be implemented by.
+        resource_category:
+          type: string
+          description: The category the test resource belongs to.
+        test_domain:
+          type: string
+          description: The domain the test belongs to.
+        test_function:
+          type: string
+          description: The purpose of the test.
+        test_interval_seconds:
+          type: integer
+          description: The interval in which test evidence should be collected if applicable.
+        test_type:
+          type: string
+          enum:
+          - upload
+          - integration
+          - platform
+          description: The type of test.
+        title:
+          type: string
+          description: The test title.
+        tolerance_window_seconds:
+          type: integer
+          description: The time between the test interval elapsing and evidence becoming stale and test failing if applicable.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date the test was last updated.
+        vendor_name:
+          type: string
+          description: The vendor name associated with the test if applicable.
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

@@ -1,0 +1,406 @@
+openapi: 3.2.0
+info:
+  title: Secureframe Vendor API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: Vendor
+  description: This document describes the API for reading and archiving Vendors.
+paths:
+  /vendors:
+    get:
+      tags:
+      - Vendor
+      operationId: companyVendorsIndex
+      parameters:
+      - name: page
+        description: 'Used for pagination of response data (default: page 1). Specifies the offset of the next block of data to receive.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: per_page
+        description: 'Used for pagination of response data (default: 100 items per response). Specifies the number of results for a given page.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: q
+        description: Search and filter the Vendor data using Lucene syntax.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: sort
+        description: 'Comma delimited string of fields to sort the results by, applied in the order given. Prefix a field with `-` to sort it in descending order, for example `?sort=-archived,id`. Sortable fields: `archived`, `id`, `name`, `owner_name`, `risk_level`, `updated_at`.'
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: List of resources matching the query
+                    items:
+                      type: object
+                      description: Data envelope for the response
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+                        type:
+                          type: string
+                          description: The type of resource this object is
+                        attributes:
+                          $ref: '#/components/schemas/Vendor'
+                        relationships:
+                          type: object
+                          description: Nested objects related to the top level object
+                        links:
+                          type: object
+                          description: Links to related API resources
+                  meta:
+                    type: object
+                    description: Metadata about the list response
+                    properties:
+                      total:
+                        type: integer
+                        description: Total number of records matching the query across all pages, independent of page and per_page
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: 'Returns a list of Vendors.
+
+        DEPRECATED - Use the Third Party Risk Management Vendor [endpoint].If you have not done so already, please also migrate your Vendors frontend experience by going to the vendors page and clicking “Take me to new TPRM.”
+
+        ### Search parameters
+
+
+        - `archived` — Flag to indicate if this Vendor is archived
+
+        - Valid values: `true`, `false`
+
+        - `id` — The ID of the Vendor
+
+        - `name` — The name of the Vendor
+
+        - `owner_name` — The name of the User that is the owner for this Vendor
+
+        - `risk_level` — The risk level for this Vendor
+
+        - Valid values: `high`, `medium`, `low`
+
+        - `updated_at` — The date this Vendor was last updated'
+      summary: List Vendors
+      security:
+      - header_authorization: []
+      x-controller: api/company_vendors
+      x-action: index
+  /vendors/{id}:
+    get:
+      tags:
+      - Vendor
+      operationId: companyVendorsShow
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/Vendor'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: 'Returns a single Vendor by ID
+
+        DEPRECATED - Use the Third Party Risk Management Vendor [endpoint].If you have not done so already, please also migrate your Vendors frontend experience by going to the vendors page and clicking “Take me to new TPRM.”'
+      summary: Get a Vendor
+      security:
+      - header_authorization: []
+      x-controller: api/company_vendors
+      x-action: show
+  /vendors/{id}/archive:
+    put:
+      tags:
+      - Vendor
+      operationId: companyVendorsArchive
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: terminated_at
+        description: The date this vendor was terminated.
+        required: false
+        in: query
+        schema:
+          type: string
+          format: date-time
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/Vendor'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: 'Archives a Vendor by ID.
+
+        DEPRECATED - Use the Third Party Risk Management Vendor [endpoint].If you have not done so already, please also migrate your Vendors frontend experience by going to the vendors page and clicking “Take me to new TPRM.”'
+      summary: Archive a Vendor
+      security:
+      - header_authorization: []
+      x-controller: api/company_vendors
+      x-action: archive
+components:
+  schemas:
+    Vendor:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this Vendor.
+        archived:
+          type: boolean
+          description: Flag to indicate if this Vendor is archived.
+        archived_at:
+          type: string
+          format: date-time
+          description: The date this Vendor was archived (if it is archived).
+        archived_by:
+          type: string
+          format: uuid
+          description: The identifier of the User that archived this Vendor (if it is archived).
+        audit_scopes:
+          type: array
+          items:
+            type: string
+          description: The audit scopes for this Vendor.
+        authentication_type:
+          type: string
+          enum:
+          - password
+          - single_sign_on
+          description: The authentication type for this Vendor.
+        data_collected:
+          type: string
+          description: The data collected for this Vendor.
+        date_of_engagement:
+          type: string
+          format: date-time
+          description: The date of engagement for this Vendor.
+        domain:
+          type: string
+          description: The domain of the Vendor.
+        environment_types:
+          type: array
+          items:
+            type: string
+            enum:
+            - production
+            - development
+          description: The environment types for this Vendor.
+        last_reviewed_at:
+          type: string
+          format: date-time
+          description: The date this Vendor was last reviewed.
+        name:
+          type: string
+          description: The name of the Vendor.
+        operational_reliance:
+          type: string
+          description: The operational reliance for this Vendor.
+        other_information:
+          type: string
+          description: Other information for this Vendor.
+        owner_id:
+          type: string
+          format: uuid
+          description: The identifier of the User that is the owner for this Vendor.
+        risk_level:
+          type: string
+          enum:
+          - high
+          - medium
+          - low
+          description: The risk level for this Vendor.
+        security_url:
+          type: string
+          description: The security URL for this Vendor.
+        services:
+          type: string
+          description: The services provided by this Vendor.
+        terminated_at:
+          type: string
+          format: date-time
+          description: The date this Vendor was terminated (if it is archived).
+        third_party_audit_report_concerns:
+          type: string
+          description: The third party audit report concerns for this Vendor.
+        two_factor_enabled:
+          type: boolean
+          description: Flag to indicate if two factor is enabled for this Vendor.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date this Vendor was last updated.
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

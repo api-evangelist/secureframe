@@ -1,0 +1,390 @@
+openapi: 3.2.0
+info:
+  title: Secureframe Device API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: Device
+  description: This document describes the API for reading Devices.
+paths:
+  /devices:
+    get:
+      tags:
+      - Device
+      operationId: devicesIndex
+      parameters:
+      - name: include
+        description: Comma delimited string of relationships to include.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - device_user
+            - owner
+        explode: false
+        style: form
+      - name: page
+        description: 'Used for pagination of response data (default: page 1). Specifies the offset of the next block of data to receive.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: per_page
+        description: 'Used for pagination of response data (default: 100 items per response). Specifies the number of results for a given page.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: q
+        description: Search and filter the Device data using Lucene syntax.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      - name: sort
+        description: 'Comma delimited string of fields to sort the results by, applied in the order given. Prefix a field with `-` to sort it in descending order, for example `?sort=-cpu,created_at`. Sortable fields: `cpu`, `created_at`, `device_name`, `device_user_name`, `hard_drive_encrypted`, `id`, `in_audit_scope`, `last_checkin_at`, `local_firewall_enabled`, `mac_address`, `make`, `memory`, `model`, `native_anti_virus_enabled`, `os`, `out_of_audit_scope_reason`, `owner_name`, `password_enforcement_enabled`, `remote_ip`, `serial_number`, `session_timeout_enabled`, `updated_at`.'
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: List of resources matching the query
+                    items:
+                      type: object
+                      description: Data envelope for the response
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+                        type:
+                          type: string
+                          description: The type of resource this object is
+                        attributes:
+                          $ref: '#/components/schemas/Device'
+                        relationships:
+                          type: object
+                          description: Nested objects related to the top level object
+                        links:
+                          type: object
+                          description: Links to related API resources
+                  meta:
+                    type: object
+                    description: Metadata about the list response
+                    properties:
+                      total:
+                        type: integer
+                        description: Total number of records matching the query across all pages, independent of page and per_page
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: 'Returns a list of Devices.
+
+        ### Search parameters
+
+
+        - `cpu` — The cpu info available for this Device
+
+        - `created_at` — The date this Device object was created
+
+        - `device_name` — The name of the Device
+
+        - `device_user_name` — The Device user''s name
+
+        - `hard_drive_encrypted` — Flag to indicate if the hard drive is encrypted
+
+        - Valid values: `true`, `false`
+
+        - `id` — The ID of the Device
+
+        - `in_audit_scope` — Flag to indicate if this Device is in scope. DEPRECATED - Use the Device Framework Asset Scope [endpoint]
+
+        - Valid values: `true`, `false`
+
+        - `last_checkin_at` — The date this Device last checked in
+
+        - `local_firewall_enabled` — Flag to indicate if the local firewall is enabled
+
+        - Valid values: `true`, `false`
+
+        - `mac_address` — The MAC address of the Device
+
+        - `make` — The make of the Device
+
+        - `memory` — The memory of the Device
+
+        - `model` — The model of the Device
+
+        - `native_anti_virus_enabled` — Flag to indicate if native antivirus is enabled
+
+        - Valid values: `true`, `false`
+
+        - `os` — The operating system of the Device
+
+        - `out_of_audit_scope_reason` — Out of scope reason if the Device is not in scope
+
+        - Valid values: `development_asset`, `staging_asset`, `out_of_scope_production_asset`
+
+        - `owner_name` — The Device owner''s name
+
+        - `password_enforcement_enabled` — Flag to indicate if password enforcement is enabled
+
+        - Valid values: `true`, `false`
+
+        - `remote_ip` — The remote IP of the Device
+
+        - `serial_number` — The serial number of the Device
+
+        - `session_timeout_enabled` — Flag to indicate if session timeout is enabled
+
+        - Valid values: `true`, `false`
+
+        - `updated_at` — The date this Device was last updated'
+      summary: List Devices
+      security:
+      - header_authorization: []
+      x-controller: api/devices
+      x-action: index
+  /devices/{id}:
+    get:
+      tags:
+      - Device
+      operationId: devicesShow
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: include
+        description: Comma delimited string of relationships to include.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - device_user
+            - owner
+        explode: false
+        style: form
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/Device'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Returns a single Device by ID
+      summary: Get a Device
+      security:
+      - header_authorization: []
+      x-controller: api/devices
+      x-action: show
+components:
+  schemas:
+    Device:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this Device.
+        created_at:
+          type: string
+          format: date-time
+          description: The date this Device object was created.
+        cpu:
+          type: string
+          description: The cpu info available for this Device.
+        device_name:
+          type: string
+          description: The name of the Device.
+        hard_drive_encrypted:
+          type: boolean
+          description: Flag to indicate if the hard drive is encrypted.
+        in_audit_scope:
+          type: boolean
+          description: Flag to indicate if this Device is in scope.
+        last_checkin_at:
+          type: string
+          format: date-time
+          description: The date this Device last checked in.
+        local_firewall_enabled:
+          type: boolean
+          description: Flag to indicate if the local firewall is enabled.
+        mac_address:
+          type: string
+          description: The MAC address of the Device.
+        make:
+          type: string
+          description: The make of the Device.
+        memory:
+          type: string
+          description: The memory of the Device.
+        model:
+          type: string
+          description: The model of the Device.
+        native_anti_virus_enabled:
+          type: boolean
+          description: Flag to indicate if the native antivirus is enabled.
+        os:
+          type: string
+          description: The operating system of the Device.
+        out_of_audit_scope_reason:
+          type: string
+          enum:
+          - development_asset
+          - staging_asset
+          - out_of_scope_production_asset
+          description: Out of scope reason if the Device is not in scope.
+        password_enforcement_enabled:
+          type: boolean
+          description: Flag to indicate if password enforcement is enabled.
+        remote_ip:
+          type: string
+          description: The remote IP of the Device.
+        serial_number:
+          type: string
+          description: The serial number of the Device.
+        session_timeout_enabled:
+          type: boolean
+          description: Flag to indicate if session timeout is enabled.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date this Device was last updated.
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

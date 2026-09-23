@@ -1,0 +1,137 @@
+specification: API Commons Conformance
+specificationVersion: '0.1'
+provider: Secureframe
+providerId: secureframe
+generated: '2026-08-27'
+modified: '2026-08-27'
+method: searched
+source: openapi/secureframe-public-api-openapi.yml, https://api.secureframe.com/docs, https://mcp.secureframe.com/.well-known/oauth-authorization-server,
+  https://trust.secureframe.com/
+description: Standards Secureframe's contracts declare about themselves. The REST API declares JSON:API and
+  Lucene query syntax in its own introduction; the hosted MCP server implements the full MCP OAuth 2.1 discovery
+  chain (RFC 8414 + RFC 9728 + RFC 7591 + PKCE). The provider is itself a compliance platform, so its regulatory
+  certifications are published and audited — see the trust center.
+standards:
+- id: jsonapi
+  name: JSON:API
+  conforms: partial
+  evidence: 'info.description states "returns requests in the form of standard JSON responses, based on the
+    JSON API spec (https://jsonapi.org/)". The envelope matches — every response is {data: [{id, type, attributes,
+    relationships}]} — and `include` + `relationships` query parameters implement compound documents on 36
+    operations.'
+  deviations:
+  - Media type is application/json, not application/vnd.api+json.
+  - Pagination uses page/per_page rather than JSON:API's page[number]/page[size] profile.
+  - Sparse fieldsets (fields[TYPE]) are not supported.
+  - 'Errors are not JSON:API error objects; the observed body is {"message": "..."}.'
+  spec_location: info.description
+- id: lucene-query-syntax
+  name: Apache Lucene Query Syntax
+  conforms: true
+  evidence: 'info.description: "Search utilizes Lucene Syntax", linked to lucene.apache.org. The `q` query
+    parameter appears on 28 list operations.'
+  spec_location: info.description + the q parameter on 28 operations
+- id: openapi
+  name: OpenAPI 3.0.0
+  conforms: true
+  evidence: Machine-readable spec — 76 paths, 112 operations, 40 component schemas — served inline at https://api.secureframe.com/docs.
+    Every operation carries a stable operationId.
+- id: oauth2
+  name: OAuth 2.1 (MCP authorization)
+  conforms: true
+  scope: hosted MCP server only, not the REST API
+  evidence: https://mcp.secureframe.com/.well-known/oauth-authorization-server returned 200 on 2026-08-27 declaring
+    authorization_code + refresh_token grants, response_types [code], and code_challenge_methods_supported
+    [S256]. token_endpoint_auth_methods_supported is ["none"] (public clients), the MCP-native profile.
+- id: rfc8414
+  name: RFC 8414 OAuth 2.0 Authorization Server Metadata
+  conforms: true
+  evidence: GET https://mcp.secureframe.com/.well-known/oauth-authorization-server -> 200 application/json
+- id: rfc9728
+  name: RFC 9728 OAuth 2.0 Protected Resource Metadata
+  conforms: true
+  evidence: GET https://mcp.secureframe.com/.well-known/oauth-protected-resource -> 200, declaring resource=https://mcp.secureframe.com,
+    authorization_servers=[https://mcp.secureframe.com], bearer_methods_supported=[header]
+- id: rfc7591
+  name: RFC 7591 Dynamic Client Registration
+  conforms: true
+  evidence: registration_endpoint https://mcp.secureframe.com/register is advertised in the authorization-server
+    metadata; the provider docs state MCP clients "register themselves".
+- id: rfc7636
+  name: RFC 7636 PKCE
+  conforms: true
+  evidence: code_challenge_methods_supported ["S256"]
+- id: mcp
+  name: Model Context Protocol
+  conforms: true
+  evidence: Live hosted server at https://mcp.secureframe.com/ exposing 112 tools across 41 categories, documented
+    at https://mcp.secureframe.com/mcp_docs. Anonymous tools/list returned 401 on 2026-08-27.
+- id: rfc9457
+  name: RFC 9457 Problem Details for HTTP APIs
+  conforms: false
+  evidence: 'No application/problem+json media type anywhere in the spec; error bodies are an undocumented
+    {"message": "..."} shape with no declared schema.'
+- id: rfc8594
+  name: RFC 8594 Sunset HTTP Header
+  conforms: false
+  evidence: No Sunset or Deprecation response header is declared on any operation, even though three operations
+    are marked deprecated in prose.
+- id: pagination
+  name: Documented pagination
+  conforms: true
+  evidence: page + per_page query parameters declared on 31 list operations.
+- id: idempotency
+  name: Idempotency keys
+  conforms: false
+  evidence: No Idempotency-Key header on any of the 20 POST operations; the string "idempoten" does not occur
+    in the spec or the reference prose.
+- id: scim
+  name: SCIM
+  conforms: false
+  evidence: Secureframe SELLS SCIM connections as a Complete-tier feature (pricing page, "SSO & SCIM Connections")
+    — it CONSUMES SCIM from customer IdPs. It exposes no SCIM service-provider surface of its own; no urn:ietf:params:scim
+    URN appears in the contract.
+- id: odata
+  name: OData
+  conforms: false
+  evidence: No $metadata surface; no OData query options.
+domain_standards:
+- id: nist-800-171-ssp-poam
+  name: NIST SP 800-171 / CMMC System Security Plan and POA&M artifacts
+  conforms: true
+  evidence: 'The contract models the named artifacts NIST SP 800-171A and CMMC assessments are conducted against
+    as first-class resources with their own endpoints: /ssp_reports, /ssp_report_sections, /ssp_report_section_blocks,
+    /ssp_report_assessment_objectives, /ssp_policies, /ssp_roles, /ssp_duties, /ssp_duty_roles, /ssp_vendors
+    and /poam_items. "Assessment Objective" is the 800-171A determination-statement unit; "POA&M item" is the
+    800-171 3.12.2 Plan of Action and Milestones record; the SSP duty-assignment matrix is the CMMC separation-of-duties
+    artifact.'
+  spec_location: 10 OpenAPI tags — SSP Report, SSP Report Section, SSP Report Section Block, SSP Report Assessment
+    Objective, SSP Policy, SSP Role, SSP Duty, SSP Duty Role, SSP Vendor, POA&M Item — covering 39 of the 112
+    operations.
+  significance: A buyer who already speaks 800-171A/CMMC artifact vocabulary maps their assessment workflow
+    onto these resources with no bespoke connector. This is the domain-standard signature for the GRC market,
+    declared in the machine-readable contract rather than only on a marketing page.
+- id: oscal
+  name: NIST OSCAL
+  conforms: false
+  evidence: OSCAL is the machine-readable serialization NIST publishes for exactly the SSP/POA&M artifacts
+    above. It appears in the spec only as a single evidence-type enum value, oscal_diff, on the evidence endpoints
+    — there is no OSCAL-shaped request or response, no application/oscal+json media type, and no catalog/profile/ssp/poam
+    OSCAL document exchange.
+  gap: 'The highest-value domain-standard upgrade available to Secureframe: emitting its existing /ssp_reports
+    and /poam_items as OSCAL SSP and POA&M models would make its output directly consumable by the FedRAMP
+    20x tooling it already advertises support for.'
+compliance_program:
+  published: true
+  trust_center: https://trust.secureframe.com/
+  certifications:
+  - SOC 2
+  - ISO 27001
+  - FedRAMP
+  - GDPR
+  note: Named, third-party-audited certifications published on a public trust center. Secureframe announced
+    FedRAMP 20x Moderate authorization on 2026-06-26 (see blogs/).
+  artifact: security/secureframe-trust-center.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

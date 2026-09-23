@@ -1,0 +1,439 @@
+openapi: 3.2.0
+info:
+  title: Secureframe Third Party Risk Management Vendor API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: Third Party Risk Management Vendor
+  description: This document describes the API for reading and archiving Vendors for companies using the Third Party Risk Management.
+paths:
+  /tprm/vendors:
+    get:
+      tags:
+      - Third Party Risk Management Vendor
+      operationId: tprmVendorRiskDetailsIndex
+      parameters:
+      - name: include
+        description: Comma delimited string of relationships to include.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - vendor_risk_subassessment_responses
+        explode: false
+        style: form
+      - name: page
+        description: 'Used for pagination of response data (default: page 1). Specifies the offset of the next block of data to receive.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: per_page
+        description: 'Used for pagination of response data (default: 100 items per response). Specifies the number of results for a given page.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: q
+        description: Search and filter the Vendor data using Lucene syntax.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      - name: sort
+        description: 'Comma delimited string of fields to sort the results by, applied in the order given. Prefix a field with `-` to sort it in descending order, for example `?sort=-archived,id`. Sortable fields: `archived`, `id`, `name`, `owner_name`, `risk_level`, `updated_at`, `created_at`.'
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: List of resources matching the query
+                    items:
+                      type: object
+                      description: Data envelope for the response
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+                        type:
+                          type: string
+                          description: The type of resource this object is
+                        attributes:
+                          $ref: '#/components/schemas/VendorRiskDetail'
+                        relationships:
+                          type: object
+                          description: Nested objects related to the top level object
+                        links:
+                          type: object
+                          description: Links to related API resources
+                  meta:
+                    type: object
+                    description: Metadata about the list response
+                    properties:
+                      total:
+                        type: integer
+                        description: Total number of records matching the query across all pages, independent of page and per_page
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: 'Returns a list of Third Party Risk Management Vendors.
+
+        ### Search parameters
+
+
+        - `archived` — Flag to indicate if this Vendor is archived
+
+        - Valid values: `true`, `false`
+
+        - `id` — The ID of the Vendor
+
+        - `name` — The name of the Vendor
+
+        - `owner_name` — The name of the User that is the owner for this Vendor
+
+        - `risk_level` — The risk level for this Vendor
+
+        - `updated_at` — The date this Vendor was last updated
+
+        - `created_at` — The date this Vendor was created'
+      summary: List Third Party Risk Management Vendors
+      security:
+      - header_authorization: []
+      x-controller: api/tprm/vendor_risk_details
+      x-action: index
+  /tprm/vendors/{id}:
+    get:
+      tags:
+      - Third Party Risk Management Vendor
+      operationId: tprmVendorRiskDetailsShow
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: include
+        description: Comma delimited string of relationships to include.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - vendor_risk_subassessment_responses
+        explode: false
+        style: form
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/VendorRiskDetail'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Returns a single Vendor by ID
+      summary: Get a Third Party Risk Management Vendor
+      security:
+      - header_authorization: []
+      x-controller: api/tprm/vendor_risk_details
+      x-action: show
+  /tprm/vendors/{id}/archive:
+    put:
+      tags:
+      - Third Party Risk Management Vendor
+      operationId: tprmVendorRiskDetailsArchive
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/VendorRiskDetail'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Archives a Vendor by ID.
+      summary: Archive a Third Party Risk Management Vendor
+      security:
+      - header_authorization: []
+      x-controller: api/tprm/vendor_risk_details
+      x-action: archive
+components:
+  schemas:
+    VendorRiskDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this Vendor.
+        archived:
+          type: boolean
+          description: Flag to indicate if this Vendor is archived.
+        archived_at:
+          type: string
+          format: date-time
+          description: The date this Vendor was archived.
+        authentication_type:
+          type: string
+          enum:
+          - password
+          - sso
+          - n_a
+          description: The authentication type for this Vendor.
+        created_at:
+          type: string
+          format: date-time
+          description: The date this Vendor was created.
+        data_collected:
+          type: string
+          description: The data collected for this Vendor.
+        environment_types:
+          type: array
+          items:
+            type: string
+          description: The environments for this Vendor.
+        last_reviewed_at:
+          type: string
+          format: date-time
+          description: The date this Vendor was last reviewed.
+        name:
+          type: string
+          description: The name of the Vendor.
+        other_information:
+          type: string
+          description: Other information for this Vendor.
+        owner_id:
+          type: string
+          format: uuid
+          description: The identifier of the User that is the owner for this Vendor.
+        risk_level:
+          type: string
+          description: The risk level for this Vendor.
+        security_url:
+          type: string
+          description: The security URL for this Vendor.
+        services_provided:
+          type: string
+          description: The services provided by this Vendor.
+        third_party_audit_report_concerns:
+          type: string
+          description: The third party audit report concerns for this Vendor.
+        two_factor_enabled:
+          type: boolean
+          description: Flag to indicate if two factor is enabled for this Vendor.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date this Vendor was last updated.
+        vendor_status:
+          type: string
+          enum:
+          - accepted
+          - rejected
+          - pending
+          description: The status of the Vendor.
+        vendor_risk_subassessment_responses:
+          type: array
+          items:
+            $ref: '#/components/schemas/VendorRiskSubassessmentResponse'
+          description: The assesments for each risk subcategory.
+        website:
+          type: string
+          description: The website of the Vendor.
+    VendorRiskSubassessmentResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Subassesment response id.
+        name:
+          type: string
+          description: The name for the subassessment.
+        description:
+          type: string
+          description: The description for the subassessment.
+        risk_level:
+          type: string
+          description: The risk level assigned to this subassessment.
+        tprm_vendor_id:
+          type: string
+          format: uuid
+          description: The vendor risk details id.
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

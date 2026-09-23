@@ -1,0 +1,75 @@
+specification: API Commons Agent Skills
+specificationVersion: '0.1'
+provider: Secureframe
+providerId: secureframe
+generated: '2026-08-27'
+modified: '2026-08-27'
+method: generated
+source: authored by API Evangelist from openapi/secureframe-public-api-openapi.yml (every operationId verified
+  against the spec), https://mcp.secureframe.com/mcp_docs, and the findings in conventions/secureframe-conventions.yml
+description: Packaged Agent Skills for the three marquee Secureframe flows. Every operationId and MCP tool
+  name referenced is real and present in the published contract; the constraints each skill warns about (no
+  idempotency key, no bulk writes, 500 req/min per IP, soft-discard with no un-discard) are the provider's
+  own published behaviour.
+provider_published_skills: null
+provider_published_skills_note: 'Searched for a provider-published skills/ or AGENTS.md surface: none found.
+  Secureframe''s agent-facing publishing is the hosted MCP server and its documentation page.'
+skill_count: 3
+skills:
+- name: secureframe-asset-framework-scoping
+  file: skills/secureframe-asset-framework-scoping.md
+  description: Scope cloud resources, devices and code repositories into or out of a compliance framework's
+    audit in Secureframe. Use when preparing an asset inventory for a SOC 2, ISO 27001 or CMMC audit.
+  operations:
+  - companyFrameworksIndex
+  - cloudResourcesIndex
+  - cloudResourcesCompanyFrameworkAssetScopesIndex
+  - cloudResourcesCompanyFrameworkAssetScopesCreate
+  - devicesIndex
+  - devicesCompanyFrameworkAssetScopesCreate
+  - repositoriesIndex
+  - repositoriesCompanyFrameworkAssetScopesCreate
+  mcp_tools:
+  - list_frameworks
+  - list_cloud_resources
+  - list_cloud_resource_framework_asset_scopes
+  - create_cloud_resource_framework_asset_scope
+  - list_devices
+  - create_device_framework_asset_scope
+  - list_repositories
+  - create_repository_framework_asset_scope
+- name: secureframe-audit-evidence-collection
+  file: skills/secureframe-audit-evidence-collection.md
+  description: Attach an evidence file to a Secureframe compliance test, from staging the upload through confirming
+    the test's state. Use when an auditor or agent needs to put a document on the record for a control.
+  operations:
+  - companyTestsIndex
+  - companyTestsShow
+  - fileUploadsCreate
+  - companyTestsEvidencesCreate
+  - evidencesIndex
+  mcp_tools:
+  - list_tests
+  - get_test
+  - create_file_upload
+  - create_test_evidence
+  - list_evidences
+- name: secureframe-poam-management
+  file: skills/secureframe-poam-management.md
+  description: Manage the Plan of Action & Milestones register for a NIST 800-171 / CMMC assessment in Secureframe
+    — list, create, update and discard POA&M items. Use for Defense-tier compliance work.
+  operations:
+  - poamItemsIndex
+  - poamItemsShow
+  - poamItemsCreate
+  - poamItemsUpdate
+  - poamItemsDiscard
+  mcp_tools:
+  - list_poam_items
+  - get_poam_item
+  - create_poam_item
+  - update_poam_item
+  - discard_poam_item
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

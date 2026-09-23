@@ -1,0 +1,353 @@
+openapi: 3.2.0
+info:
+  title: Secureframe Knowledge Base Answer API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: Knowledge Base Answer
+  description: This document describes the API for reading, creating, updating, and deleting Knowledge Base Answers.
+paths:
+  /knowledge_base_answers/{id}:
+    get:
+      tags:
+      - Knowledge Base Answer
+      operationId: knowledgeBaseAnswersShow
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/KnowledgeBaseAnswer'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Returns a single Knowledge Base Answer by ID
+      summary: Get a Knowledge Base Answer
+      security:
+      - header_authorization: []
+      x-controller: api/knowledge_base_answers
+      x-action: show
+    put:
+      tags:
+      - Knowledge Base Answer
+      operationId: knowledgeBaseAnswersUpdate
+      parameters:
+      - name: content
+        description: The content of the Knowledge Base Answer.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: primary_answer
+        description: Flag to indicate if this is the primary answer.
+        required: false
+        in: query
+        schema:
+          type: boolean
+      - name: type
+        description: The type of the Knowledge Base Answer.
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - KnowledgeBaseAnswerFreeForm
+          - KnowledgeBaseAnswerYesOrNo
+          - KnowledgeBaseAnswerTrueOrFalse
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/KnowledgeBaseAnswer'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Update a Knowledge Base Answer by ID
+      summary: Update a Knowledge Base Answer
+      security:
+      - header_authorization: []
+      x-controller: api/knowledge_base_answers
+      x-action: update
+    delete:
+      tags:
+      - Knowledge Base Answer
+      operationId: knowledgeBaseAnswersDestroy
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Delete a Knowledge Base Answer by ID
+      summary: Delete a Knowledge Base Answer
+      security:
+      - header_authorization: []
+      x-controller: api/knowledge_base_answers
+      x-action: destroy
+  /knowledge_base_answers:
+    post:
+      tags:
+      - Knowledge Base Answer
+      operationId: knowledgeBaseAnswersCreate
+      parameters:
+      - name: content
+        description: The content of the Knowledge Base Answer.
+        required: true
+        in: query
+        schema:
+          type: string
+      - name: knowledge_base_question_id
+        description: The ID of the associated Knowledge Base Question.
+        required: true
+        in: query
+        schema:
+          type: string
+          format: uuid
+      - name: primary_answer
+        description: Flag to indicate if this is the primary answer.
+        required: false
+        in: query
+        schema:
+          type: boolean
+      - name: type
+        description: The type of the Knowledge Base Answer.
+        required: true
+        in: query
+        schema:
+          type: string
+          enum:
+          - KnowledgeBaseAnswerFreeForm
+          - KnowledgeBaseAnswerYesOrNo
+          - KnowledgeBaseAnswerTrueOrFalse
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/KnowledgeBaseAnswer'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Create a new Knowledge Base Answer
+      summary: Create a Knowledge Base Answer
+      security:
+      - header_authorization: []
+      x-controller: api/knowledge_base_answers
+      x-action: create
+components:
+  schemas:
+    KnowledgeBaseAnswer:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this knowledge base answer.
+        content:
+          type: string
+          description: The content of the knowledge base answer.
+        created_at:
+          type: string
+          format: date-time
+          description: The date this knowledge base answer was created.
+        primary_answer:
+          type: boolean
+          description: Flag to indicate if this is the primary answer.
+        type:
+          type: string
+          enum:
+          - KnowledgeBaseAnswerFreeForm
+          - KnowledgeBaseAnswerYesOrNo
+          - KnowledgeBaseAnswerTrueOrFalse
+          description: The type of the knowledge base answer.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date this knowledge base answer was updated.
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

@@ -1,0 +1,170 @@
+openapi: 3.2.0
+info:
+  title: Secureframe Test Export API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: Test Export
+  description: This document describes the API for creating a Test Export for a Test.
+paths:
+  /tests/{test_id}/exports:
+    post:
+      tags:
+      - Test Export
+      operationId: companyTestsTestExportsCreate
+      parameters:
+      - name: framework_id
+        description: The ID of the Company's Framework for the export
+        required: false
+        in: query
+        schema:
+          type: string
+          format: uuid
+      - name: is_json
+        description: 'If the export should be a JSON file or not (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      - name: test_id
+        description: The ID of the test to attach the evidence
+        required: true
+        in: path
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/TestExport'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Creates a new Test Export for a Test.
+      summary: Create a Test Export
+      security:
+      - header_authorization: []
+      x-controller: api/company_tests/test_exports
+      x-action: create
+components:
+  schemas:
+    TestExport:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this Text Export.
+        created_at:
+          type: string
+          format: date-time
+          description: The date when this Test Export was created.
+        status:
+          type: string
+          enum:
+          - pending
+          - complete
+          - failed
+          description: The progress status of the Test export.
+        url:
+          type: string
+          description: The URL to download the file.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date this Text Export was last updated
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

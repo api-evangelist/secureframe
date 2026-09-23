@@ -1,0 +1,376 @@
+openapi: 3.2.0
+info:
+  title: Secureframe Task API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: Task
+  description: This document describes the API for reading Tasks.
+paths:
+  /tasks:
+    get:
+      tags:
+      - Task
+      operationId: tasksIndex
+      parameters:
+      - name: include
+        description: Comma delimited string of relationships to include.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - creator
+            - owner
+        explode: false
+        style: form
+      - name: page
+        description: 'Used for pagination of response data (default: page 1). Specifies the offset of the next block of data to receive.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: per_page
+        description: 'Used for pagination of response data (default: 100 items per response). Specifies the number of results for a given page.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: q
+        description: Search and filter the Task data using Lucene syntax.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      - name: sort
+        description: 'Comma delimited string of fields to sort the results by, applied in the order given. Prefix a field with `-` to sort it in descending order, for example `?sort=-category,completed`. Sortable fields: `category`, `completed`, `completed_at`, `created_at`, `creator_name`, `description`, `dismissed_at`, `due_at`, `id`, `overdue`, `owner_id`, `owner_name`, `task_subtype`, `task_type`, `taskable_id`, `taskable_type`, `title`.'
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: List of resources matching the query
+                    items:
+                      type: object
+                      description: Data envelope for the response
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+                        type:
+                          type: string
+                          description: The type of resource this object is
+                        attributes:
+                          $ref: '#/components/schemas/Task'
+                        relationships:
+                          type: object
+                          description: Nested objects related to the top level object
+                        links:
+                          type: object
+                          description: Links to related API resources
+                  meta:
+                    type: object
+                    description: Metadata about the list response
+                    properties:
+                      total:
+                        type: integer
+                        description: Total number of records matching the query across all pages, independent of page and per_page
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: 'Returns a list of Tasks.
+
+        ### Search parameters
+
+
+        - `category` — The category of the Task
+
+        - Valid values: `lets_get_started`, `get_audit_ready`, `lets_start`, `account_security`, `integrations`, `compliance`, `go_further`, `personnel`, `launch_trust_center`, `build_knowledge_base`, `process_first_security_questionnaire`, `user_onboarding`
+
+        - `completed` — Flag to indicate if the Task has been completed
+
+        - Valid values: `true`, `false`
+
+        - `completed_at` — The date this Task was completed
+
+        - `created_at` — The date this Task was created
+
+        - `creator_name` — The name of the User that created this Task
+
+        - `description` — The description of the Task
+
+        - `dismissed_at` — The date this Task was dismissed
+
+        - `due_at` — The date this Task is due
+
+        - `id` — The ID of the Task
+
+        - `overdue` — Flag to indicate if the Task was past due and incomplete when it was last indexed
+
+        - Valid values: `true`, `false`
+
+        - `owner_id` — The ID of the User that owns this Task
+
+        - `owner_name` — The name of the User that owns this Task
+
+        - `task_subtype` — The subtype of the Task. Empty for standard Tasks
+
+        - `task_type` — The type of the Task
+
+        - Valid values: `add_cloud_resources`, `add_devices`, `add_metadata_to_vendors`, `add_owners_to_cloud_resources`, `add_owners_to_devices`, `add_owners_to_policies`, `add_owners_to_repositories`, `add_repositories`, `categorize_users`, `complete_risk_questionnaire`, `configure_custom_domain`, `custom`, `employees_accept_policies`, `employees_complete_security_training`, `employees_complete_trainings`, `export_completed_questionnaire`, `identify_ism`, `initiate_background_checks`, `link_terms_of_service_and_privacy_policy`, `process_questionnaire`, `publish_trust_center`, `review_policies`, `schedule_pen_test`, `select_auditor`, `set_company_description`, `set_up_background_check_provider`, `set_up_mdm`, `set_up_password_manager`, `set_up_sso`, `upload_100_security_questions_and_answers`, `upload_company_logo`, `upload_compliance_certification`, `upload_requestable_compliance_document`, `adding_cloud_resources`, `adding_devices`, `setup_domain_filtering`, `add_personnel`, `connect_remaining_integrations`, `finish_profile`, `schedule_call`, `categorize_personnel`, `mark_personnel_scope`, `link_accounts`, `manage_policies`, `setup_bkg_check_provider`, `initiate_bkg_checks`, `create_invite_email`, `invite_personnel`, `setup_sso`, `setup_mdm`, `setup_pw_manager`, `select_ism`, `add_vendors`, `create_recurring_review_schedules`, `complete_questionnaire`, `select_compliance_auditor`, `select_compliance_pentest`, `trust_center`, `secureframe_questionnaire`, `secureframe_training`, `user_accepted_policies`, `user_completed_trainings`, `user_completed_background_check`, `user_secureframe_agent_installed`
+
+        - `taskable_id` — The ID of the resource this Task is associated with
+
+        - `taskable_type` — The type of resource this Task is associated with
+
+        - Valid values: `CompanyTest`, `CompanyRisk`, `UserAccessReviewAccount`, `VendorRiskDetail`
+
+        - `title` — The title of the Task'
+      summary: List Tasks
+      security:
+      - header_authorization: []
+      x-controller: api/tasks
+      x-action: index
+  /tasks/{id}:
+    get:
+      tags:
+      - Task
+      operationId: tasksShow
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: include
+        description: Comma delimited string of relationships to include.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - creator
+            - owner
+        explode: false
+        style: form
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/Task'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Returns a single Task by ID
+      summary: Get a Task
+      security:
+      - header_authorization: []
+      x-controller: api/tasks
+      x-action: show
+components:
+  schemas:
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this Task.
+        auto_close:
+          type: boolean
+          description: Whether this Task closes itself once its underlying work is done.
+        category:
+          type: string
+          description: The category this Task belongs to.
+        completed_at:
+          type: string
+          format: date-time
+          description: The date this Task was completed.
+        created_at:
+          type: string
+          format: date-time
+          description: The date this Task was created.
+        creator_id:
+          type: string
+          format: uuid
+          description: The identifier for the creator for this Task.
+        description:
+          type: string
+          description: The description of this Task.
+        dismissed_at:
+          type: string
+          format: date-time
+          description: The date this Task was dismissed.
+        due_at:
+          type: string
+          format: date-time
+          description: The date this Task is due.
+        optional:
+          type: boolean
+          description: Whether this Task is optional.
+        overdue:
+          type: boolean
+          description: Whether this Task is past its due date and not yet completed.
+        owner_id:
+          type: string
+          format: uuid
+          description: The identifier for the owner for this Task.
+        task_subtype:
+          type: string
+          description: The subtype of this Task. Empty for standard Tasks.
+        task_type:
+          type: string
+          description: The type of this Task.
+        taskable_id:
+          type: string
+          format: uuid
+          description: The identifier for the taskable for this Task.
+        taskable_type:
+          type: string
+          enum:
+          - CompanyTest
+          - CompanyRisk
+          - UserAccessReviewAccount
+          - VendorRiskDetail
+          description: The type of resource this Task is associated with.
+        title:
+          type: string
+          description: The title of this Task.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date this Task was updated.
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

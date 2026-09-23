@@ -1,0 +1,223 @@
+openapi: 3.2.0
+info:
+  title: Secureframe File Upload API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: File Upload
+  description: This document describes the API for staging a direct-to-storage file upload.
+paths:
+  /file_uploads:
+    post:
+      tags:
+      - File Upload
+      operationId: fileUploadsCreate
+      parameters:
+      - name: byte_size
+        description: The exact size of the file in bytes. Must be 32 MB or smaller; a larger file is refused here rather than at the upload.
+        required: true
+        in: query
+        schema:
+          type: integer
+      - name: checksum
+        description: The base64-encoded MD5 digest of the file's raw bytes.
+        required: true
+        in: query
+        schema:
+          type: string
+      - name: content_type
+        description: The file's MIME type. Inferred from the filename when omitted.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: filename
+        description: The file's name, including its extension (for example `evidence.png`).
+        required: true
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/FileUpload'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: 'Stage a file upload.
+
+
+        Stages a file so its bytes can be sent straight to storage rather than through this API.
+
+        Three steps:
+
+
+        1. Call this endpoint with the file''s `filename`, `byte_size` and `checksum`. It returns a
+
+        `url` to upload to, the `headers` to send with it, and an `id` to attach with. The two
+
+        have separate deadlines: the `url` stops being accepted at `url_expires_at`, while the
+
+        `id` stays redeemable until the later `id_expires_at`, so an upload whose bytes have
+
+        already landed can still be attached after the URL is dead.
+
+        2. PUT the file''s bytes to that `url`, with exactly the `headers` returned. The request
+
+        body is the file''s contents as they are on disk — raw bytes, not base64, not multipart,
+
+        not wrapped in JSON — so there is nothing to encode or convert. Send the headers
+
+        unaltered, and make sure the bytes match the `byte_size` and `checksum` declared in
+
+        step 1, or storage rejects the PUT.
+
+        3. Send the `id` to an endpoint that attaches it, as `upload_id` in place of a multipart
+
+        `file`. Each `id` is redeemable once; attaching the same file again means staging it
+
+        again from step 1. The endpoints that accept an upload today are:
+
+        - `POST /tests/{test_id}/evidences`:
+
+        https://api.secureframe.com/docs#tag/test-evidence/POST/tests/{test_id}/evidences
+
+        - `POST /users/{user_id}/evidences`:
+
+        https://api.secureframe.com/docs#tag/user-evidence/POST/users/{user_id}/evidences
+
+        - `PUT /trust_center_requests/{id}`:
+
+        https://api.secureframe.com/docs#tag/trust-center-request/PUT/trust_center_requests/{id}'
+      summary: Stage a direct-to-storage File Upload and get an id for attaching the file
+      security:
+      - header_authorization: []
+      x-controller: api/file_uploads
+      x-action: create
+      x-mcp-description: "Stage a file so its bytes go straight to storage rather than through this API, and get\nback an id to attach it with. Uploading a file takes three steps, and only the first and\nthird are tools — the middle one you make yourself.\n\n1. Call this tool with the file's `filename`, `byte_size` and `checksum`. The response\n   contains a `url`, a `headers` object, and an `id`.\n2. PUT the file's bytes to that `url`, sending every entry in `headers` as a header,\n   unaltered. The request body is the file's contents as they are on disk — raw bytes,\n   not base64, not multipart, not wrapped in JSON — so there is nothing to encode or\n   convert. Storage rejects the PUT unless the bytes match the `byte_size` and\n   `checksum` declared in step 1, so declare them from the file you are actually sending.\n3. Pass the `id` as `upload_id` to the tool that attaches it: `create_test_evidence`,\n   `create_user_evidence` or `update_trust_center_request`. Each `id` is redeemable\n   once; attaching the same file again means staging it again from step 1.\n\nA file must be 32 MB or smaller. A larger `byte_size` is refused here, in step 1, before\nyou have spent anything on the upload itself.\n\nThe two halves of the handshake expire apart, and the response dates both. The `url`\nstops being accepted 15 minutes after staging, at `url_expires_at`; the `id` stays\nredeemable for an hour, until `id_expires_at`. Bytes that have already landed can\ntherefore still be attached after the URL is dead, but a batch of uploads staged up\nfront must all be PUT inside that first 15 minutes."
+components:
+  schemas:
+    FileUpload:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The identifier to redeem at an endpoint that accepts an upload.
+        url:
+          type: string
+          description: The URL to PUT the file's raw bytes to.
+        headers:
+          type: object
+          description: Headers that must be sent verbatim on the PUT.
+        url_expires_at:
+          type: string
+          format: date-time
+          description: 'The deadline for the PUT: after this, `url` stops being accepted.'
+        id_expires_at:
+          type: string
+          format: date-time
+          description: The deadline for redeeming `id` as an `upload_id` at an attaching endpoint. Later than `url_expires_at`, so an upload whose bytes have already landed stays attachable after the URL is dead.
+        created_at:
+          type: string
+          format: date-time
+          description: The date this File Upload was created.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date this File Upload was last updated. File Uploads are immutable, so this always equals `created_at`.
+      description: 'A File Upload is write-only and single-use: it is returned once, redeemed once, and there is
+
+        no endpoint to fetch one back.'
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

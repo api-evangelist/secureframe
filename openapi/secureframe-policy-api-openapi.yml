@@ -1,0 +1,406 @@
+openapi: 3.2.0
+info:
+  title: Secureframe Policy API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: Policy
+  description: 'This document describes the API for reading Policies.
+
+
+    Policies are returned in every status, including drafts and archived ones. Filter with
+
+    `?q=status:published` to narrow.
+
+
+    Note that `q` free-text search covers a Policy''s name and owner, not the content of the Policy
+
+    itself.'
+paths:
+  /policies:
+    get:
+      tags:
+      - Policy
+      operationId: policiesIndex
+      parameters:
+      - name: include
+        description: Comma delimited string of relationships to include.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - owner
+        explode: false
+        style: form
+      - name: page
+        description: 'Used for pagination of response data (default: page 1). Specifies the offset of the next block of data to receive.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: per_page
+        description: 'Used for pagination of response data (default: 100 items per response). Specifies the number of results for a given page.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: q
+        description: Search and filter the Policy data using Lucene syntax.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      - name: sort
+        description: 'Comma delimited string of fields to sort the results by, applied in the order given. Prefix a field with `-` to sort it in descending order, for example `?sort=-acceptance_rate,acceptance_status`. Sortable fields: `acceptance_rate`, `acceptance_status`, `framework_ids`, `groups`, `id`, `name`, `owner_id`, `owner_name`, `parent_policy_id`, `published_at`, `read_only`, `status`, `updated_at`.'
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: List of resources matching the query
+                    items:
+                      type: object
+                      description: Data envelope for the response
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+                        type:
+                          type: string
+                          description: The type of resource this object is
+                        attributes:
+                          $ref: '#/components/schemas/Policy'
+                        relationships:
+                          type: object
+                          description: Nested objects related to the top level object
+                        links:
+                          type: object
+                          description: Links to related API resources
+                  meta:
+                    type: object
+                    description: Metadata about the list response
+                    properties:
+                      total:
+                        type: integer
+                        description: Total number of records matching the query across all pages, independent of page and per_page
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: 'Returns a list of Policies.
+
+        ### Search parameters
+
+
+        - `acceptance_rate` — The percentage of eligible personnel who have accepted this Policy
+
+        - `acceptance_status` — Whether every eligible person has accepted this Policy
+
+        - Valid values: `pending`, `completed`
+
+        - `framework_ids` — The IDs of the Frameworks this Policy is mapped to
+
+        - `groups` — The names of the personnel groups this Policy is assigned to
+
+        - `id` — The ID of the Policy
+
+        - `name` — The name of the Policy
+
+        - `owner_id` — The ID of the User that owns this Policy
+
+        - `owner_name` — The name of the User that owns this Policy
+
+        - `parent_policy_id` — The ID of the Policy this Policy is an addendum to
+
+        - `published_at` — The date this Policy was published
+
+        - `read_only` — Flag to indicate if this Policy is informational and requires no acceptance
+
+        - Valid values: `true`, `false`
+
+        - `status` — The status of the Policy
+
+        - Valid values: `needs_review`, `published`, `archived`
+
+        - `updated_at` — The date this Policy was last updated'
+      summary: List Policies
+      security:
+      - header_authorization: []
+      x-controller: api/policies
+      x-action: index
+  /policies/{id}:
+    get:
+      tags:
+      - Policy
+      operationId: policiesShow
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: include
+        description: Comma delimited string of relationships to include.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - owner
+        explode: false
+        style: form
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/PolicyDetail'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Returns a single Policy by ID, including its content and any attached documents.
+      summary: Get a Policy
+      security:
+      - header_authorization: []
+      x-controller: api/policies
+      x-action: show
+components:
+  schemas:
+    PolicyDetail:
+      allOf:
+      - $ref: '#/components/schemas/Policy'
+      - type: object
+        properties:
+          content:
+            type: string
+            description: The body of this Policy, with tokens such as {{company_name}} left unresolved.
+          has_content:
+            type: boolean
+            description: Whether this Policy has body content. False for Policies supplied only as an uploaded document.
+          interpolated_content:
+            type: string
+            description: The body of this Policy with every token resolved. This is what the Secureframe app displays.
+          documents:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                filename:
+                  type: string
+                content_type:
+                  type: string
+                byte_size:
+                  type: integer
+                download_url:
+                  type: string
+            description: The files attached to this Policy. Each download_url is signed and expires five minutes after the response is generated.
+    Policy:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this Policy.
+        acceptance_rate:
+          type: number
+          format: float
+          description: The percentage of eligible personnel who have accepted this Policy.
+        acceptance_status:
+          type: string
+          enum:
+          - pending
+          - completed
+          description: Whether every eligible person has accepted this Policy. Null when nobody is eligible.
+        acceptances_count:
+          type: integer
+          description: The number of eligible personnel who have accepted this Policy.
+        addendum:
+          type: boolean
+          description: Whether this Policy is an addendum to another Policy.
+        company_id:
+          type: string
+          format: uuid
+          description: The identifier for the company for this Policy.
+        created_at:
+          type: string
+          format: date-time
+          description: The date this Policy was created.
+        eligible_company_users_count:
+          type: integer
+          description: The number of personnel required to accept this Policy.
+        framework_names:
+          type: array
+          items:
+            type: string
+          description: The frameworks this Policy was authored for.
+        groups:
+          type: array
+          items:
+            type: string
+          description: The personnel groups this Policy is assigned to.
+        name:
+          type: string
+          description: The name of this Policy.
+        owner_id:
+          type: string
+          format: uuid
+          description: The identifier for the owner for this Policy.
+        parent_policy_id:
+          type: string
+          format: uuid
+          description: The identifier of the Policy this Policy is an addendum to.
+        published_at:
+          type: string
+          format: date-time
+          description: The date this Policy was published.
+        read_only:
+          type: boolean
+          description: Whether this Policy is informational and requires no acceptance.
+        status:
+          type: string
+          description: The status of this Policy.
+        tags:
+          type: array
+          items:
+            type: string
+          description: The categories this Policy belongs to.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date this Policy was updated.
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

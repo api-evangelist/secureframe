@@ -1,0 +1,509 @@
+openapi: 3.2.0
+info:
+  title: Secureframe Comment API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: Comment
+  description: This document describes the API for reading, creating, updating, and deleting Comments.
+paths:
+  /comments:
+    get:
+      tags:
+      - Comment
+      operationId: commentsIndex
+      parameters:
+      - name: include
+        description: Comma delimited string of relationships to include.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - author
+        explode: false
+        style: form
+      - name: page
+        description: 'Used for pagination of response data (default: page 1). Specifies the offset of the next block of data to receive.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: per_page
+        description: 'Used for pagination of response data (default: 100 items per response). Specifies the number of results for a given page.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: q
+        description: Search and filter the Comment data using Lucene syntax.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      - name: sort
+        description: 'Comma delimited string of fields to sort the results by, applied in the order given. Prefix a field with `-` to sort it in descending order, for example `?sort=-commentable_type,commentable_id`. Sortable fields: `commentable_type`, `commentable_id`, `company_id`, `content`, `id`.'
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: List of resources matching the query
+                    items:
+                      type: object
+                      description: Data envelope for the response
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+                        type:
+                          type: string
+                          description: The type of resource this object is
+                        attributes:
+                          $ref: '#/components/schemas/Comment'
+                        relationships:
+                          type: object
+                          description: Nested objects related to the top level object
+                        links:
+                          type: object
+                          description: Links to related API resources
+                  meta:
+                    type: object
+                    description: Metadata about the list response
+                    properties:
+                      total:
+                        type: integer
+                        description: Total number of records matching the query across all pages, independent of page and per_page
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: 'Returns a list of Comments.
+
+        ### Search parameters
+
+
+        - `commentable_type` — The type of the commentable object
+
+        - Valid values: `Company`, `CompanyAudit`, `CompanyAuditTest`, `CompanyControlV2`, `CompanyFrameworkRequirement`, `CompanyTest`, `CompanyRisk`, `Evidence`, `PoamItem`, `CompanySspReportAssessmentObjective`, `CompanySspReportRequirement`, `Policy`, `VendorRiskDetail`, `VendorRiskReviewItem`, `VendorRiskDocument`, `VendorRiskReviewAnswer`
+
+        - `commentable_id` — The ID of the commentable object
+
+        - `company_id` — The ID of the company
+
+        - `content` — The content of the comment
+
+        - `id` — The ID of the comment'
+      summary: List Comments
+      security:
+      - header_authorization: []
+      x-controller: api/comments
+      x-action: index
+    post:
+      tags:
+      - Comment
+      operationId: commentsCreate
+      parameters:
+      - name: commentable_id
+        description: The ID of the commentable resource
+        required: true
+        in: query
+        schema:
+          type: string
+          format: uuid
+      - name: commentable_type
+        description: The type of the commentable resource
+        required: true
+        in: query
+        schema:
+          type: string
+          enum:
+          - Company
+          - CompanyAudit
+          - CompanyAuditTest
+          - CompanyControlV2
+          - CompanyFrameworkRequirement
+          - CompanyTest
+          - CompanyRisk
+          - Evidence
+          - PoamItem
+          - CompanySspReportAssessmentObjective
+          - CompanySspReportRequirement
+          - Policy
+          - VendorRiskDetail
+          - VendorRiskReviewItem
+          - VendorRiskDocument
+          - VendorRiskReviewAnswer
+      - name: content
+        description: The content of the comment
+        required: true
+        in: query
+        schema:
+          type: string
+      - name: conversation_id
+        description: Conversation ID to associate with the comment
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/Comment'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Creates a new Comment
+      summary: Create a Comment
+      security:
+      - header_authorization: []
+      x-controller: api/comments
+      x-action: create
+  /comments/{id}:
+    get:
+      tags:
+      - Comment
+      operationId: commentsShow
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: include
+        description: Comma delimited string of relationships to include.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - author
+        explode: false
+        style: form
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/Comment'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Returns a single Comment by ID
+      summary: Get a Comment
+      security:
+      - header_authorization: []
+      x-controller: api/comments
+      x-action: show
+    put:
+      tags:
+      - Comment
+      operationId: commentsUpdate
+      parameters:
+      - name: content
+        description: The updated content of the comment
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/Comment'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Updates a Comment by ID
+      summary: Update a Comment
+      security:
+      - header_authorization: []
+      x-controller: api/comments
+      x-action: update
+    delete:
+      tags:
+      - Comment
+      operationId: commentsDestroy
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Deletes a Comment by ID
+      summary: Delete a Comment
+      security:
+      - header_authorization: []
+      x-controller: api/comments
+      x-action: destroy
+components:
+  schemas:
+    Comment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this comment.
+        commentable_id:
+          type: string
+          format: uuid
+          description: The identifier for the commentable object.
+        commentable_type:
+          type: string
+          enum:
+          - Company
+          - CompanyAudit
+          - CompanyAuditTest
+          - CompanyControlV2
+          - CompanyFrameworkRequirement
+          - CompanyTest
+          - CompanyRisk
+          - Evidence
+          - PoamItem
+          - CompanySspReportAssessmentObjective
+          - CompanySspReportRequirement
+          - Policy
+          - VendorRiskDetail
+          - VendorRiskReviewItem
+          - VendorRiskDocument
+          - VendorRiskReviewAnswer
+          description: The type of the commentable object.
+        created_at:
+          type: string
+          format: date-time
+          description: The date when this comment was created.
+        content:
+          type: string
+          description: The content of the comment.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date when this comment was updated.
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

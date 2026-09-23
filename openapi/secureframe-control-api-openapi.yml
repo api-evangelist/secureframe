@@ -1,0 +1,382 @@
+openapi: 3.2.0
+info:
+  title: Secureframe Control API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: Control
+  description: This document describes the API for reading Controls.
+paths:
+  /controls:
+    get:
+      tags:
+      - Control
+      operationId: companyControlV2sIndex
+      parameters:
+      - name: include
+        description: Comma delimited string of relationships to include.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - author
+            - owner
+        explode: false
+        style: form
+      - name: page
+        description: 'Used for pagination of response data (default: page 1). Specifies the offset of the next block of data to receive.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: per_page
+        description: 'Used for pagination of response data (default: 100 items per response). Specifies the number of results for a given page.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: q
+        description: Search and filter the Control data using Lucene syntax.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      - name: sort
+        description: 'Comma delimited string of fields to sort the results by, applied in the order given. Prefix a field with `-` to sort it in descending order, for example `?sort=-author_name,description`. Sortable fields: `author_name`, `description`, `key`, `name`, `frameworks`, `created_at`, `custom`, `enabled`, `first_failed_at`, `health_status`, `id`, `implementation_date`, `owner_assigned_at`, `owner_name`, `updated_at`.'
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: List of resources matching the query
+                    items:
+                      type: object
+                      description: Data envelope for the response
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+                        type:
+                          type: string
+                          description: The type of resource this object is
+                        attributes:
+                          $ref: '#/components/schemas/Control'
+                        relationships:
+                          type: object
+                          description: Nested objects related to the top level object
+                        links:
+                          type: object
+                          description: Links to related API resources
+                  meta:
+                    type: object
+                    description: Metadata about the list response
+                    properties:
+                      total:
+                        type: integer
+                        description: Total number of records matching the query across all pages, independent of page and per_page
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: 'Returns a list of Controls.
+
+        ### Search parameters
+
+
+        - `author_name` — The author name of the Control
+
+        - `description` — The description of the Control
+
+        - `key` — The key of the Control
+
+        - `name` — The name of the Control
+
+        - `frameworks` — The framework keys for this Control
+
+        - `created_at` — The date when this Control was created
+
+        - `custom` — True if Control is custom, False if authored by Secureframe
+
+        - Valid values: `true`, `false`
+
+        - `enabled` — True if the Control is currently enabled
+
+        - Valid values: `true`, `false`
+
+        - `first_failed_at` — When the Control first failed
+
+        - `health_status` — The overall health of the Control
+
+        - Valid values: `at_risk`, `deleted`, `draft`, `healthy`, `not_applicable`, `not_tested`, `unhealthy`, `unmapped`
+
+        - `id` — The ID of the Control
+
+        - `implementation_date` — The implementation date of the Control
+
+        - `owner_assigned_at` — When the owner was assigned to the Control
+
+        - `owner_name` — The Control owner''s name
+
+        - `updated_at` — The date the Control was last updated'
+      summary: List Controls
+      security:
+      - header_authorization: []
+      x-controller: api/company_control_v2s
+      x-action: index
+  /controls/{id}:
+    get:
+      tags:
+      - Control
+      operationId: companyControlV2sShow
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: include
+        description: Comma delimited string of relationships to include.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - author
+            - owner
+        explode: false
+        style: form
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/Control'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Returns a Control by ID
+      summary: Get a Control
+      security:
+      - header_authorization: []
+      x-controller: api/company_control_v2s
+      x-action: show
+components:
+  schemas:
+    Control:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this control.
+        at_risk_test_count:
+          type: integer
+          description: The number of associated tests currently at risk of failing.
+        author_name:
+          type: string
+          description: The name of the author if custom, Secureframe otherwise.
+        created_at:
+          type: string
+          format: date-time
+          description: The date the control was created.
+        custom:
+          type: boolean
+          description: True if the control is custom, false if it's Secureframe-authored.
+        description:
+          type: string
+          description: The control description.
+        disabled_justification:
+          type: string
+          description: The reason the control was disabled if applicable.
+        disabled_test_count:
+          type: integer
+          description: The number of associated tests that are disabled.
+        enabled:
+          type: boolean
+          description: True if the control is currently enabled.
+        failing_test_count:
+          type: integer
+          description: The number of associated tests currently failing.
+        first_failed_at:
+          type: string
+          format: date-time
+          description: The date the control first failed.
+        framework_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: The IDs of the frameworks that the control is associated with.
+        framework_keys:
+          type: array
+          items:
+            type: string
+          description: The keys of the frameworks that the control is associated with.
+        framework_requirement_keys:
+          type: array
+          items:
+            type: string
+          description: The keys of the framework requirements that the control is associated with.
+        health_status:
+          type: string
+          description: The overall health of the control.
+        implementation_date:
+          type: string
+          format: date-time
+          description: The date when the control is/was to be implemented.
+        implementation_status:
+          type: string
+          description: The current implementation status of the control.
+        key:
+          type: string
+          description: The user-friendly identifier used to reference this control.
+        name:
+          type: string
+          description: The control name.
+        owner_assigned_at:
+          type: string
+          format: date-time
+          description: The date the control was assigned to its current owner.
+        owner_name:
+          type: string
+          description: The control owner's name.
+        passing_test_count:
+          type: integer
+          description: The number of associated tests currently passing.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date when the control was last updated.
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

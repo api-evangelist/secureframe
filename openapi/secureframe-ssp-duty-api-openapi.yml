@@ -1,0 +1,435 @@
+openapi: 3.2.0
+info:
+  title: Secureframe SSP Duty API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: SSP Duty
+  description: This document describes the API for reading, creating, updating, and deleting SSP Duties.
+paths:
+  /ssp_duties:
+    get:
+      tags:
+      - SSP Duty
+      operationId: companySspDutyAssignmentMatrixDutiesIndex
+      parameters:
+      - name: page
+        description: 'Used for pagination of response data (default: page 1). Specifies the offset of the next block of data to receive.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: per_page
+        description: 'Used for pagination of response data (default: 100 items per response). Specifies the number of results for a given page.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: q
+        description: Search and filter the SSP Duty data using Lucene syntax.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: sort
+        description: 'Field to sort the results by. Prefix it with `-` to sort in descending order, for example `?sort=-id`. This endpoint sorts on one field only — supplying more than one comma delimited field returns a 400. Sortable fields: `id`, `created_at`, `description`, `duty`, `ssp_report_id`, `updated_at`.'
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: List of resources matching the query
+                    items:
+                      type: object
+                      description: Data envelope for the response
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+                        type:
+                          type: string
+                          description: The type of resource this object is
+                        attributes:
+                          $ref: '#/components/schemas/SspDuty'
+                        relationships:
+                          type: object
+                          description: Nested objects related to the top level object
+                        links:
+                          type: object
+                          description: Links to related API resources
+                  meta:
+                    type: object
+                    description: Metadata about the list response
+                    properties:
+                      total:
+                        type: integer
+                        description: Total number of records matching the query across all pages, independent of page and per_page
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: 'Returns a list of SSP Duties
+
+        ### Search parameters
+
+
+        - `id` — The ID of the SSP Duty Assignment Matrix Duty
+
+        - `created_at` — The date this duty was created
+
+        - `description` — The description of the duty
+
+        - `duty` — The duty name
+
+        - `ssp_report_id` — The ID of the associated SSP Report
+
+        - `updated_at` — The date this duty was last updated'
+      summary: List SSP Duties
+      security:
+      - header_authorization: []
+      x-controller: api/company_ssp_duty_assignment_matrix_duties
+      x-action: index
+    post:
+      tags:
+      - SSP Duty
+      operationId: companySspDutyAssignmentMatrixDutiesCreate
+      parameters:
+      - name: description
+        description: The description of the duty.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: duty
+        description: The duty name.
+        required: true
+        in: query
+        schema:
+          type: string
+      - name: ssp_report_id
+        description: The ID of the SSP Report.
+        required: true
+        in: query
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/SspDuty'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Create a new SSP Duty
+      summary: Create an SSP Duty
+      security:
+      - header_authorization: []
+      x-controller: api/company_ssp_duty_assignment_matrix_duties
+      x-action: create
+  /ssp_duties/{id}:
+    get:
+      tags:
+      - SSP Duty
+      operationId: companySspDutyAssignmentMatrixDutiesShow
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/SspDuty'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Returns a single SSP Duty by ID
+      summary: Get an SSP Duty
+      security:
+      - header_authorization: []
+      x-controller: api/company_ssp_duty_assignment_matrix_duties
+      x-action: show
+    put:
+      tags:
+      - SSP Duty
+      operationId: companySspDutyAssignmentMatrixDutiesUpdate
+      parameters:
+      - name: description
+        description: The description of the duty.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: duty
+        description: The duty name.
+        required: true
+        in: query
+        schema:
+          type: string
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/SspDuty'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Update an SSP Duty by ID
+      summary: Update an SSP Duty
+      security:
+      - header_authorization: []
+      x-controller: api/company_ssp_duty_assignment_matrix_duties
+      x-action: update
+    delete:
+      tags:
+      - SSP Duty
+      operationId: companySspDutyAssignmentMatrixDutiesDestroy
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Delete an SSP Duty by ID
+      summary: Delete an SSP Duty
+      security:
+      - header_authorization: []
+      x-controller: api/company_ssp_duty_assignment_matrix_duties
+      x-action: destroy
+components:
+  schemas:
+    SspDuty:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this SSP duty.
+        created_at:
+          type: string
+          format: date-time
+          description: The date this duty was created.
+        description:
+          type: string
+          description: The description of the duty.
+        duty:
+          type: string
+          description: The duty name.
+        ssp_report_id:
+          type: string
+          format: uuid
+          description: The identifier of the associated SSP report.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date this duty was last updated.
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

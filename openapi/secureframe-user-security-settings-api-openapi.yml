@@ -1,0 +1,147 @@
+openapi: 3.2.0
+info:
+  title: Secureframe User Security Settings API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: User Security Settings
+  description: This document describes the API for retrieving user security settings for the provided API key's company.
+paths:
+  /user_security_settings:
+    get:
+      tags:
+      - User Security Settings
+      operationId: userSecuritySettingsIndex
+      parameters: []
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/UserSecuritySetting'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Returns user security settings for the provided API key's company and user
+      summary: Get user security settings
+      security:
+      - header_authorization: []
+      x-controller: api/user_security_settings
+      x-action: index
+components:
+  schemas:
+    UserSecuritySetting:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this User Security Setting.
+        company:
+          type: object
+          description: The company associated with this User Security Setting. Fields include id, name.
+        created_at:
+          type: string
+          format: date-time
+          description: The date this User Security Setting object was created.
+        schema_version:
+          type: integer
+          description: The schema version of the User Security Setting.
+        settings:
+          type: object
+          description: JSON representation of the settings for this User Security Setting. Fields include user_session_timeout_ms, user_session_timeout, roles.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date this User Security Setting object was updated.
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

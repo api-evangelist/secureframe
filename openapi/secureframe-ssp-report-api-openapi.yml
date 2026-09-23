@@ -1,0 +1,368 @@
+openapi: 3.2.0
+info:
+  title: Secureframe SSP Report API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: SSP Report
+  description: This document describes the API for reading and creating SSP Reports.
+paths:
+  /ssp_reports:
+    get:
+      tags:
+      - SSP Report
+      operationId: companySspReportsIndex
+      parameters:
+      - name: include
+        description: Comma delimited string of relationships to include.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - framework
+        explode: false
+        style: form
+      - name: page
+        description: 'Used for pagination of response data (default: page 1). Specifies the offset of the next block of data to receive.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: per_page
+        description: 'Used for pagination of response data (default: 100 items per response). Specifies the number of results for a given page.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: q
+        description: Search and filter the SSP Report data using Lucene syntax.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      - name: sort
+        description: 'Field to sort the results by. Prefix it with `-` to sort in descending order, for example `?sort=-completion_progress_percentage`. This endpoint sorts on one field only — supplying more than one comma delimited field returns a 400. Sortable fields: `completion_progress_percentage`, `created_at`, `framework_id`, `id`, `name`, `sprs_score`, `updated_at`.'
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: List of resources matching the query
+                    items:
+                      type: object
+                      description: Data envelope for the response
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+                        type:
+                          type: string
+                          description: The type of resource this object is
+                        attributes:
+                          $ref: '#/components/schemas/SspReport'
+                        relationships:
+                          type: object
+                          description: Nested objects related to the top level object
+                        links:
+                          type: object
+                          description: Links to related API resources
+                  meta:
+                    type: object
+                    description: Metadata about the list response
+                    properties:
+                      total:
+                        type: integer
+                        description: Total number of records matching the query across all pages, independent of page and per_page
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: 'Returns a list of SSP Reports.
+
+        ### Search parameters
+
+
+        - `completion_progress_percentage` — The completion progress percentage of the SSP Report
+
+        - `created_at` — The date when this SSP Report was created
+
+        - `framework_id` — The ID of the associated Framework
+
+        - `id` — The ID of the SSP Report
+
+        - `name` — The name of the SSP Report
+
+        - `sprs_score` — The SPRS score of the SSP Report
+
+        - `updated_at` — The date when this SSP Report was last updated'
+      summary: List SSP Reports
+      security:
+      - header_authorization: []
+      x-controller: api/company_ssp_reports
+      x-action: index
+    post:
+      tags:
+      - SSP Report
+      operationId: companySspReportsCreate
+      parameters:
+      - name: framework_id
+        description: The ID of the Framework to associate with the SSP Report.
+        required: true
+        in: query
+        schema:
+          type: string
+          format: uuid
+      - name: name
+        description: The name of the SSP Report.
+        required: true
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/SspReport'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Creates a new SSP Report
+      summary: Create an SSP Report
+      security:
+      - header_authorization: []
+      x-controller: api/company_ssp_reports
+      x-action: create
+  /ssp_reports/{id}:
+    get:
+      tags:
+      - SSP Report
+      operationId: companySspReportsShow
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: include
+        description: Comma delimited string of relationships to include.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - framework
+        explode: false
+        style: form
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/SspReport'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Returns an SSP Report by ID
+      summary: Get an SSP Report
+      security:
+      - header_authorization: []
+      x-controller: api/company_ssp_reports
+      x-action: show
+components:
+  schemas:
+    SspReport:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this SSP Report.
+        completion_progress_percentage:
+          type: integer
+          description: The completion progress percentage of the SSP Report.
+        created_at:
+          type: string
+          format: date-time
+          description: The date the SSP Report was created.
+        framework_id:
+          type: string
+          format: uuid
+          description: The identifier of the associated Framework.
+        name:
+          type: string
+          description: The name of the SSP Report.
+        sprs_score:
+          type: integer
+          description: The SPRS score of the SSP Report.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date the SSP Report was last updated.
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

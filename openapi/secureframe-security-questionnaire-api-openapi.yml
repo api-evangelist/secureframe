@@ -1,0 +1,233 @@
+openapi: 3.2.0
+info:
+  title: Secureframe Security Questionnaire API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: Security Questionnaire
+  description: This document describes the API for creating Security Questionnaires.
+paths:
+  /security_questionnaires:
+    post:
+      tags:
+      - Security Questionnaire
+      operationId: securityQuestionnairesCreate
+      parameters:
+      - name: company_name
+        description: The name of the client who is requesting the questionnaire
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: due_date
+        description: The due date of the questionnaire
+        required: false
+        in: query
+        schema:
+          type: string
+          format: date
+      - name: owner_id
+        description: The owner of the questionnaire
+        required: true
+        in: query
+        schema:
+          type: string
+          format: uuid
+      - name: questionnaire_template
+        description: The template to use for the questionnaire
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - custom
+          - caiq
+          - hecvat
+          - hecvat_lite
+          - sig
+          - sig_lite
+          - ccpa
+          - cis
+          - nist
+          - vsa
+          - pci_dss
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/SecurityQuestionnaire'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Creates a new Security Questionnaire.
+      summary: Create a Security Questionnaire
+      security:
+      - header_authorization: []
+      x-controller: api/security_questionnaires
+      x-action: create
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: File which you want to attach as evidence
+                  example: Users/Downloads/some_file.png
+              required:
+              - file
+components:
+  schemas:
+    SecurityQuestionnaire:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this Security Questionnaire.
+        company_name:
+          type: string
+          description: The name of the client who is requesting the questionnaire
+        company_url:
+          type: string
+          description: The URL of the client who is requesting the questionnaire
+        contact_email_at_company:
+          type: string
+          description: The email of the contact at the client who is requesting the questionnaire
+        contact_name_at_company:
+          type: string
+          description: The name of the contact at the client who is requesting the questionnaire
+        created_at:
+          type: string
+          format: date-time
+          description: The date when this Security Questionnaire was created.
+        due_date:
+          type: string
+          format: date-time
+          description: The due date of the questionnaire
+        questionnaire_template:
+          type: string
+          enum:
+          - custom
+          - caiq
+          - hecvat
+          - hecvat_lite
+          - sig
+          - sig_lite
+          - ccpa
+          - cis
+          - nist
+          - vsa
+          - pci_dss
+          description: The template of the questionnaire
+        questionnaire_type:
+          type: string
+          enum:
+          - pending
+          - complete
+          - training
+          description: The type of questionnaire
+        state:
+          type: string
+          description: The state of the Security Questionnaire
+        updated_at:
+          type: string
+          format: date-time
+          description: The date this Security Questionnaire was last updated
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

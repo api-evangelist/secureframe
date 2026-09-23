@@ -1,0 +1,472 @@
+openapi: 3.2.0
+info:
+  title: Secureframe SSP Policy API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: SSP Policy
+  description: This document describes the API for reading, creating, updating, and deleting SSP Policies.
+paths:
+  /ssp_policies:
+    get:
+      tags:
+      - SSP Policy
+      operationId: companySspPoliciesIndex
+      parameters:
+      - name: page
+        description: 'Used for pagination of response data (default: page 1). Specifies the offset of the next block of data to receive.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: per_page
+        description: 'Used for pagination of response data (default: 100 items per response). Specifies the number of results for a given page.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: q
+        description: Search and filter the SSP Policy data using Lucene syntax.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: sort
+        description: 'Comma delimited string of fields to sort the results by, applied in the order given. Prefix a field with `-` to sort it in descending order, for example `?sort=-control_id,id`. Sortable fields: `control_id`, `id`, `name`, `owner`, `ssp_report_id`, `summary`.'
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: List of resources matching the query
+                    items:
+                      type: object
+                      description: Data envelope for the response
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+                        type:
+                          type: string
+                          description: The type of resource this object is
+                        attributes:
+                          $ref: '#/components/schemas/SspPolicy'
+                        relationships:
+                          type: object
+                          description: Nested objects related to the top level object
+                        links:
+                          type: object
+                          description: Links to related API resources
+                  meta:
+                    type: object
+                    description: Metadata about the list response
+                    properties:
+                      total:
+                        type: integer
+                        description: Total number of records matching the query across all pages, independent of page and per_page
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: 'Returns a list of SSP Policies.
+
+        ### Search parameters
+
+
+        - `control_id` — The ID of the associated control
+
+        - `id` — The ID of the SSP policy
+
+        - `name` — The name of the SSP policy
+
+        - `owner` — The owner of the SSP policy
+
+        - `ssp_report_id` — The ID of the associated SSP report
+
+        - `summary` — The summary of the SSP policy'
+      summary: List SSP Policies
+      security:
+      - header_authorization: []
+      x-controller: api/company_ssp_policies
+      x-action: index
+    post:
+      tags:
+      - SSP Policy
+      operationId: companySspPoliciesCreate
+      parameters:
+      - name: control_id
+        description: The ID of the associated control.
+        required: false
+        in: query
+        schema:
+          type: string
+          format: uuid
+      - name: name
+        description: The name of the SSP policy.
+        required: true
+        in: query
+        schema:
+          type: string
+      - name: owner
+        description: The owner of the SSP policy.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: ssp_report_id
+        description: The ID of the associated SSP report.
+        required: true
+        in: query
+        schema:
+          type: string
+          format: uuid
+      - name: summary
+        description: The summary of the SSP policy.
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/SspPolicy'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Creates a new SSP Policy
+      summary: Create an SSP Policy
+      security:
+      - header_authorization: []
+      x-controller: api/company_ssp_policies
+      x-action: create
+  /ssp_policies/{id}:
+    get:
+      tags:
+      - SSP Policy
+      operationId: companySspPoliciesShow
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/SspPolicy'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Returns a single SSP Policy by ID
+      summary: Get an SSP Policy
+      security:
+      - header_authorization: []
+      x-controller: api/company_ssp_policies
+      x-action: show
+    put:
+      tags:
+      - SSP Policy
+      operationId: companySspPoliciesUpdate
+      parameters:
+      - name: control_id
+        description: The ID of the associated control.
+        required: false
+        in: query
+        schema:
+          type: string
+          format: uuid
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: name
+        description: The name of the SSP policy.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: owner
+        description: The owner of the SSP policy.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: summary
+        description: The summary of the SSP policy.
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/SspPolicy'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Updates an SSP Policy by ID
+      summary: Update an SSP Policy
+      security:
+      - header_authorization: []
+      x-controller: api/company_ssp_policies
+      x-action: update
+    delete:
+      tags:
+      - SSP Policy
+      operationId: companySspPoliciesDestroy
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Deletes an SSP Policy by ID
+      summary: Delete an SSP Policy
+      security:
+      - header_authorization: []
+      x-controller: api/company_ssp_policies
+      x-action: destroy
+components:
+  schemas:
+    SspPolicy:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this SSP policy.
+        control_id:
+          type: string
+          format: uuid
+          description: The identifier for the associated control.
+        created_at:
+          type: string
+          format: date-time
+          description: The date when this SSP policy was created.
+        name:
+          type: string
+          description: The name of the SSP policy.
+        owner:
+          type: string
+          description: The owner of the SSP policy.
+        ssp_report_id:
+          type: string
+          format: uuid
+          description: The identifier for the associated SSP report.
+        summary:
+          type: string
+          description: The summary of the SSP policy.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date when this SSP policy was updated.
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

@@ -1,0 +1,503 @@
+openapi: 3.2.0
+info:
+  title: Secureframe User API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: User
+  description: This document describes the API for reading and updating Users.
+paths:
+  /users:
+    get:
+      tags:
+      - User
+      operationId: companyUsersIndex
+      parameters:
+      - name: include
+        description: Comma delimited string of relationships to include.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - manager
+        explode: false
+        style: form
+      - name: page
+        description: 'Used for pagination of response data (default: page 1). Specifies the offset of the next block of data to receive.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: per_page
+        description: 'Used for pagination of response data (default: 100 items per response). Specifies the number of results for a given page.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: q
+        description: Search and filter the User data using Lucene syntax.
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      - name: sort
+        description: 'Comma delimited string of fields to sort the results by, applied in the order given. Prefix a field with `-` to sort it in descending order, for example `?sort=-active,department_id`. Sortable fields: `active`, `department_id`, `email`, `employee_type`, `end_date`, `first_name`, `id`, `in_audit_scope`, `invited`, `invited_at`, `last_name`, `name`, `onboarding_status`, `personnel_status`, `preferred_first_name`, `secureframe_agent_acknowledged_at`, `start_date`, `title`.'
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: List of resources matching the query
+                    items:
+                      type: object
+                      description: Data envelope for the response
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+                        type:
+                          type: string
+                          description: The type of resource this object is
+                        attributes:
+                          $ref: '#/components/schemas/User'
+                        relationships:
+                          type: object
+                          description: Nested objects related to the top level object
+                        links:
+                          type: object
+                          description: Links to related API resources
+                  meta:
+                    type: object
+                    description: Metadata about the list response
+                    properties:
+                      total:
+                        type: integer
+                        description: Total number of records matching the query across all pages, independent of page and per_page
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: 'Returns a list of Users.
+
+        ### Search parameters
+
+
+        - `active` — Flag to indicate if this User is active
+
+        - Valid values: `true`, `false`
+
+        - `department_id` — The department_id of the User
+
+        - `email` — The email of the User
+
+        - `employee_type` — The employee_type of the User
+
+        - Valid values: `contractor`, `employee`, `non_employee`, `auditor`, `external`, `workspace`
+
+        - `end_date` — The end date for the User
+
+        - `first_name` — The first name of the User
+
+        - `id` — The ID of the User
+
+        - `in_audit_scope` — Flag to indicate if the User is in audit scope
+
+        - Valid values: `true`, `false`
+
+        - `invited` — Flag to indicate if this User has been invited
+
+        - Valid values: `true`, `false`
+
+        - `invited_at` — The date the User was invited
+
+        - `last_name` — The last name of the User
+
+        - `name` — The name of the User
+
+        - `onboarding_status` — The onboarding status of the User
+
+        - Valid values: `not_started`, `security_training`, `security_training_questionnaire`, `hipaa_training`, `pci_training`, `pci_secure_code_training`, `ccpa_training`, `gdpr_training`, `handling_cui_training`, `accept_policies`, `background_check`, `secureframe_agent`, `secureframe_federal_mdm`, `completed`
+
+        - `personnel_status` — The personnel status of the User
+
+        - Valid values: `uncategorized`, `not_invited`, `overdue_tasks`, `incomplete_tasks`, `all_tasks_completed`, `offboarded`, `active_accounts`, `inactive`
+
+        - `preferred_first_name` — The preferred first name of the User
+
+        - `secureframe_agent_acknowledged_at` — The date that the User acknowledged secureframe agent
+
+        - `start_date` — The start date of the User
+
+        - `title` — The title of the User'
+      summary: List Users
+      security:
+      - header_authorization: []
+      x-controller: api/company_users
+      x-action: index
+  /users/{id}:
+    get:
+      tags:
+      - User
+      operationId: companyUsersShow
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: include
+        description: Comma delimited string of relationships to include.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - manager
+        explode: false
+        style: form
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/User'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Returns a User by ID
+      summary: Get a User
+      security:
+      - header_authorization: []
+      x-controller: api/company_users
+      x-action: show
+    put:
+      tags:
+      - User
+      operationId: companyUsersUpdate
+      parameters:
+      - name: active
+        description: True if the user account is active, false if it has been disabled.
+        required: false
+        in: query
+        schema:
+          type: boolean
+      - name: employee_type
+        description: The type of employee.
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - contractor
+          - employee
+          - non_employee
+          - auditor
+          - external
+          - workspace
+      - name: end_date
+        description: Date when the user's employement ended in ISO 8601 format.
+        required: false
+        in: query
+        schema:
+          type: string
+          format: date-time
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: in_audit_scope
+        description: True if the user should be audited, false otherwise - only updateable in certain cases.
+        required: false
+        in: query
+        schema:
+          type: boolean
+      - name: start_date
+        description: Date when the user's employement started in ISO 8601 format.
+        required: false
+        in: query
+        schema:
+          type: string
+          format: date-time
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Data envelope for the response
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The identifier for this resource
+                      type:
+                        type: string
+                        description: The type of resource this object is
+                      attributes:
+                        $ref: '#/components/schemas/User'
+                      relationships:
+                        type: object
+                        description: Nested objects related to the top level object
+                      links:
+                        type: object
+                        description: Links to related API resources
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Update a User by ID
+      summary: Update a User
+      security:
+      - header_authorization: []
+      x-controller: api/company_users
+      x-action: update
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this user.
+        access_role:
+          type: string
+          description: The user's access role in the system.
+        active:
+          type: boolean
+          description: True if the user's account is active, false if it has been deactivated.
+        active_source:
+          type: string
+          description: The integration the active status was sourced from.
+        created_at:
+          type: string
+          format: date-time
+          description: The date when this user account was created.
+        department_id:
+          type: string
+          description: The identifier of the department the user belongs to.
+        email:
+          type: string
+          description: The user's email.
+        employee_type:
+          type: string
+          enum:
+          - contractor
+          - employee
+          - non_employee
+          - auditor
+          - external
+          - workspace
+          description: The type of employee (contractor, employee, non-employee etc).
+        end_date:
+          type: string
+          format: date-time
+          description: The date of the user's termination if applicable.
+        first_name:
+          type: string
+          description: The user's first name.
+        image_url:
+          type: string
+          description: The user's icon image URL.
+        in_audit_scope:
+          type: boolean
+          description: True if this user is in scope for being audited, false if they are exempt.
+        invited:
+          type: boolean
+          description: True if an invitation to Secureframe has been sent to the user's email, false otherwise.
+        invited_at:
+          type: string
+          format: date-time
+          description: The date the user was invited.
+        last_name:
+          type: string
+          description: The user's last name.
+        manager_name:
+          type: string
+          description: The name of the user's manager if applicable, null otherwise.
+        middle_name:
+          type: string
+          description: The user's middle name.
+        name:
+          type: string
+          description: The first and last name of the user separated by a space.
+        onboarding_status:
+          type: string
+          description: The current onboarding status of the user.
+        personnel_status:
+          type: string
+          description: The current personnel status of the user.
+        preferred_first_name:
+          type: string
+          description: The user's preferred first name if applicable, null otherwise.
+        role:
+          type: string
+          description: The user's role at the company.
+        secureframe_agent_acknowledged_at:
+          type: string
+          format: date-time
+          description: The date the user completed installation of the Secureframe device agent.
+        start_date:
+          type: string
+          format: date-time
+          description: The date the user started employment at the company.
+        title:
+          type: string
+          description: The user's job title.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date this user account was last updated.
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

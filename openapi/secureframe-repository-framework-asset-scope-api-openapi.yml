@@ -1,0 +1,318 @@
+openapi: 3.2.0
+info:
+  title: Secureframe Repository Framework Asset Scope API
+  description: '## Introduction
+
+
+    Secureframe exposes a REST API for use by customers, partners, and community developers.'
+  version: '2023-10-18'
+  x-logo:
+    url: https://media.secureframe.com/logo-dark.svg
+servers:
+- url: https://api.secureframe.com
+- url: https://api-uk.secureframe.com
+tags:
+- name: Repository Framework Asset Scope
+  description: 'This document describes the API for reading Framework Asset Scopes.
+
+
+    A Framework Asset Scope defines the scope of an asset (e.g., a Repository) within a Framework.
+
+
+    Framework Asset Scopes are immutable. Once created, they cannot be modified. To update a scope, create a new resource with the updated information.'
+paths:
+  /repositories/{id}/framework_asset_scopes:
+    get:
+      tags:
+      - Repository Framework Asset Scope
+      operationId: repositoriesCompanyFrameworkAssetScopesIndex
+      parameters:
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: include
+        description: Comma delimited string of relationships to include.
+        required: false
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - manually_scoped_by
+        explode: false
+        style: form
+      - name: page
+        description: 'Used for pagination of response data (default: page 1). Specifies the offset of the next block of data to receive.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: per_page
+        description: 'Used for pagination of response data (default: 100 items per response). Specifies the number of results for a given page.'
+        required: false
+        in: query
+        schema:
+          type: integer
+      - name: relationships
+        description: 'Set to true to return the associated relationships data within the response. (default: false)'
+        required: false
+        in: query
+        schema:
+          type: boolean
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: List of resources matching the query
+                    items:
+                      type: object
+                      description: Data envelope for the response
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+                        type:
+                          type: string
+                          description: The type of resource this object is
+                        attributes:
+                          $ref: '#/components/schemas/FrameworkAssetScope'
+                        relationships:
+                          type: object
+                          description: Nested objects related to the top level object
+                        links:
+                          type: object
+                          description: Links to related API resources
+                  meta:
+                    type: object
+                    description: Metadata about the list response
+                    properties:
+                      total:
+                        type: integer
+                        description: Total number of records matching the query across all pages, independent of page and per_page
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: 'Returns a list of Framework Asset Scopes for the Repository by ID.
+
+
+        The absence of a Framework Asset Scope indicates the asset is not in scope for the Framework.'
+      summary: List Framework Asset Scopes
+      security:
+      - header_authorization: []
+      x-controller: api/repositories/company_framework_asset_scopes
+      x-action: index
+    post:
+      tags:
+      - Repository Framework Asset Scope
+      operationId: repositoriesCompanyFrameworkAssetScopesCreate
+      parameters:
+      - name: active
+        description: Flag to indicate if this Framework Asset Scope is active.
+        required: false
+        in: query
+        schema:
+          type: boolean
+      - name: framework_id
+        description: The ID of the Framework assigned to this Framework Asset Scope.
+        required: false
+        in: query
+        schema:
+          type: string
+          format: uuid
+      - name: id
+        description: Scope response to id
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: manually_scoped_reason
+        description: Reason if this Framework Asset Scope is manually scoped.
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: List of resources matching the query
+                    items:
+                      type: object
+                      description: Data envelope for the response
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+                        type:
+                          type: string
+                          description: The type of resource this object is
+                        attributes:
+                          $ref: '#/components/schemas/FrameworkAssetScope'
+                        relationships:
+                          type: object
+                          description: Nested objects related to the top level object
+                        links:
+                          type: object
+                          description: Links to related API resources
+                  meta:
+                    type: object
+                    description: Metadata about the list response
+                    properties:
+                      total:
+                        type: integer
+                        description: Total number of records matching the query across all pages, independent of page and per_page
+                  included:
+                    type: array
+                    items:
+                      type: object
+                      description: Various objects that have been included via the `include` param
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The identifier for this resource
+        '404':
+          description: Resource not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      description: Create a Framework Asset Scope for the Repository by ID
+      summary: Create Framework Asset Scope
+      security:
+      - header_authorization: []
+      x-controller: api/repositories/company_framework_asset_scopes
+      x-action: create
+components:
+  schemas:
+    FrameworkAssetScope:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this framework asset scope.
+        active:
+          type: boolean
+          description: Flag to indicate if this asset is in scope for this framework.
+        asset_id:
+          type: string
+          format: uuid
+          description: The identifier of the asset.
+        asset_type:
+          type: string
+          enum:
+          - CloudResource
+          - CompanyUser
+          - CompanyUserVendor
+          - Device
+          - Evidence
+          - ProductionBranch
+          - PullRequest
+          - Repository
+          - Ticket
+          - DataPlatform::ResourceData
+          description: The type of the asset.
+        created_at:
+          type: string
+          format: date-time
+          description: The date the framework asset scope was created.
+        framework_id:
+          type: string
+          format: uuid
+          description: The identifier of the framework.
+        framework_title:
+          type: string
+          description: The title of the framework.
+        manually_scoped:
+          type: boolean
+          description: Flag to indicate if this asset is manually scoped.
+        manually_scoped_reason:
+          type: string
+          description: Reason if this asset is manually scoped.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date when the framework asset scope was last updated.
+  securitySchemes:
+    header_authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+x-tagGroups:
+- name: Endpoints
+  tags:
+  - Cloud Resource
+  - Cloud Resource Framework Asset Scope
+  - Comment
+  - Control
+  - Custom Integration
+  - Device
+  - Device Framework Asset Scope
+  - Evidence
+  - File Upload
+  - Framework
+  - Framework Requirement
+  - Integration Connection
+  - Knowledge Base Answer
+  - Knowledge Base Question
+  - POA&M Item
+  - Policy
+  - Repository
+  - Repository Framework Asset Scope
+  - Risk
+  - SSP Duty
+  - SSP Duty Role
+  - SSP Policy
+  - SSP Report
+  - SSP Report Assessment Objective
+  - SSP Report Section
+  - SSP Report Section Block
+  - SSP Role
+  - SSP Vendor
+  - Security Questionnaire
+  - Task
+  - Test
+  - Test Evidence
+  - Test Export
+  - Test Export Reading
+  - Third Party Risk Management Vendor
+  - Trust Center Request
+  - User
+  - User Account
+  - User Evidence
+  - User Security Settings
+  - Vendor

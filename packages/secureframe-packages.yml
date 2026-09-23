@@ -1,0 +1,58 @@
+specification: API Commons Packages
+specificationVersion: '0.1'
+provider: Secureframe
+providerId: secureframe
+generated: '2026-08-27'
+modified: '2026-08-27'
+method: searched
+source: registry.npmjs.org search, pypi.org, rubygems.org, crates.io, api.github.com/orgs/secureframe, https://api.secureframe.com/docs
+description: Secureframe publishes NO first-party client SDK in any package registry. Searched npm (registry.npmjs.org/-/v1/search?text=secureframe),
+  PyPI, RubyGems and crates.io on 2026-08-27; the only npm hits are unrelated third-party packages (secureframe-react
+  wraps SecurePay, react-secure-frame is an iframe helper). The API reference documents raw cURL only. The
+  one first-party distributable Secureframe ever shipped — a Python MCP server on GitHub — was archived and
+  marked deprecated on 2026-07-17 in favour of the hosted MCP endpoint.
+official_sdk_count: 0
+package_count: 1
+registry_probes:
+- registry: npm
+  query: https://registry.npmjs.org/-/v1/search?text=secureframe&size=20
+  status: 200
+  first_party_hits: 0
+  note: 6 results, none published by Secureframe.
+- registry: pypi
+  url: https://pypi.org/pypi/secureframe/json
+  status: 404
+- registry: rubygems
+  url: https://rubygems.org/api/v1/gems/secureframe.json
+  status: 404
+- registry: crates.io
+  url: https://crates.io/api/v1/crates/secureframe
+  status: 403
+  note: crates.io rejected the unauthenticated user agent; no Rust crate is referenced anywhere in Secureframe
+    docs.
+packages:
+- name: secureframe-mcp-server
+  official: true
+  registry: github
+  language: Python
+  license: MIT
+  url: https://github.com/secureframe/secureframe-mcp-server
+  version: null
+  published: '2026-07-17'
+  version_note: 'version: null — never published to PyPI or npm. Distribution is git clone + pip install -r
+    requirements.txt, so there is no registry metadata endpoint to read a version from and no release tag.
+    The date recorded is the final push, which is also when the repo was archived.'
+  status: deprecated
+  deprecation_evidence: 'README opens "# Deprecated / This repository is no longer maintained. Please use the
+    Secureframe hosted MCP server instead." GitHub API reports archived: true, pushed_at 2026-07-17.'
+  replacement: https://mcp.secureframe.com/ (hosted, 112 tools)
+  note: Read-only, 11 tools, created 2025-06-10. Superseded 13 months later by the hosted server, which is
+    a strict superset.
+finding: A 112-operation REST API with zero official client libraries in any registry. Secureframe answered
+  the agent question (a hosted MCP server) before it answered the developer question (an SDK) — an unusual
+  and notable ordering.
+related:
+- mcp/secureframe-mcp.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com
