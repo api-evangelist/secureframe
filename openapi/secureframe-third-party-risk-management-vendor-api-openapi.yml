@@ -287,6 +287,26 @@ paths:
       x-action: archive
 components:
   schemas:
+    VendorRiskSubassessmentResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Subassesment response id.
+        name:
+          type: string
+          description: The name for the subassessment.
+        description:
+          type: string
+          description: The description for the subassessment.
+        risk_level:
+          type: string
+          description: The risk level assigned to this subassessment.
+        tprm_vendor_id:
+          type: string
+          format: uuid
+          description: The vendor risk details id.
     VendorRiskDetail:
       type: object
       properties:
@@ -368,26 +388,6 @@ components:
         website:
           type: string
           description: The website of the Vendor.
-    VendorRiskSubassessmentResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Subassesment response id.
-        name:
-          type: string
-          description: The name for the subassessment.
-        description:
-          type: string
-          description: The description for the subassessment.
-        risk_level:
-          type: string
-          description: The risk level assigned to this subassessment.
-        tprm_vendor_id:
-          type: string
-          format: uuid
-          description: The vendor risk details id.
   securitySchemes:
     header_authorization:
       type: apiKey
