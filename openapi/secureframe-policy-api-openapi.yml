@@ -250,37 +250,6 @@ paths:
       x-action: show
 components:
   schemas:
-    PolicyDetail:
-      allOf:
-      - $ref: '#/components/schemas/Policy'
-      - type: object
-        properties:
-          content:
-            type: string
-            description: The body of this Policy, with tokens such as {{company_name}} left unresolved.
-          has_content:
-            type: boolean
-            description: Whether this Policy has body content. False for Policies supplied only as an uploaded document.
-          interpolated_content:
-            type: string
-            description: The body of this Policy with every token resolved. This is what the Secureframe app displays.
-          documents:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: string
-                  format: uuid
-                filename:
-                  type: string
-                content_type:
-                  type: string
-                byte_size:
-                  type: integer
-                download_url:
-                  type: string
-            description: The files attached to this Policy. Each download_url is signed and expires five minutes after the response is generated.
     Policy:
       type: object
       properties:
@@ -355,6 +324,37 @@ components:
           type: string
           format: date-time
           description: The date this Policy was updated.
+    PolicyDetail:
+      allOf:
+      - $ref: '#/components/schemas/Policy'
+      - type: object
+        properties:
+          content:
+            type: string
+            description: The body of this Policy, with tokens such as {{company_name}} left unresolved.
+          has_content:
+            type: boolean
+            description: Whether this Policy has body content. False for Policies supplied only as an uploaded document.
+          interpolated_content:
+            type: string
+            description: The body of this Policy with every token resolved. This is what the Secureframe app displays.
+          documents:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                filename:
+                  type: string
+                content_type:
+                  type: string
+                byte_size:
+                  type: integer
+                download_url:
+                  type: string
+            description: The files attached to this Policy. Each download_url is signed and expires five minutes after the response is generated.
   securitySchemes:
     header_authorization:
       type: apiKey
