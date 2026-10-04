@@ -1291,6 +1291,9 @@ apis:
   - type: RateLimits
     url: rate-limits/secureframe-rate-limits.yml
 common:
+  - type: CapabilityMap
+    url: capabilities/secureframe-capability-edges.yml
+    name: Secureframe Business Capability Map
   - type: Website
     url: https://secureframe.com/
   - type: DeveloperPortal

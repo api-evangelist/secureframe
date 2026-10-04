@@ -1,0 +1,110 @@
+slug: secureframe
+provider: Secureframe
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 9
+edges:
+- tag: Trust Center Request
+  spec_file: secureframe-trust-center-request-api-openapi.yml
+  capability_id: BC-4290.30
+  capability_id_l1: BC-4290
+  capability_name: Trust Portal & Public Disclosure
+  confidence: 0.85
+  evidence: GET /trust_center_requests trustCenterRequestsIndex List Trust Center Requests; schemas TrustCenterResourceRequest,
+    TrustCenterResource
+  reason: Operations manage external requests for trust-center resources (compliance reports/documents),
+    which is exactly 'Trust Portal & Public Disclosure — operation of the customer trust portal... document
+    distribution workflows'.
+- tag: Third Party Risk Management Vendor
+  spec_file: secureframe-third-party-risk-management-vendor-api-openapi.yml
+  capability_id: BC-510.30
+  capability_id_l1: BC-510
+  capability_name: Supplier Risk Management
+  confidence: 0.8
+  evidence: GET /tprm/vendors tprmVendorRiskDetailsIndex List Third Party Risk Management Vendors; schemas
+    VendorRiskSubassessmentResponse, VendorRiskDetail
+  reason: Explicit third-party risk management over vendors with risk detail and sub-assessment schemas
+    — this is supplier/third-party risk assessment (cyber and compliance risk on suppliers). Some ambiguity
+    with sub-processor disclosure (BC-4290.40), but the risk-assessment schemas point to supplier risk
+    management.
+- tag: Framework
+  spec_file: secureframe-framework-api-openapi.yml
+  capability_id: BC-4290.10
+  capability_id_l1: BC-4290
+  capability_name: Service Attestation Management
+  confidence: 0.78
+  evidence: 'GET /frameworks companyFrameworksIndex ''List Frameworks''; vendor: ''SOC 2, ISO 27001, HIPAA,
+    PCI DSS, GDPR, CMMC, FedRAMP'''
+  reason: Frameworks are the attestation standards the company is certifying against, directly matching
+    'Coordination of service-level attestations such as SOC 2, ISO 27001, and FedRAMP'.
+- tag: Policy
+  spec_file: secureframe-policy-api-openapi.yml
+  capability_id: BC-130.20
+  capability_id_l1: BC-130
+  capability_name: Policy Management
+  confidence: 0.75
+  evidence: 'GET /policies  policiesIndex  List Policies; schemas: Policy, PolicyDetail — vendor "automates
+    security and privacy compliance ... policies"'
+  reason: The tag exposes the company's compliance policy records (list/get Policy, PolicyDetail) inside
+    a compliance-automation platform, which is policy lifecycle management. Some ambiguity with security
+    governance, but Policy Management is the narrower honest fit.
+- tag: Framework Requirement
+  spec_file: secureframe-framework-requirement-api-openapi.yml
+  capability_id: BC-4290.10
+  capability_id_l1: BC-4290
+  capability_name: Service Attestation Management
+  confidence: 0.72
+  evidence: GET /framework_requirements companyFrameworkRequirementsIndex 'List Framework Requirements'
+  reason: Individual requirements of a compliance framework tracked toward certification/attestation;
+    same attestation-management surface as Framework.
+- tag: Cloud Resource Framework Asset Scope
+  spec_file: secureframe-cloud-resource-framework-asset-scope-api-openapi.yml
+  capability_id: BC-4290.10
+  capability_id_l1: BC-4290
+  capability_name: Service Attestation Management
+  confidence: 0.7
+  evidence: POST /cloud_resources/{cloud_resource_id}/framework_asset_scopes  Create Framework Asset Scope
+    — vendor 'automates security and privacy compliance for SOC 2, ISO 27001, HIPAA, PCI DSS'
+  reason: Scoping assets into a compliance framework is the audit/attestation scoping work behind SOC
+    2 / ISO 27001 attestations, matching Service Attestation Management.
+- tag: Control
+  spec_file: secureframe-control-api-openapi.yml
+  capability_id: BC-4290.10
+  capability_id_l1: BC-4290
+  capability_name: Service Attestation Management
+  confidence: 0.7
+  evidence: 'GET /controls companyControlV2sIndex ''List Controls''; vendor: ''automates security and
+    privacy compliance for SOC 2, ISO 27001, HIPAA, PCI DSS'''
+  reason: Controls here are the compliance control set maintained to obtain service-level attestations
+    (SOC 2/ISO 27001/FedRAMP), matching BC-4290.10's explicit scope. Alternative reading as generic security
+    governance (BC-620.10) keeps confidence below 0.8.
+- tag: Risk
+  spec_file: secureframe-risk-api-openapi.yml
+  capability_id: BC-120.20
+  capability_id_l1: BC-120
+  capability_name: Risk Identification & Assessment
+  confidence: 0.7
+  evidence: GET /risks  companyRisksIndex  List Risks; schema CompanyRisk
+  reason: Exposes the company risk register maintained by the compliance platform, which realises enterprise
+    risk identification and assessment. Only read operations, so which risk sub-capability (assessment
+    vs monitoring) is somewhat uncertain.
+- tag: Security Questionnaire
+  spec_file: secureframe-security-questionnaire-api-openapi.yml
+  capability_id: BC-4290.20
+  capability_id_l1: BC-4290
+  capability_name: Customer Security Questionnaire Management
+  confidence: 0.7
+  evidence: POST /security_questionnaires securityQuestionnairesCreate Create a Security Questionnaire
+  reason: Secureframe's questionnaire feature manages security questionnaires in a compliance-automation
+    context, matching 'Customer Security Questionnaire Management — stewardship of the questionnaire repository,
+    response authoring'. Some residual ambiguity as to whether the questionnaire is outbound to vendors
+    (TPRM) rather than inbound from customers, hence 0.7.
