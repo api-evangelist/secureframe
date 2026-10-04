@@ -457,19 +457,6 @@ components:
           items:
             $ref: '#/components/schemas/TrustCenterResourceRequest'
           description: The trust center resource requests associated with this trust center request.
-    TrustCenterResourceRequest:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The identifier for this trust center resource request.
-        approved_at:
-          type: string
-          format: date-time
-          description: The date this trust center resource request was approved.
-        trust_center_resource:
-          $ref: '#/components/schemas/TrustCenterResource'
     TrustCenterResource:
       type: object
       properties:
@@ -493,6 +480,19 @@ components:
           - other_document
           - link
           description: The type of resource.
+    TrustCenterResourceRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this trust center resource request.
+        approved_at:
+          type: string
+          format: date-time
+          description: The date this trust center resource request was approved.
+        trust_center_resource:
+          $ref: '#/components/schemas/TrustCenterResource'
   securitySchemes:
     header_authorization:
       type: apiKey
