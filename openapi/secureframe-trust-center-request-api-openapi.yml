@@ -407,6 +407,42 @@ paths:
                   example: Users/Downloads/some_file.png
 components:
   schemas:
+    TrustCenterResource:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this trust center resource.
+        description:
+          type: string
+          description: The description of the resource.
+        name:
+          type: string
+          description: The name of the resource.
+        nda_required:
+          type: boolean
+          description: Whether an NDA is required to access this resource.
+        resource_type:
+          type: string
+          enum:
+          - compliance_item
+          - other_document
+          - link
+          description: The type of resource.
+    TrustCenterResourceRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier for this trust center resource request.
+        approved_at:
+          type: string
+          format: date-time
+          description: The date this trust center resource request was approved.
+        trust_center_resource:
+          $ref: '#/components/schemas/TrustCenterResource'
     TrustCenterRequest:
       type: object
       properties:
@@ -457,42 +493,6 @@ components:
           items:
             $ref: '#/components/schemas/TrustCenterResourceRequest'
           description: The trust center resource requests associated with this trust center request.
-    TrustCenterResource:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The identifier for this trust center resource.
-        description:
-          type: string
-          description: The description of the resource.
-        name:
-          type: string
-          description: The name of the resource.
-        nda_required:
-          type: boolean
-          description: Whether an NDA is required to access this resource.
-        resource_type:
-          type: string
-          enum:
-          - compliance_item
-          - other_document
-          - link
-          description: The type of resource.
-    TrustCenterResourceRequest:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The identifier for this trust center resource request.
-        approved_at:
-          type: string
-          format: date-time
-          description: The date this trust center resource request was approved.
-        trust_center_resource:
-          $ref: '#/components/schemas/TrustCenterResource'
   securitySchemes:
     header_authorization:
       type: apiKey
