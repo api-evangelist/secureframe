@@ -40,3 +40,16 @@
     builder: unknown (not in the directory record)
   status: not-a-workflow
   arazzo: null
+- slug: secureframe-zoom-own
+  label: Zoom (own)
+  partner: zoom
+  partner_name: Zoom (own)
+  category: Zoom app
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://marketplace.zoom.us/apps/AaZ7RZTRTcSdQT1O84wW9g
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
