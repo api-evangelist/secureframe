@@ -1,4 +1,4 @@
-# Secureframe (secureframe)
+# Secureframe
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,31 +64,177 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Secureframe automates security compliance (SOC 2, ISO 27001, HIPAA, PCI DSS, GDPR) with continuous evidence collection, vendor management, and AI-powered risk. The Secureframe Public API gives programmatic access to controls, frameworks, evidence, tests, personnel, and vendors.
+Secureframe automates security and privacy compliance for SOC 2, ISO 27001, HIPAA, PCI DSS, GDPR, CMMC, FedRAMP, NIST 800-171 and more. Its Public API is a 112-operation, JSON:API-shaped REST contract over the compliance record of truth — frameworks, requirements, controls, tests, evidence, policies, risks, personnel, devices, cloud resources, repositories, third-party vendors, trust center requests, and the System Security Plan and POA&M artifacts CMMC and FedRAMP assessments are conducted against. Secureframe also runs a first-party hosted MCP server that exposes all 112 operations as agent-callable tools over OAuth 2.1.
 
-**URL:** [Visit APIs.json URL](https://raw.githubusercontent.com/api-evangelist/secureframe/refs/heads/main/apis.yml)
+**Areas:** GRC · Compliance · SOC 2 · ISO 27001 · Risk Management · CMMC · FedRAMP · Security · Audit · Trust
 
-## Type
-- **x-type:** company
+## Secureframe on APIs.io
 
-## Tags
-- GRC, Compliance, SOC 2, ISO 27001, Risk
+Everything profiled for Secureframe is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/secureframe/](https://apis.io/providers/secureframe/)** — or go straight to one of the APIs or properties below.
 
-## APIs
-- **Secureframe Public API** — REST API. Base URL: `https://api.secureframe.com`. Docs: https://developer.secureframe.com/
+### APIs (42)
 
-## Timestamps
-- **Created:** 2026-05-08
-- **Modified:** 2026-05-08
+- [Secureframe MCP Server](https://apis.io/apis/secureframe/mcp-server/) — First-party hosted (remote) Model Context Protocol server exposing the Secureframe compliance platform as 112 tools across 41 categories — 63 read, 49 write…
+- [Secureframe Cloud Resource API](https://apis.io/apis/secureframe/secureframe-cloud-resource-api/) — This document describes the API for reading and updating Cloud Resources.
+- [Secureframe Cloud Resource Framework Asset Scope API](https://apis.io/apis/secureframe/secureframe-cloud-resource-framework-asset-scope-api/) — This document describes the API for reading and creating Framework Asset Scopes. A Framework Asset Scope defines the scope of an asset (e.g., a Cloud…
+- [Secureframe Comment API](https://apis.io/apis/secureframe/secureframe-comment-api/) — This document describes the API for reading, creating, updating, and deleting Comments.
+- [Secureframe Control API](https://apis.io/apis/secureframe/secureframe-control-api/) — This document describes the API for reading Controls.
+- [Secureframe Custom Integration API](https://apis.io/apis/secureframe/secureframe-custom-integration-api/) — This document describes the API for publishing data to a custom integration.
+- [Secureframe Device API](https://apis.io/apis/secureframe/secureframe-device-api/) — This document describes the API for reading Devices.
+- [Secureframe Device Framework Asset Scope API](https://apis.io/apis/secureframe/secureframe-device-framework-asset-scope-api/) — This document describes the API for reading and creating Framework Asset Scopes. A Framework Asset Scope defines the scope of an asset (e.g., a Device)…
+- [Secureframe Evidence API](https://apis.io/apis/secureframe/secureframe-evidence-api/) — This document describes the API for reading Evidence.
+- [Secureframe File Upload API](https://apis.io/apis/secureframe/secureframe-file-upload-api/) — This document describes the API for staging a direct-to-storage file upload.
+- [Secureframe Framework API](https://apis.io/apis/secureframe/secureframe-framework-api/) — This document describes the API for reading Frameworks.
+- [Secureframe Framework Requirement API](https://apis.io/apis/secureframe/secureframe-framework-requirement-api/) — This document describes the API for reading Framework Requirements.
+- [Secureframe Integration Connection API](https://apis.io/apis/secureframe/secureframe-integration-connection-api/) — This document describes the API for reading and archiving Integration Connections.
+- [Secureframe Knowledge Base Answer API](https://apis.io/apis/secureframe/secureframe-knowledge-base-answer-api/) — This document describes the API for reading, creating, updating, and deleting Knowledge Base Answers.
+- [Secureframe Knowledge Base Question API](https://apis.io/apis/secureframe/secureframe-knowledge-base-question-api/) — This document describes the API for reading, creating, updating, and deleting Knowledge Base Questions.
+- [Secureframe POA&M Item API](https://apis.io/apis/secureframe/secureframe-poa-m-item-api/) — This document describes the API for reading, creating, updating, and discarding POA&M (Plan of Action & Milestones) items.
+- [Secureframe Policy API](https://apis.io/apis/secureframe/secureframe-policy-api/) — This document describes the API for reading Policies. Policies are returned in every status, including drafts and archived ones. Filter with…
+- [Secureframe Repository API](https://apis.io/apis/secureframe/secureframe-repository-api/) — This document describes the API for reading and updating Repositories.
+- [Secureframe Repository Framework Asset Scope API](https://apis.io/apis/secureframe/secureframe-repository-framework-asset-scope-api/) — This document describes the API for reading Framework Asset Scopes. A Framework Asset Scope defines the scope of an asset (e.g., a Repository) within a…
+- [Secureframe Risk API](https://apis.io/apis/secureframe/secureframe-risk-api/) — This document describes the API for reading Risks.
+- [Secureframe Security Questionnaire API](https://apis.io/apis/secureframe/secureframe-security-questionnaire-api/) — This document describes the API for creating Security Questionnaires.
+- [Secureframe SSP Duty API](https://apis.io/apis/secureframe/secureframe-ssp-duty-api/) — This document describes the API for reading, creating, updating, and deleting SSP Duties.
+- [Secureframe SSP Duty Role API](https://apis.io/apis/secureframe/secureframe-ssp-duty-role-api/) — This document describes the API for reading, creating, and deleting SSP Duty Roles.
+- [Secureframe SSP Policy API](https://apis.io/apis/secureframe/secureframe-ssp-policy-api/) — This document describes the API for reading, creating, updating, and deleting SSP Policies.
+- [Secureframe SSP Report API](https://apis.io/apis/secureframe/secureframe-ssp-report-api/) — This document describes the API for reading and creating SSP Reports.
+- [Secureframe SSP Report Assessment Objective API](https://apis.io/apis/secureframe/secureframe-ssp-report-assessment-objective-api/) — This document describes the API for reading and updating SSP Report Assessment Objectives.
+- [Secureframe SSP Report Section API](https://apis.io/apis/secureframe/secureframe-ssp-report-section-api/) — This document describes the API for reading and updating SSP Report Sections.
+- [Secureframe SSP Report Section Block API](https://apis.io/apis/secureframe/secureframe-ssp-report-section-block-api/) — This document describes the API for reading and updating SSP Report Section Blocks.
+- [Secureframe SSP Role API](https://apis.io/apis/secureframe/secureframe-ssp-role-api/) — This document describes the API for reading, creating, updating, and deleting SSP Roles.
+- [Secureframe SSP Vendor API](https://apis.io/apis/secureframe/secureframe-ssp-vendor-api/) — This document describes the API for reading, creating, updating, and deleting SSP Vendors.
+- [Secureframe Task API](https://apis.io/apis/secureframe/secureframe-task-api/) — This document describes the API for reading Tasks.
+- [Secureframe Test API](https://apis.io/apis/secureframe/secureframe-test-api/) — This document describes the API for reading, creating, and updating Tests.
+- [Secureframe Test Evidence API](https://apis.io/apis/secureframe/secureframe-test-evidence-api/) — This document describes the API for creating Evidence for a Test.
+- [Secureframe Test Export API](https://apis.io/apis/secureframe/secureframe-test-export-api/) — This document describes the API for creating a Test Export for a Test.
+- [Secureframe Test Export Reading API](https://apis.io/apis/secureframe/secureframe-test-export-reading-api/) — This document describes the API for reading a Test Export.
+- [Secureframe Third Party Risk Management Vendor API](https://apis.io/apis/secureframe/secureframe-third-party-risk-management-vendor-api/) — This document describes the API for reading and archiving Vendors for companies using the Third Party Risk Management.
+- [Secureframe Trust Center Request API](https://apis.io/apis/secureframe/secureframe-trust-center-request-api/) — This document describes the API for reading and updating Trust Center Requests.\ Note: In order to access this API, you need to have paid features enabled…
+- [Secureframe User Account API](https://apis.io/apis/secureframe/secureframe-user-account-api/) — This document describes the API for reading and linking User Accounts.
+- [Secureframe User API](https://apis.io/apis/secureframe/secureframe-user-api/) — This document describes the API for reading and updating Users.
+- [Secureframe User Evidence API](https://apis.io/apis/secureframe/secureframe-user-evidence-api/) — This document describes the API for creating Evidence for a User.
+- [Secureframe User Security Settings API](https://apis.io/apis/secureframe/secureframe-user-security-settings-api/) — This document describes the API for retrieving user security settings for the provided API key's company.
+- [Secureframe Vendor API](https://apis.io/apis/secureframe/secureframe-vendor-api/) — This document describes the API for reading and archiving Vendors.
 
-## Common Properties
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [Secureframe MCP Server](https://apis.io/servers/secureframe/secureframe-mcp-server/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Secureframe Public Api Overlay](https://apis.io/overlays/secureframe/secureframe-public-api-overlay/)
+
+#### Security (4)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Secureframe Authentication](https://apis.io/security/secureframe/secureframe-authentication/)
+- [Secureframe Domain Security](https://apis.io/security/secureframe/secureframe-domain-security/)
+- [Secureframe Trust Center](https://apis.io/security/secureframe/secureframe-trust-center/)
+- [Secureframe Vulnerability Disclosure](https://apis.io/security/secureframe/secureframe-vulnerability-disclosure/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Secureframe Scopes](https://apis.io/scopes/secureframe/secureframe-scopes/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Secureframe Plans Pricing](https://apis.io/plans/secureframe/secureframe-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Secureframe Rate Limits](https://apis.io/rate-limits/secureframe/secureframe-rate-limits/)
+
+#### FinOps (1)
+
+What the API costs to run, by operation.
+
+- [Secureframe Finops](https://apis.io/finops/secureframe/secureframe-finops/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
 - [Website](https://secureframe.com/)
-- [Developer Portal](https://developer.secureframe.com/)
-- [Plans](plans/secureframe-plans-pricing.yml) — quote-based, no public pricing (reconciled: false)
-- [RateLimits](rate-limits/secureframe-rate-limits.yml) — limits not publicly published (reconciled: false)
-- [FinOps](finops/secureframe-finops.yml) — FOCUS-aligned subscription model (reconciled: false)
+- [Documentation](https://developer.secureframe.com/)
+- [API reference](https://api.secureframe.com/docs)
+- [Pricing](https://secureframe.com/pricing)
+- [Sign up](https://secureframe.com/request-demo)
+- [Support](https://secureframe.com/contact)
+- [Changelog](https://secureframe.com/product-updates)
+- [Blog](https://secureframe.com/blog)
+- [Compliance](https://trust.secureframe.com/)
+- [Terms of service](https://secureframe.com/terms)
+- [Privacy policy](https://secureframe.com/privacy-policy)
+- [GitHub](https://github.com/secureframe)
+- [Status](https://status.secureframe.com/)
 
-## Maintainers
-**FN:** Kin Lane
+## API Evangelist rating
 
-**Email:** kin@apievangelist.com
+**Kin Score 56.1** — strong · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 75.0 |
+| Contract quality | 48.4 |
+| Contract governance | 18.2 |
+| Operational transparency | 73.7 |
+| Developer ergonomics | 37.5 |
+| Access clarity | 73.7 |
+
+**Agent readiness 43.0** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | documented (partial credit) |
+| Auth Clarity | served (partial credit) |
+| Idempotency | — |
+| Error Semantics | derived (partial credit) |
+| OpenAPI Examples | partial |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | yes |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 36.3** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/secureframe/](https://apis.io/providers/secureframe/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Secureframe: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/secureframe/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
